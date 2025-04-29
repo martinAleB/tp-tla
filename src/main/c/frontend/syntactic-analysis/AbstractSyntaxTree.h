@@ -16,7 +16,9 @@ void shutdownAbstractSyntaxTreeModule();
 
 typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
+typedef enum ProgramType ProgramType;
 
+typedef struct Json Json;
 typedef struct Constant Constant;
 typedef struct Expression Expression;
 typedef struct Factor Factor;
@@ -39,6 +41,11 @@ enum FactorType {
 	EXPRESSION
 };
 
+enum ProgramType {
+	PROGRAM_EXPRESSION,
+	JSON
+};
+
 struct Constant {
 	int value;
 };
@@ -50,6 +57,13 @@ struct Factor {
 	};
 	FactorType type;
 };
+
+/*This should have more things*/
+struct Json
+{
+	int value;
+};
+
 
 struct Expression {
 	union {
@@ -63,7 +77,11 @@ struct Expression {
 };
 
 struct Program {
-	Expression * expression;
+	union {
+		Json * json;
+		Expression * expression;
+	};
+	ProgramType type;
 };
 
 /**
@@ -72,6 +90,7 @@ struct Program {
 void releaseConstant(Constant * constant);
 void releaseExpression(Expression * expression);
 void releaseFactor(Factor * factor);
+void releaseJson(Json *json);
 void releaseProgram(Program * program);
 
 #endif

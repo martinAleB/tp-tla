@@ -57,10 +57,24 @@ void releaseFactor(Factor * factor) {
 	}
 }
 
+void releaseJson(Json *json) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (json != NULL){
+		free(json);
+	}
+}
+
 void releaseProgram(Program * program) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (program != NULL) {
-		releaseExpression(program->expression);
+		switch (program->type) {
+			case PROGRAM_EXPRESSION:
+				releaseExpression(program->expression);
+				break;
+			case JSON:
+				releaseJson(program->json);
+				break;
+		}
 		free(program);
 	}
 }

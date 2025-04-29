@@ -31,4 +31,6 @@ Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, T
 
 Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 
+Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+
 #endif

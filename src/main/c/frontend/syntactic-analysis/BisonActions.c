@@ -75,12 +75,41 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Express
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Program * program = calloc(1, sizeof(Program));
 	program->expression = expression;
+	program->type = PROGRAM_EXPRESSION;
 	compilerState->abstractSyntaxtTree = program;
 	if (0 < flexCurrentContext()) {
 		logError(_logger, "The final context is not the default (0): %d", flexCurrentContext());
 		compilerState->succeed = false;
 	}
 	else {
+		compilerState->succeed = true;
+	}
+	return program;
+}
+
+//Our own Bison Actions
+Json *JsonSemanticAction()
+{
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Json *json = calloc(1, sizeof(Json));
+	json->value = 1;
+	return json;
+}
+
+Program *JsonProgramSemanticAction(CompilerState *compilerState, Json *json)
+{
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Program *program = calloc(1, sizeof(Program));
+	program->json = json;
+	program->type = JSON;
+	compilerState->abstractSyntaxtTree = program;
+	if (0 < flexCurrentContext())
+	{
+		logError(_logger, "The final context is not the default (0): %d", flexCurrentContext());
+		compilerState->succeed = false;
+	}
+	else
+	{
 		compilerState->succeed = true;
 	}
 	return program;

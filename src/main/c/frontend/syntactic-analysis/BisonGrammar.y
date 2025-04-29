@@ -18,6 +18,7 @@
 	Constant * constant;
 	Expression * expression;
 	Factor * factor;
+	Json * json;
 	Program * program;
 }
 
@@ -32,6 +33,7 @@
 %destructor { releaseConstant($$); } <constant>
 %destructor { releaseExpression($$); } <expression>
 %destructor { releaseFactor($$); } <factor>
+%destructor { releaseJson($$); } <json>
 
 /** Terminals. */
 %token <integer> INTEGER
@@ -41,6 +43,8 @@
 %token <token> MUL
 %token <token> OPEN_PARENTHESIS
 %token <token> SUB
+%token <token> OPEN_BRACE
+%token <token> CLOSE_BRACE
 
 %token <token> UNKNOWN
 
@@ -48,6 +52,7 @@
 %type <constant> constant
 %type <expression> expression
 %type <factor> factor
+%type <json> json
 %type <program> program
 
 /**
@@ -63,6 +68,10 @@
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
 program: expression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
+	| json															{ $$ = JsonProgramSemanticAction(currentCompilerState(), $1); }
+	;
+
+json: OPEN_BRACE CLOSE_BRACE 										{ $$ = JsonSemanticAction();}
 	;
 
 expression: expression[left] ADD expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
