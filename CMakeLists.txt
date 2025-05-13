@@ -72,22 +72,5 @@ add_executable(Compiler
 	# ...
 )
 
-#Our own entry-point, just for checking the syntactic analysis.
-add_executable(CheckSyntaxOnly
-	src/main/c/SyntaxOnlyEntryPoint.c
-	src/main/c/backend/code-generation/Generator.c
-	src/main/c/backend/domain-specific/Calculator.c
-	src/main/c/frontend/lexical-analysis/FlexActions.c
-	src/main/c/frontend/lexical-analysis/FlexScanner.c
-	src/main/c/frontend/lexical-analysis/LexicalAnalyzerContext.c
-	src/main/c/frontend/syntactic-analysis/AbstractSyntaxTree.c
-	src/main/c/frontend/syntactic-analysis/BisonActions.c
-	src/main/c/frontend/syntactic-analysis/BisonParser.c
-	src/main/c/frontend/syntactic-analysis/SyntacticAnalyzer.c
-	src/main/c/shared/Environment.c
-	src/main/c/shared/Logger.c
-	src/main/c/shared/String.c
-)
-
 # Link final project and libraries.
 target_link_libraries(Compiler)

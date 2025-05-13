@@ -31,8 +31,15 @@
 <MULTILINE_COMMENT>[^*]+			{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>.				{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
-"{"                                 { return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACE); }
-"}"                                 { return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_BRACE); }
+"{"                                 { return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_CURLY_BRACE); }
+"}"                                 { return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_CURLY_BRACE); }
+"\"from\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), FROM); }
+"\"attributes\""                    { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ATTRIBUTES); }
+"\"where\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), WHERE); }
+":"                                 { return KeyWordLexemeAction(createLexicalAnalyzerContext(), COLON); }      
+
+\"([^\\\"]|\\.)*\"                  { return StringLexemeAction(createLexicalAnalyzerContext()); }
+
 "-"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), SUB); }
 "*"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), MUL); }
 "/"									{ return ArithmeticOperatorLexemeAction(createLexicalAnalyzerContext(), DIV); }
@@ -42,6 +49,7 @@
 ")"									{ return ParenthesisLexemeAction(createLexicalAnalyzerContext(), CLOSE_PARENTHESIS); }
 
 [[:digit:]]+						{ return IntegerLexemeAction(createLexicalAnalyzerContext()); }
+"-?[0-9]+(\.[0-9]+)?"               { return NumberLexemeAction(createLexicalAnalyzerContext()); }
 
 [[:space:]]+						{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 .									{ return UnknownLexemeAction(createLexicalAnalyzerContext()); }

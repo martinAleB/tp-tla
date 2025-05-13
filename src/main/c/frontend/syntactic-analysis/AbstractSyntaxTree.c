@@ -60,6 +60,7 @@ void releaseFactor(Factor * factor) {
 void releaseJson(Json *json) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (json != NULL){
+		free(json->jsonString);
 		free(json);
 	}
 }

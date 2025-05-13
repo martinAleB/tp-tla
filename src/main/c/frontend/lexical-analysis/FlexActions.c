@@ -92,3 +92,27 @@ Token BraceLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token to
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return token;
 }
+
+Token KeyWordLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
+{
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	lexicalAnalyzerContext->semanticValue->token = token;
+	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+	return token;
+}
+
+Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
+	//@todo: check if this is a security liability (would strncpy be better?)
+	strcpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme);
+	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+	return STRING;
+}
+
+Token NumberLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	lexicalAnalyzerContext->semanticValue->number = atoi(lexicalAnalyzerContext->lexeme);
+	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+	return NUMBER;
+}

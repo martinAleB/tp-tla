@@ -11,6 +11,8 @@
 	/** Terminals. */
 
 	int integer;
+	float number;
+	char * string;
 	Token token;
 
 	/** Non-terminals. */
@@ -43,8 +45,14 @@
 %token <token> MUL
 %token <token> OPEN_PARENTHESIS
 %token <token> SUB
-%token <token> OPEN_BRACE
-%token <token> CLOSE_BRACE
+%token <token> OPEN_CURLY_BRACE
+%token <token> CLOSE_CURLY_BRACE
+%token <token> FROM
+%token <token> ATTRIBUTES
+%token <token> WHERE
+%token <token> COLON
+%token <string> STRING
+%token <number> NUMBER
 
 %token <token> UNKNOWN
 
@@ -71,8 +79,10 @@ program: expression													{ $$ = ExpressionProgramSemanticAction(currentCo
 	| json															{ $$ = JsonProgramSemanticAction(currentCompilerState(), $1); }
 	;
 
-json: OPEN_BRACE CLOSE_BRACE 										{ $$ = JsonSemanticAction();}
+json: OPEN_CURLY_BRACE FROM COLON STRING[string] CLOSE_CURLY_BRACE 					{ $$ = JsonSemanticAction($string);}
 	;
+
+
 
 expression: expression[left] ADD expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
 	| expression[left] DIV expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }

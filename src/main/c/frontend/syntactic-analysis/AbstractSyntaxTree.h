@@ -58,10 +58,8 @@ struct Factor {
 	FactorType type;
 };
 
-/*This should have more things*/
-struct Json
-{
-	int value;
+struct Json {
+	char * jsonString;
 };
 
 

@@ -88,11 +88,11 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Express
 }
 
 //Our own Bison Actions
-Json *JsonSemanticAction()
+Json *JsonSemanticAction(char * jsonString)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Json *json = calloc(1, sizeof(Json));
-	json->value = 1;
+	json->jsonString = jsonString;
 	return json;
 }
 

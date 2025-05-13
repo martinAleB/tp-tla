@@ -11,30 +11,11 @@ OFF='\033[0m'
 STATUS=0
 
 
-# Check which compiler to use
-
-SYNTAX_ONLY=false
-
-for arg in "$@"; do
-  if [ "$arg" = "--syntax-only" ]; then
-    SYNTAX_ONLY=true
-  fi
-done
-
-if [ "$SYNTAX_ONLY" = true ]; then
-  COMPILER="build/CheckSyntaxOnly"
-else
-  COMPILER="build/Compiler"
-fi
-
-##
-
-
 echo "Compiler should accept..."
 echo ""
 
 for test in $(ls src/test/c/accept/); do
-	cat "src/test/c/accept/$test" | $COMPILER >/dev/null 2>&1
+	cat "src/test/c/accept/$test" | build/Compiler >/dev/null 2>&1
 	RESULT="$?"
 	if [ "$RESULT" == "0" ]; then
 		echo -e "    $test, ${GREEN}and it does${OFF} (status $RESULT)"
@@ -49,7 +30,7 @@ echo "Compiler should reject..."
 echo ""
 
 for test in $(ls src/test/c/reject/); do
-	cat "src/test/c/reject/$test" | $COMPILER >/dev/null 2>&1
+	cat "src/test/c/reject/$test" | build/Compiler >/dev/null 2>&1
 	RESULT="$?"
 	if [ "$RESULT" != "0" ]; then
 		echo -e "    $test, ${GREEN}and it does${OFF} (status $RESULT)"
