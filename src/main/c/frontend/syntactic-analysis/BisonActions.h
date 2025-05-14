@@ -26,5 +26,9 @@ Factor * ExpressionFactorSemanticAction(Expression * expression);
 Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression);
 Json * JsonSemanticAction();
 Program * JsonProgramSemanticAction(CompilerState *compilerState, Json *json);
+ClauseList * ClauseListSemanticAction(Clause * clause, ClauseList * clauseList);
+Clause * FromClauseSemanticAction(ClauseArgsList * fromClauseArgsList);
+ClauseValue * FromClauseValueSemanticAction(char * string);
+ClauseArgsList * ClauseArgsListSemanticAction(ClauseValue * fromClauseValue, ClauseArgsList * fromAClauseArgsList);
 
 #endif

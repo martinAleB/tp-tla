@@ -20,6 +20,10 @@
 	Constant * constant;
 	Expression * expression;
 	Factor * factor;
+	Clause * clause;
+	ClauseList * clauseList;
+	ClauseArgsList * clauseArgsList;
+	ClauseValue * clauseValue;
 	Json * json;
 	Program * program;
 }
@@ -36,6 +40,10 @@
 %destructor { releaseExpression($$); } <expression>
 %destructor { releaseFactor($$); } <factor>
 %destructor { releaseJson($$); } <json>
+%destructor { releaseClauseArgsList($$); } <clauseArgsList>
+%destructor { releaseClauseValue($$); } <clauseValue>
+%destructor { releaseClause($$); } <clause>
+%destructor { releaseClauseList($$); } <clauseList>
 
 /** Terminals. */
 %token <integer> INTEGER
@@ -51,6 +59,9 @@
 %token <token> ATTRIBUTES
 %token <token> WHERE
 %token <token> COLON
+%token <token> COMMA
+%token <token> OPEN_BRACKET
+%token <token> CLOSE_BRACKET
 %token <string> STRING
 %token <number> NUMBER
 
@@ -61,6 +72,11 @@
 %type <expression> expression
 %type <factor> factor
 %type <json> json
+%type <clause> clause
+%type <clauseList> clauseList
+%type <clauseArgsList> fromClauseArgsList
+%type <clauseArgsList> fromClauseValues
+%type <clauseValue> fromClauseValue
 %type <program> program
 
 /**
@@ -79,10 +95,25 @@ program: expression													{ $$ = ExpressionProgramSemanticAction(currentCo
 	| json															{ $$ = JsonProgramSemanticAction(currentCompilerState(), $1); }
 	;
 
-json: OPEN_CURLY_BRACE FROM COLON STRING[string] CLOSE_CURLY_BRACE 					{ $$ = JsonSemanticAction($string);}
+json: OPEN_CURLY_BRACE clauseList CLOSE_CURLY_BRACE 				{ $$ = JsonSemanticAction($2);}
 	;
 
+clauseList: clause													{ $$ = ClauseListSemanticAction($1, NULL); }	
+	| clause COMMA clauseList										{ $$ = ClauseListSemanticAction($1, $3); }
+	;
 
+clause: FROM COLON fromClauseArgsList               				{ $$ = FromClauseSemanticAction($3); }
+	;
+
+fromClauseValue: STRING												{ $$ = FromClauseValueSemanticAction($1); }
+	;
+
+fromClauseValues: fromClauseValue										{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| fromClauseValue COMMA fromClauseValues							{ $$ = ClauseArgsListSemanticAction($1, $3); }
+
+
+fromClauseArgsList: fromClauseValue									{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| OPEN_BRACKET fromClauseValues CLOSE_BRACKET					{ $$ = $2; }
 
 expression: expression[left] ADD expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
 	| expression[left] DIV expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }

@@ -17,11 +17,16 @@ void shutdownAbstractSyntaxTreeModule();
 typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
 typedef enum ProgramType ProgramType;
+typedef enum ClauseType ClauseType;
 
 typedef struct Json Json;
 typedef struct Constant Constant;
 typedef struct Expression Expression;
 typedef struct Factor Factor;
+typedef struct ClauseValue ClauseValue;
+typedef struct ClauseArgsList ClauseArgsList;
+typedef struct ClauseList ClauseList;
+typedef struct Clause Clause;
 typedef struct Program Program;
 
 /**
@@ -46,6 +51,9 @@ enum ProgramType {
 	JSON
 };
 
+enum ClauseType {
+	FROM_CLAUSE
+};
 struct Constant {
 	int value;
 };
@@ -58,10 +66,33 @@ struct Factor {
 	FactorType type;
 };
 
-struct Json {
-	char * jsonString;
+struct ClauseArgsList {
+	ClauseValue * clauseValue;
+	ClauseArgsList * next;
 };
 
+struct ClauseValue {
+	union {
+		char * string;
+	};
+	ClauseType clauseType;
+};
+
+struct Clause {
+	union {
+		ClauseArgsList * fromClauseArgsList;
+	};
+	ClauseType type;
+};
+
+struct ClauseList {
+	Clause * clause;
+	ClauseList * next;
+};
+
+struct Json {
+	ClauseList * clauseList;
+};
 
 struct Expression {
 	union {
@@ -90,5 +121,9 @@ void releaseExpression(Expression * expression);
 void releaseFactor(Factor * factor);
 void releaseJson(Json *json);
 void releaseProgram(Program * program);
+void releaseClauseArgsList(ClauseArgsList * fromArray);
+void releaseClauseValue(ClauseValue * fromArrayValue);
+void releaseClause(Clause * clause);
+void releaseClauseList(ClauseList * clauseList);
 
 #endif

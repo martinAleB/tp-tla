@@ -88,11 +88,11 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Express
 }
 
 //Our own Bison Actions
-Json *JsonSemanticAction(char * jsonString)
+Json *JsonSemanticAction(ClauseList * clauseList)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Json *json = calloc(1, sizeof(Json));
-	json->jsonString = jsonString;
+	json->clauseList = clauseList;
 	return json;
 }
 
@@ -113,4 +113,36 @@ Program *JsonProgramSemanticAction(CompilerState *compilerState, Json *json)
 		compilerState->succeed = true;
 	}
 	return program;
+}
+
+ClauseList * ClauseListSemanticAction(Clause * clause, ClauseList * clauseList) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseList * newClauseList = calloc(1, sizeof(ClauseList));
+	newClauseList->clause = clause;
+	newClauseList->next = clauseList;
+	return newClauseList;
+}
+
+ClauseValue * FromClauseValueSemanticAction(char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * fromClauseValue = calloc(1, sizeof(ClauseValue));
+	fromClauseValue->string = string;
+	fromClauseValue->clauseType = FROM_CLAUSE;
+	return fromClauseValue;
+}
+
+ClauseArgsList * ClauseArgsListSemanticAction(ClauseValue * clauseValue, ClauseArgsList * clauseValuesNext) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseArgsList * clauseArgsList = calloc(1, sizeof(ClauseArgsList));
+	clauseArgsList->clauseValue = clauseValue;
+	clauseArgsList->next = clauseValuesNext;
+	return clauseArgsList;
+}
+
+Clause * FromClauseSemanticAction(ClauseArgsList * clauseArgsList) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Clause * clause = calloc(1, sizeof(Clause));
+	clause->type = FROM_CLAUSE;
+	clause->fromClauseArgsList = clauseArgsList;
+	return clause;
 }

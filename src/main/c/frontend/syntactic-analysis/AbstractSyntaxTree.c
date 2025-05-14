@@ -60,7 +60,7 @@ void releaseFactor(Factor * factor) {
 void releaseJson(Json *json) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (json != NULL){
-		free(json->jsonString);
+		releaseClauseList(json->clauseList);
 		free(json);
 	}
 }
@@ -78,4 +78,50 @@ void releaseProgram(Program * program) {
 		}
 		free(program);
 	}
+}
+
+void releaseClauseArgsList(ClauseArgsList * clauseArgsList) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	while (clauseArgsList != NULL) {
+		ClauseArgsList * next = clauseArgsList->next;
+		releaseClauseValue(clauseArgsList->clauseValue);
+		free(clauseArgsList);
+		clauseArgsList = next;
+	}
+}
+
+void releaseClauseValue(ClauseValue * clauseValue) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (clauseValue != NULL) {
+		switch(clauseValue->clauseType) {
+			case FROM_CLAUSE:
+				free(clauseValue->string);
+		}
+		free(clauseValue);
+	}
+}
+
+void releaseClause(Clause * clause) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (clause != NULL) {
+		switch (clause->type) {
+			case FROM_CLAUSE:
+				releaseClauseArgsList(clause->fromClauseArgsList);
+				break;
+		}
+		free(clause);
+	}
+}
+
+ void releaseClauseList(ClauseList * clauseList) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+    ClauseList * aux = NULL;
+    while(clauseList->next != NULL) {
+        releaseClause(clauseList->clause);
+        aux = clauseList;
+        clauseList = clauseList->next;
+        free(aux);
+    }
+    releaseClause(clauseList->clause);
+    free(clauseList);
 }
