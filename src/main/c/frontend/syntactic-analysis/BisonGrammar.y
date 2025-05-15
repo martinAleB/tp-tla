@@ -26,6 +26,7 @@
 	ClauseArgsList * clauseArgsList;
 	ClauseValue * clauseValue;
 	TableRename * tableRename;
+	AttributeRename * attrRename;
 	AggregationFunction * aggregationFunction;
 	Json * json;
 	Program * program;
@@ -48,6 +49,7 @@
 %destructor { releaseClause($$); } <clause>
 %destructor { releaseClauseList($$); } <clauseList>
 %destructor { releaseAggregationFunction($$); } <aggregationFunction>
+%destructor { releaseAttributeRename($$); } <attrRename>
 
 /** Terminals. */
 %token <integer> INTEGER
@@ -89,6 +91,8 @@
 %type <clauseArgsList> fromClauseArgsList
 %type <clauseArgsList> fromClauseValues
 %type <clauseValue> fromClauseValue
+
+%type <attrRename> attributeRename
 
 %type <aggregationFunction> aggregationFunction
 %type <clauseArgsList> attributesClauseArgsList
@@ -149,8 +153,11 @@ aggregationFunction: COUNT											{ $$ = AggregationFunctionSemanticAction($1
 	| AVERAGE														{ $$ = AggregationFunctionSemanticAction($1); }
 	;
 
+attributeRename: ATTRIBUTE COLON attributesClauseValue[val] COMMA AS COLON STRING[str]	{ $$ = AttributeRenameSemanticAction($val, $str); } 
+	;
 attributesClauseValue: STRING										{ $$ = StringAttributesClauseValueSemanticAction($1); }
 	| OPEN_CURLY_BRACE FUNCTION COLON aggregationFunction[aggr] COMMA ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionAttributesClauseValueSemanticAction($aggr, $attr); }
+	| OPEN_CURLY_BRACE attributeRename[attrRename] CLOSE_CURLY_BRACE { $$ = AttributeRenameAttributesClauseValueSemanticAction($attrRename); }
 	;
 
 attributesClauseValues: attributesClauseValue						{ $$ = ClauseArgsListSemanticAction($1, NULL); }

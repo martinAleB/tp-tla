@@ -32,6 +32,7 @@ typedef struct Program Program;
 typedef struct Json Json;
 typedef struct FromClauseValue FromClauseValue;
 typedef struct TableRename TableRename;
+typedef struct AttributeRename AttributeRename;
 typedef struct AggregationFunction AggregationFunction;
 typedef struct AttributesClauseValue AttributesClauseValue;
 typedef struct ClauseValue ClauseValue;
@@ -79,7 +80,8 @@ enum FromClauseValueType {
 
 enum AttributesClauseValueType {
 	ATTR_STR,
-	AGGR_FUNC
+	AGGR_FUNC,
+	ATTR_RENAME
 };
 struct Constant {
 	int value;
@@ -95,6 +97,11 @@ struct Factor {
 
 struct TableRename {
 	char * name;
+	char * rename;
+};
+
+struct AttributeRename {
+	ClauseValue * value;
 	char * rename;
 };
 
@@ -114,6 +121,7 @@ struct AttributesClauseValue {
 	union {
 		char * string;
 		AggregationFunction * aggrFunc;
+		AttributeRename * attrRename;
 	};
 	AttributesClauseValueType attributeClauseValueType;
 };
@@ -178,6 +186,7 @@ void releaseClause(Clause * clause);
 void releaseClauseList(ClauseList * clauseList);
 
 void releaseTableRename(TableRename * tableRename);
+void releaseAttributeRename(AttributeRename * attrRename);
 void releaseAggregationFunction(AggregationFunction * aggFunc);
 
 #endif

@@ -181,6 +181,14 @@ AggregationFunction * AggregationFunctionSemanticAction(AggregationType aggrType
 	return aggrFunc;
 }
 
+AttributeRename * AttributeRenameSemanticAction(ClauseValue * clausevalue, char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	AttributeRename * attrRename = calloc(1, sizeof(AttributeRename));
+	attrRename->value = clausevalue;
+	attrRename->rename = string;
+	return attrRename;
+}
+
 ClauseValue * AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction * aggrFunc, char * string) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
@@ -188,6 +196,16 @@ ClauseValue * AggregationFunctionAttributesClauseValueSemanticAction(Aggregation
 	clauseValue->attributesClauseValue->aggrFunc = aggrFunc;
 	clauseValue->attributesClauseValue->aggrFunc->attribute = string;
 	clauseValue->attributesClauseValue->attributeClauseValueType = AGGR_FUNC;
+	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+	return clauseValue;
+}
+
+ClauseValue * AttributeRenameAttributesClauseValueSemanticAction(AttributeRename * attrRename) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
+	clauseValue->attributesClauseValue->attrRename = attrRename;
+	clauseValue->attributesClauseValue->attributeClauseValueType = ATTR_RENAME;
 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
 	return clauseValue;
 }

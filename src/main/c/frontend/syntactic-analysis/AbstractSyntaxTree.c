@@ -120,6 +120,9 @@ void releaseClauseValue(ClauseValue * clauseValue) {
 					case AGGR_FUNC:
 						releaseAggregationFunction(clauseValue->attributesClauseValue->aggrFunc);
 						break;
+					case ATTR_RENAME:
+						releaseAttributeRename(clauseValue->attributesClauseValue->attrRename);
+						break;
 				}
 				free(clauseValue->attributesClauseValue);
 				break;
@@ -154,5 +157,13 @@ void releaseAggregationFunction(AggregationFunction * aggFunc) {
 	if (aggFunc != NULL) {
 		free(aggFunc->attribute);
 		free(aggFunc);
+	}
+}
+
+void releaseAttributeRename(AttributeRename * attrRename) {
+	if (attrRename != NULL) {
+		releaseClauseValue(attrRename->value);
+		free(attrRename->rename);
+		free(attrRename);
 	}
 }
