@@ -45,4 +45,8 @@ ClauseValue * AttributeRenameAttributesClauseValueSemanticAction(AttributeRename
 ClauseValue * AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction * aggrFunc, char * string);
 ClauseValue * StringAttributesClauseValueSemanticAction(char * string);
 
+//GROUP BY CLAUSE VALUES
+ClauseArgsList * StringGroupByClauseSemanticAction(char * string);
+ClauseValue * GroupByValueSemanticAction(char * string);
+
 #endif

@@ -39,6 +39,7 @@ typedef struct ClauseValue ClauseValue;
 typedef struct ClauseArgsList ClauseArgsList;
 typedef struct ClauseList ClauseList;
 typedef struct Clause Clause;
+typedef struct GroupByClauseValue GroupByClauseValue;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -70,7 +71,8 @@ enum ProgramType {
 
 enum ClauseType {
 	FROM_CLAUSE,
-	ATTRIBUTES_CLAUSE
+	ATTRIBUTES_CLAUSE,
+	GROUP_BY_CLAUSE
 };
 
 enum FromClauseValueType {
@@ -135,7 +137,8 @@ struct ClauseValue {
 	union {
 		FromClauseValue * fromClauseValue;
 		AttributesClauseValue * attributesClauseValue;
-	};
+		GroupByClauseValue * groupByClauseValue;
+	}; 
 	ClauseType clauseType;
 };
 
@@ -147,6 +150,10 @@ struct Clause {
 struct ClauseList {
 	Clause * clause;
 	ClauseList * next;
+};
+
+struct GroupByClauseValue {
+	char * string;
 };
 
 struct Json {

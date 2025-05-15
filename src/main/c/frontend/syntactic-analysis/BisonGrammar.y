@@ -64,6 +64,7 @@
 %token <token> FROM
 %token <token> ATTRIBUTES
 %token <token> WHERE
+%token <token> GROUP_BY
 %token <token> TABLE
 %token <token> AS
 %token <token> FUNCTION
@@ -99,6 +100,10 @@
 %type <clauseArgsList> attributesClauseValues
 %type <clauseValue> attributesClauseValue
 
+%type <clauseArgsList> groupByClause
+%type <clauseArgsList> groupByValues
+%type <clauseValue> groupByValue
+
 %type <program> program
 
 /**
@@ -130,6 +135,7 @@ clauseList: clause													{ $$ = ClauseListSemanticAction($1, NULL); }
 
 clause: FROM COLON fromClauseArgsList               				{ $$ = ClauseSemanticAction($3, FROM_CLAUSE); }
 	| ATTRIBUTES COLON attributesClauseArgsList						{ $$ = ClauseSemanticAction($3, ATTRIBUTES_CLAUSE); }
+	| GROUP_BY COLON groupByClause									{ $$ = ClauseSemanticAction($3, GROUP_BY_CLAUSE); }
 	;
 
 
@@ -155,6 +161,7 @@ aggregationFunction: COUNT											{ $$ = AggregationFunctionSemanticAction($1
 
 attributeRename: ATTRIBUTE COLON attributesClauseValue[val] COMMA AS COLON STRING[str]	{ $$ = AttributeRenameSemanticAction($val, $str); } 
 	;
+
 attributesClauseValue: STRING										{ $$ = StringAttributesClauseValueSemanticAction($1); }
 	| OPEN_CURLY_BRACE FUNCTION COLON aggregationFunction[aggr] COMMA ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionAttributesClauseValueSemanticAction($aggr, $attr); }
 	| OPEN_CURLY_BRACE attributeRename[attrRename] CLOSE_CURLY_BRACE { $$ = AttributeRenameAttributesClauseValueSemanticAction($attrRename); }
@@ -166,6 +173,18 @@ attributesClauseValues: attributesClauseValue						{ $$ = ClauseArgsListSemantic
 
 attributesClauseArgsList: attributesClauseValue						{ $$ = ClauseArgsListSemanticAction($1, NULL); }
 	| OPEN_BRACKET attributesClauseValues CLOSE_BRACKET				{ $$ = $2; }
+	;
+
+//GROUP BY CLAUSE
+groupByClause: STRING												{ $$ = StringGroupByClauseSemanticAction($1); }
+	| OPEN_BRACKET groupByValues CLOSE_BRACKET						{ $$ = $2; }
+	;
+
+groupByValues: groupByValue											{ $$ = ClauseArgsListSemanticAction($1, NULL); }		
+	| groupByValue COMMA groupByValues								{ $$ = ClauseArgsListSemanticAction($1, $3); }	
+	;
+
+groupByValue: STRING												{ $$ = GroupByValueSemanticAction($1); }
 	;
 
 // THE OG, KEEP THEM AS REFERENCE
