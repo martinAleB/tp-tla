@@ -126,6 +126,10 @@ void releaseClauseValue(ClauseValue * clauseValue) {
 				}
 				free(clauseValue->attributesClauseValue);
 				break;
+			case GROUP_BY_CLAUSE:
+				free(clauseValue->groupByClauseValue->string);
+				free(clauseValue->groupByClauseValue);
+				break;
 			case ORDER_BY_CLAUSE:
 				switch(clauseValue->orderByClauseValue->orderByClauseValueType) {
 					case ORDER_BY_STRING:

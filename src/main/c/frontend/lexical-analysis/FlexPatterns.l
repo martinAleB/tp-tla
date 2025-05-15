@@ -34,7 +34,8 @@
 "\"from\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), FROM); }
 "\"attributes\""                    { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ATTRIBUTES); }
 "\"where\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), WHERE); }
-"\"order_by\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ORDER_BY); }
+"\"order_by\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ORDER_BY); }"\"group_by\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), GROUP_BY); }
+
 "\"table\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TABLE); }
 "\"as\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), AS); }
 

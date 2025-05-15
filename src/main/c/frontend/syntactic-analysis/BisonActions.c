@@ -120,7 +120,6 @@ Json *JsonSemanticAction(ClauseList * clauseList)
 	return json;
 }
 
-
 //CLAUSES (GENERAL)
 
 ClauseList * ClauseListSemanticAction(Clause * clause, ClauseList * clauseList) {
@@ -146,8 +145,6 @@ ClauseArgsList * ClauseArgsListSemanticAction(ClauseValue * clauseValue, ClauseA
 	clauseArgsList->next = clauseValuesNext;
 	return clauseArgsList;
 }
-
-
 
 //FROM CLAUSE VALUES
 
@@ -300,5 +297,26 @@ ClauseValue * StringAttributesClauseValueSemanticAction(char * string) {
 	clauseValue->attributesClauseValue->string = string;
 	clauseValue->attributesClauseValue->attributeClauseValueType = ATTR_STR;
 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+	return clauseValue;
+}
+
+// GROUP BY CLAUSE VALUES
+
+ClauseArgsList * StringGroupByClauseSemanticAction(char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseArgsList * clauseArgsList = calloc(1, sizeof(ClauseArgsList));
+	clauseArgsList->clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseArgsList->clauseValue->groupByClauseValue = calloc(1, sizeof(GroupByClauseValue));
+	clauseArgsList->clauseValue->groupByClauseValue->string = string;
+	clauseArgsList->clauseValue->clauseType = GROUP_BY_CLAUSE;
+	return clauseArgsList;
+}
+
+ClauseValue * GroupByValueSemanticAction(char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->groupByClauseValue = calloc(1, sizeof(GroupByClauseValue));
+	clauseValue->groupByClauseValue->string = string;
+	clauseValue->clauseType = GROUP_BY_CLAUSE;
 	return clauseValue;
 }

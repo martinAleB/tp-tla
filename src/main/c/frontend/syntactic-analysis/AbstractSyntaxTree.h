@@ -42,6 +42,7 @@ typedef struct ClauseValue ClauseValue;
 typedef struct ClauseArgsList ClauseArgsList;
 typedef struct ClauseList ClauseList;
 typedef struct Clause Clause;
+typedef struct GroupByClauseValue GroupByClauseValue;
 typedef struct OrderByClauseValue  OrderByClauseValue;
 typedef struct CompositeOrderByClause CompositeOrderByClause;
 
@@ -91,6 +92,8 @@ enum ProgramType {
 
 enum ClauseType {
 	FROM_CLAUSE,
+	ATTRIBUTES_CLAUSE,
+	GROUP_BY_CLAUSE
 	ATTRIBUTES_CLAUSE,
 	ORDER_BY_CLAUSE
 };
@@ -173,6 +176,8 @@ struct ClauseValue {
 	union {
 		FromClauseValue * fromClauseValue;
 		AttributesClauseValue * attributesClauseValue;
+		GroupByClauseValue * groupByClauseValue;
+	}; 
 		OrderByClauseValue * orderByClauseValue;
 	};
 	ClauseType clauseType;
@@ -186,6 +191,10 @@ struct Clause {
 struct ClauseList {
 	Clause * clause;
 	ClauseList * next;
+};
+
+struct GroupByClauseValue {
+	char * string;
 };
 
 struct Json {
