@@ -93,8 +93,7 @@ enum ProgramType {
 enum ClauseType {
 	FROM_CLAUSE,
 	ATTRIBUTES_CLAUSE,
-	GROUP_BY_CLAUSE
-	ATTRIBUTES_CLAUSE,
+	GROUP_BY_CLAUSE,
 	ORDER_BY_CLAUSE
 };
 
@@ -177,8 +176,8 @@ struct ClauseValue {
 		FromClauseValue * fromClauseValue;
 		AttributesClauseValue * attributesClauseValue;
 		GroupByClauseValue * groupByClauseValue;
-	}; 
 		OrderByClauseValue * orderByClauseValue;
+	
 	};
 	ClauseType clauseType;
 };
