@@ -90,12 +90,31 @@ void releaseClauseArgsList(ClauseArgsList * clauseArgsList) {
 	}
 }
 
+void releaseTableRename(TableRename * tableRename) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	free(tableRename->name);
+	free(tableRename->rename);
+	free(tableRename);
+}
+
+
 void releaseClauseValue(ClauseValue * clauseValue) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (clauseValue != NULL) {
 		switch(clauseValue->clauseType) {
 			case FROM_CLAUSE:
-				free(clauseValue->string);
+				switch (clauseValue->fromClauseValue->fromClauseValueType) {
+					case STR:
+						free(clauseValue->fromClauseValue->string);
+						break;
+					case TABLE_RENAME:
+						releaseTableRename(clauseValue->fromClauseValue->tableRename);
+				}
+				free(clauseValue->fromClauseValue);
+				break;
+			case ATTRIBUTES_CLAUSE:
+				free(clauseValue->attributesClauseValue->string);
+				free(clauseValue->attributesClauseValue);
 		}
 		free(clauseValue);
 	}
@@ -104,13 +123,9 @@ void releaseClauseValue(ClauseValue * clauseValue) {
 void releaseClause(Clause * clause) {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (clause != NULL) {
-		switch (clause->type) {
-			case FROM_CLAUSE:
-				releaseClauseArgsList(clause->fromClauseArgsList);
-				break;
-		}
-		free(clause);
+		releaseClauseArgsList(clause->clauseArgsList);
 	}
+	free(clause);
 }
 
  void releaseClauseList(ClauseList * clauseList) {

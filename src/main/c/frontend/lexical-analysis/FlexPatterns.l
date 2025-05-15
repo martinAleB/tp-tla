@@ -31,11 +31,13 @@
 <MULTILINE_COMMENT>[^*]+			{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 <MULTILINE_COMMENT>.				{ IgnoredLexemeAction(createLexicalAnalyzerContext()); }
 
-"{"                                 { return BraceLexemeAction(createLexicalAnalyzerContext(), OPEN_CURLY_BRACE); }
-"}"                                 { return BraceLexemeAction(createLexicalAnalyzerContext(), CLOSE_CURLY_BRACE); }
+"{"                                 { return KeyWordLexemeAction(createLexicalAnalyzerContext(), OPEN_CURLY_BRACE); }
+"}"                                 { return KeyWordLexemeAction(createLexicalAnalyzerContext(), CLOSE_CURLY_BRACE); }
 "\"from\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), FROM); }
 "\"attributes\""                    { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ATTRIBUTES); }
 "\"where\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), WHERE); }
+"\"table\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TABLE); }
+"\"as\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), AS); }
 ":"                                 { return KeyWordLexemeAction(createLexicalAnalyzerContext(), COLON); }
 ","                                 { return KeyWordLexemeAction(createLexicalAnalyzerContext(), COMMA); }        
 "["                                 { return KeyWordLexemeAction(createLexicalAnalyzerContext(), OPEN_BRACKET); }

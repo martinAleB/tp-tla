@@ -1,3 +1,7 @@
 {
-    "from":["table1", "table2"]
+    "from":["table1", "table2", {
+        "table": "table3",
+        "as": "godeto"
+    }],
+    "attributes":["attr1", "attr2"]
 }

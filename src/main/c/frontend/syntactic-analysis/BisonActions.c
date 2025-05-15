@@ -87,14 +87,11 @@ Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Express
 	return program;
 }
 
+
 //Our own Bison Actions
-Json *JsonSemanticAction(ClauseList * clauseList)
-{
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Json *json = calloc(1, sizeof(Json));
-	json->clauseList = clauseList;
-	return json;
-}
+
+
+//JSON
 
 Program *JsonProgramSemanticAction(CompilerState *compilerState, Json *json)
 {
@@ -115,6 +112,17 @@ Program *JsonProgramSemanticAction(CompilerState *compilerState, Json *json)
 	return program;
 }
 
+Json *JsonSemanticAction(ClauseList * clauseList)
+{
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	Json *json = calloc(1, sizeof(Json));
+	json->clauseList = clauseList;
+	return json;
+}
+
+
+//CLAUSES (GENERAL)
+
 ClauseList * ClauseListSemanticAction(Clause * clause, ClauseList * clauseList) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ClauseList * newClauseList = calloc(1, sizeof(ClauseList));
@@ -123,12 +131,12 @@ ClauseList * ClauseListSemanticAction(Clause * clause, ClauseList * clauseList) 
 	return newClauseList;
 }
 
-ClauseValue * FromClauseValueSemanticAction(char * string) {
+Clause * ClauseSemanticAction(ClauseArgsList * newClauseArgsList, Token token) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	ClauseValue * fromClauseValue = calloc(1, sizeof(ClauseValue));
-	fromClauseValue->string = string;
-	fromClauseValue->clauseType = FROM_CLAUSE;
-	return fromClauseValue;
+	Clause * clause = calloc(1, sizeof(Clause));
+	clause->type = token;
+	clause->clauseArgsList = newClauseArgsList;
+	return clause;
 }
 
 ClauseArgsList * ClauseArgsListSemanticAction(ClauseValue * clauseValue, ClauseArgsList * clauseValuesNext) {
@@ -139,10 +147,38 @@ ClauseArgsList * ClauseArgsListSemanticAction(ClauseValue * clauseValue, ClauseA
 	return clauseArgsList;
 }
 
-Clause * FromClauseSemanticAction(ClauseArgsList * clauseArgsList) {
+
+
+//FROM CLAUSE VALUES
+
+ClauseValue * StringFromClauseValueSemanticAction(char * string) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	Clause * clause = calloc(1, sizeof(Clause));
-	clause->type = FROM_CLAUSE;
-	clause->fromClauseArgsList = clauseArgsList;
-	return clause;
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->fromClauseValue = calloc(1, sizeof(FromClauseValue));
+	clauseValue->fromClauseValue->string = string;
+	clauseValue->clauseType = FROM_CLAUSE;
+	return clauseValue;
+}
+
+ClauseValue * TableRenameFromClauseValueSemanticAction(char * trueName, char * alias) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->fromClauseValue = calloc(1, sizeof(FromClauseValue));
+	clauseValue->fromClauseValue->tableRename = calloc(1, sizeof(TableRename));
+	clauseValue->fromClauseValue->tableRename->name = trueName;
+	clauseValue->fromClauseValue->tableRename->rename = alias;
+	clauseValue->fromClauseValue->fromClauseValueType = TABLE_RENAME;
+	clauseValue->clauseType = FROM_CLAUSE;
+	return clauseValue;
+}
+
+//ATTRIBUTES CLAUSE VALUES
+
+ClauseValue * StringAttributesClauseValueSemanticAction(char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
+	clauseValue->attributesClauseValue->string = string;
+	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+	return clauseValue;
 }

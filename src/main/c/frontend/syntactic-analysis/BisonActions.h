@@ -24,11 +24,21 @@ Expression * FactorExpressionSemanticAction(Factor * factor);
 Factor * ConstantFactorSemanticAction(Constant * constant);
 Factor * ExpressionFactorSemanticAction(Expression * expression);
 Program * ExpressionProgramSemanticAction(CompilerState * compilerState, Expression * expression);
-Json * JsonSemanticAction();
+
+//JSON
 Program * JsonProgramSemanticAction(CompilerState *compilerState, Json *json);
+Json * JsonSemanticAction(ClauseList * clauseList);
+
+//CLAUSES
 ClauseList * ClauseListSemanticAction(Clause * clause, ClauseList * clauseList);
-Clause * FromClauseSemanticAction(ClauseArgsList * fromClauseArgsList);
-ClauseValue * FromClauseValueSemanticAction(char * string);
 ClauseArgsList * ClauseArgsListSemanticAction(ClauseValue * fromClauseValue, ClauseArgsList * fromAClauseArgsList);
+Clause * ClauseSemanticAction(ClauseArgsList * newClauseArgsList, Token token);
+
+//FROM CLAUSE VALUES
+ClauseValue * StringFromClauseValueSemanticAction(char * string);
+ClauseValue * TableRenameFromClauseValueSemanticAction(char * trueName, char * alias);
+
+//ATTRIBUTES CLAUSE VALUES
+ClauseValue * StringAttributesClauseValueSemanticAction(char * string);
 
 #endif

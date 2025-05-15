@@ -58,6 +58,8 @@
 %token <token> FROM
 %token <token> ATTRIBUTES
 %token <token> WHERE
+%token <token> TABLE
+%token <token> AS
 %token <token> COLON
 %token <token> COMMA
 %token <token> OPEN_BRACKET
@@ -74,9 +76,15 @@
 %type <json> json
 %type <clause> clause
 %type <clauseList> clauseList
+
 %type <clauseArgsList> fromClauseArgsList
 %type <clauseArgsList> fromClauseValues
 %type <clauseValue> fromClauseValue
+
+%type <clauseArgsList> attributesClauseArgsList
+%type <clauseArgsList> attributesClauseValues
+%type <clauseValue> attributesClauseValue
+
 %type <program> program
 
 /**
@@ -91,6 +99,8 @@
 
 // IMPORTANT: To use λ in the following grammar, use the %empty symbol.
 
+
+//GENERAL JSON
 program: expression													{ $$ = ExpressionProgramSemanticAction(currentCompilerState(), $1); }
 	| json															{ $$ = JsonProgramSemanticAction(currentCompilerState(), $1); }
 	;
@@ -98,23 +108,45 @@ program: expression													{ $$ = ExpressionProgramSemanticAction(currentCo
 json: OPEN_CURLY_BRACE clauseList CLOSE_CURLY_BRACE 				{ $$ = JsonSemanticAction($2);}
 	;
 
+
+//CLAUSES
 clauseList: clause													{ $$ = ClauseListSemanticAction($1, NULL); }	
 	| clause COMMA clauseList										{ $$ = ClauseListSemanticAction($1, $3); }
 	;
 
-clause: FROM COLON fromClauseArgsList               				{ $$ = FromClauseSemanticAction($3); }
+clause: FROM COLON fromClauseArgsList               				{ $$ = ClauseSemanticAction($3, FROM_CLAUSE); }
+	| ATTRIBUTES COLON attributesClauseArgsList						{ $$ = ClauseSemanticAction($3, ATTRIBUTES_CLAUSE); }
 	;
 
-fromClauseValue: STRING												{ $$ = FromClauseValueSemanticAction($1); }
+
+//FROM CLAUSE
+fromClauseValue: STRING												{ $$ = StringFromClauseValueSemanticAction($1); }
+	| OPEN_CURLY_BRACE TABLE COLON STRING[strTable] COMMA AS COLON STRING[strRename] CLOSE_CURLY_BRACE	{ $$ = TableRenameFromClauseValueSemanticAction($strTable, $strRename); }
 	;
 
-fromClauseValues: fromClauseValue										{ $$ = ClauseArgsListSemanticAction($1, NULL); }
-	| fromClauseValue COMMA fromClauseValues							{ $$ = ClauseArgsListSemanticAction($1, $3); }
-
+fromClauseValues: fromClauseValue									{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| fromClauseValue COMMA fromClauseValues						{ $$ = ClauseArgsListSemanticAction($1, $3); }
+	;
 
 fromClauseArgsList: fromClauseValue									{ $$ = ClauseArgsListSemanticAction($1, NULL); }
 	| OPEN_BRACKET fromClauseValues CLOSE_BRACKET					{ $$ = $2; }
+	;
 
+
+//ATTRIBUTES CLAUSE
+attributesClauseValue: STRING										{ $$ = StringAttributesClauseValueSemanticAction($1); }
+	
+	;
+
+attributesClauseValues: attributesClauseValue						{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| attributesClauseValue COMMA attributesClauseValues			{ $$ = ClauseArgsListSemanticAction($1, $3); }
+	;
+
+attributesClauseArgsList: attributesClauseValue						{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| OPEN_BRACKET attributesClauseValues CLOSE_BRACKET				{ $$ = $2; }
+	;
+
+// THE OG, KEEP THEM AS REFERENCE
 expression: expression[left] ADD expression[right]					{ $$ = ArithmeticExpressionSemanticAction($left, $right, ADDITION); }
 	| expression[left] DIV expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, DIVISION); }
 	| expression[left] MUL expression[right]						{ $$ = ArithmeticExpressionSemanticAction($left, $right, MULTIPLICATION); }

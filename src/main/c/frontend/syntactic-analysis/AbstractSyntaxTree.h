@@ -17,17 +17,24 @@ void shutdownAbstractSyntaxTreeModule();
 typedef enum ExpressionType ExpressionType;
 typedef enum FactorType FactorType;
 typedef enum ProgramType ProgramType;
-typedef enum ClauseType ClauseType;
 
-typedef struct Json Json;
+typedef enum ClauseType ClauseType;
+typedef enum FromClauseValueType FromClauseValueType;
+
+
 typedef struct Constant Constant;
 typedef struct Expression Expression;
 typedef struct Factor Factor;
+
+typedef struct Program Program;
+typedef struct Json Json;
+typedef struct FromClauseValue FromClauseValue;
+typedef struct TableRename TableRename;
+typedef struct AttributesClauseValue AttributesClauseValue;
 typedef struct ClauseValue ClauseValue;
 typedef struct ClauseArgsList ClauseArgsList;
 typedef struct ClauseList ClauseList;
 typedef struct Clause Clause;
-typedef struct Program Program;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -52,7 +59,13 @@ enum ProgramType {
 };
 
 enum ClauseType {
-	FROM_CLAUSE
+	FROM_CLAUSE,
+	ATTRIBUTES_CLAUSE
+};
+
+enum FromClauseValueType {
+	STR,
+	TABLE_RENAME
 };
 struct Constant {
 	int value;
@@ -66,6 +79,22 @@ struct Factor {
 	FactorType type;
 };
 
+struct TableRename {
+	char * name;
+	char * rename;
+};
+struct FromClauseValue {
+	union {
+		char * string;
+		TableRename * tableRename;
+	};
+	FromClauseValueType fromClauseValueType;
+};
+
+struct AttributesClauseValue {
+	char * string;
+};
+
 struct ClauseArgsList {
 	ClauseValue * clauseValue;
 	ClauseArgsList * next;
@@ -73,15 +102,14 @@ struct ClauseArgsList {
 
 struct ClauseValue {
 	union {
-		char * string;
+		FromClauseValue * fromClauseValue;
+		AttributesClauseValue * attributesClauseValue;
 	};
 	ClauseType clauseType;
 };
 
 struct Clause {
-	union {
-		ClauseArgsList * fromClauseArgsList;
-	};
+	ClauseArgsList * clauseArgsList;
 	ClauseType type;
 };
 
@@ -125,5 +153,7 @@ void releaseClauseArgsList(ClauseArgsList * fromArray);
 void releaseClauseValue(ClauseValue * fromArrayValue);
 void releaseClause(Clause * clause);
 void releaseClauseList(ClauseList * clauseList);
+
+void releaseTableRename(TableRename * tableRename);
 
 #endif
