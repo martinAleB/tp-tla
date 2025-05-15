@@ -21,5 +21,4 @@
         {"attribute":"attr3"}
     ],
     "group_by":["attr1", "attr2"]
-    
 }

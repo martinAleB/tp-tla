@@ -1,0 +1,4 @@
+{
+    "from":"tabl1",
+    "group_by":["attr1", "attr2"]
+}

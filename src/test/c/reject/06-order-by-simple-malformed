@@ -1,0 +1,4 @@
+{
+    "from":"table1",
+    "order_by":["attr1", "attr2", ["attr3"]]
+}

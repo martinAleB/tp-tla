@@ -1,0 +1,6 @@
+{
+    "from":["table1", "table2", {
+        "table": "table3",
+        "as": "a"
+    }]
+}
