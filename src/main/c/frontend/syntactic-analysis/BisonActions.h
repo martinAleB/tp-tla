@@ -45,4 +45,9 @@ ClauseValue * AttributeRenameAttributesClauseValueSemanticAction(AttributeRename
 ClauseValue * AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction * aggrFunc, char * string);
 ClauseValue * StringAttributesClauseValueSemanticAction(char * string);
 
+ClauseValue * StringOrderByClauseValueSemanticAction(char * string);
+ClauseValue * AggregationFunctionOrderByClauseValueSemanticAction(AggregationFunction * aggrFunc, char * string, CompositeOrderByClause * compositeOrderByClause);
+ClauseValue * CompositeOrderByClauseValueSemanticAction(char * string, CompositeOrderByClause * compositeOrderByClause);
+CompositeOrderByClause * OrderBySemanticAction(OrderByType orderByType);
+
 #endif

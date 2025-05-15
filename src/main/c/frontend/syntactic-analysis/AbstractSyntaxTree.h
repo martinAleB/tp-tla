@@ -22,6 +22,9 @@ typedef enum ClauseType ClauseType;
 typedef enum FromClauseValueType FromClauseValueType;
 typedef enum AttributesClauseValueType AttributesClauseValueType;
 typedef enum AggregationType AggregationType;
+typedef enum OrderByType OrderByType;
+typedef enum OrderByFunctionType OrderByFunctionType;
+typedef enum OrderByClauseValueType OrderByClauseValueType;
 
 
 typedef struct Constant Constant;
@@ -39,6 +42,8 @@ typedef struct ClauseValue ClauseValue;
 typedef struct ClauseArgsList ClauseArgsList;
 typedef struct ClauseList ClauseList;
 typedef struct Clause Clause;
+typedef struct OrderByClauseValue  OrderByClauseValue;
+typedef struct CompositeOrderByClause CompositeOrderByClause;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -48,6 +53,22 @@ enum AggregationType {
 	COUNT_F,
 	SUM_F,
 	AVERAGE_F
+};
+
+enum OrderByType{
+	ASC_T,
+	DESC_T
+};
+
+enum OrderByFunctionType {
+	ORDER_BY_ASC,
+	ORDER_BY_DESC
+};
+
+enum OrderByClauseValueType{
+	ORDER_BY_STRING,
+	ORDER_BY_COMPOSITE,
+	ORDER_BY_AGGR_FUNC
 };
 
 enum ExpressionType {
@@ -70,7 +91,8 @@ enum ProgramType {
 
 enum ClauseType {
 	FROM_CLAUSE,
-	ATTRIBUTES_CLAUSE
+	ATTRIBUTES_CLAUSE,
+	ORDER_BY_CLAUSE
 };
 
 enum FromClauseValueType {
@@ -117,6 +139,22 @@ struct FromClauseValue {
 	FromClauseValueType fromClauseValueType;
 };
 
+struct CompositeOrderByClause{
+	char* string;
+	AggregationFunction * aggrFunc;
+	OrderByFunctionType orderByFunctionType;
+};
+
+
+struct OrderByClauseValue {
+	union {
+		char * string;
+		CompositeOrderByClause * compositeOrderByClause;
+	};
+	OrderByClauseValueType orderByClauseValueType;
+};
+	
+
 struct AttributesClauseValue {
 	union {
 		char * string;
@@ -135,6 +173,7 @@ struct ClauseValue {
 	union {
 		FromClauseValue * fromClauseValue;
 		AttributesClauseValue * attributesClauseValue;
+		OrderByClauseValue * orderByClauseValue;
 	};
 	ClauseType clauseType;
 };
@@ -184,6 +223,8 @@ void releaseClauseArgsList(ClauseArgsList * fromArray);
 void releaseClauseValue(ClauseValue * fromArrayValue);
 void releaseClause(Clause * clause);
 void releaseClauseList(ClauseList * clauseList);
+
+void releaseOrderByClauseValue(OrderByClauseValue * orderBy);
 
 void releaseTableRename(TableRename * tableRename);
 void releaseAttributeRename(AttributeRename * attrRename);

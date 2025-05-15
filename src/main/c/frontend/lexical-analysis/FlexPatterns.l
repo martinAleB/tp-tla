@@ -34,16 +34,18 @@
 "\"from\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), FROM); }
 "\"attributes\""                    { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ATTRIBUTES); }
 "\"where\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), WHERE); }
-
+"\"order_by\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ORDER_BY); }
 "\"table\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TABLE); }
 "\"as\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), AS); }
 
 "\"attribute\""                     { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ATTRIBUTE); }
 "\"function\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), FUNCTION); }
-
+"\"order\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ORDER); }
 "\"count\""                             { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), COUNT); }
 "\"sum\""                               { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), SUM); }
 "\"average\""                           { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), AVERAGE); }
+"\"asc\""                               { return OrderByFunctionLexemeAction(createLexicalAnalyzerContext(), ASC); }
+"\"desc\""                              { return OrderByFunctionLexemeAction(createLexicalAnalyzerContext(), DESC); }
 
 "{"                                 { return KeyWordLexemeAction(createLexicalAnalyzerContext(), OPEN_CURLY_BRACE); }
 "}"                                 { return KeyWordLexemeAction(createLexicalAnalyzerContext(), CLOSE_CURLY_BRACE); }

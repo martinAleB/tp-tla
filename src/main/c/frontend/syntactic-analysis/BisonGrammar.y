@@ -14,6 +14,8 @@
 	float number;
 	char * string;
 	AggregationType aggrType;
+	OrderByClauseValueType orderByType;
+	//CompositeOrderByClause compositeOrderByClause;
 	Token token;
 
 	/** Non-terminals. */
@@ -30,6 +32,7 @@
 	AggregationFunction * aggregationFunction;
 	Json * json;
 	Program * program;
+	CompositeOrderByClause * orderByExplicit;
 }
 
 /**
@@ -64,10 +67,14 @@
 %token <token> FROM
 %token <token> ATTRIBUTES
 %token <token> WHERE
+%token <token> ORDER_BY
+%token <token> ORDER
 %token <token> TABLE
 %token <token> AS
 %token <token> FUNCTION
 %token <token> ATTRIBUTE
+%token <token> ASC
+%token <token> DESC
 %token <aggrType> COUNT
 %token <aggrType> SUM
 %token <aggrType> AVERAGE
@@ -91,6 +98,11 @@
 %type <clauseArgsList> fromClauseArgsList
 %type <clauseArgsList> fromClauseValues
 %type <clauseValue> fromClauseValue
+
+%type <clauseArgsList> orderByClauseArgsList
+%type <clauseArgsList> orderByClauseValues
+%type <clauseValue> orderByClauseValue
+%type <orderByExplicit> orderByExplicit
 
 %type <attrRename> attributeRename
 
@@ -130,6 +142,7 @@ clauseList: clause													{ $$ = ClauseListSemanticAction($1, NULL); }
 
 clause: FROM COLON fromClauseArgsList               				{ $$ = ClauseSemanticAction($3, FROM_CLAUSE); }
 	| ATTRIBUTES COLON attributesClauseArgsList						{ $$ = ClauseSemanticAction($3, ATTRIBUTES_CLAUSE); }
+	| ORDER_BY COLON orderByClauseArgsList							{ $$ = ClauseSemanticAction($3, ORDER_BY_CLAUSE); }
 	;
 
 
@@ -146,6 +159,27 @@ fromClauseArgsList: fromClauseValue									{ $$ = ClauseArgsListSemanticAction(
 	| OPEN_BRACKET fromClauseValues CLOSE_BRACKET					{ $$ = $2; }
 	;
 
+//ORDER BY CLAUSE
+orderByClauseArgsList: orderByClauseValue							{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| OPEN_BRACKET orderByClauseValues CLOSE_BRACKET				{ $$ = $2; }
+	;
+
+orderByClauseValues: orderByClauseValue								{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| orderByClauseValue COMMA orderByClauseValues					{ $$ = ClauseArgsListSemanticAction($1, $3); }
+	;
+
+orderByClauseValue: STRING											{ $$ = StringOrderByClauseValueSemanticAction($1); }
+	//Funcion de agregacion
+	| OPEN_CURLY_BRACE FUNCTION COLON aggregationFunction[aggr] COMMA ATTRIBUTE COLON STRING[attr] COMMA ORDER COLON orderByExplicit[order] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionOrderByClauseValueSemanticAction($aggr, $attr, $order); }
+	//Solo atributo, como en sql y que defaultee a ASC (el motor de BD)
+	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = StringOrderByClauseValueSemanticAction($attr); }
+	//Atributo con order ASC o DESC
+	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING[attr] COMMA ORDER COLON orderByExplicit[expl] CLOSE_CURLY_BRACE { $$ = CompositeOrderByClauseValueSemanticAction($attr, $expl); }
+	;
+
+orderByExplicit: ASC												{ $$ = OrderBySemanticAction($1); }
+	| DESC															{ $$ = OrderBySemanticAction($1); }
+;
 
 //ATTRIBUTES CLAUSE
 aggregationFunction: COUNT											{ $$ = AggregationFunctionSemanticAction($1); }

@@ -126,6 +126,28 @@ void releaseClauseValue(ClauseValue * clauseValue) {
 				}
 				free(clauseValue->attributesClauseValue);
 				break;
+			case ORDER_BY_CLAUSE:
+				switch(clauseValue->orderByClauseValue->orderByClauseValueType) {
+					case ORDER_BY_STRING:
+						free(clauseValue->orderByClauseValue->string);
+						break;
+					case ORDER_BY_COMPOSITE:
+						if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL) {
+							free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
+							releaseAggregationFunction(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
+							free(clauseValue->orderByClauseValue->compositeOrderByClause);
+						}
+						break;
+					case ORDER_BY_AGGR_FUNC:
+						if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL) {
+							free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
+							releaseAggregationFunction(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
+							free(clauseValue->orderByClauseValue->compositeOrderByClause);
+						} 
+ 						break;
+				}
+				free(clauseValue->orderByClauseValue);
+				break;
 		}
 		free(clauseValue);
 	}

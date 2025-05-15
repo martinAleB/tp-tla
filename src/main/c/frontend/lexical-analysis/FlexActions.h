@@ -35,5 +35,6 @@ Token KeyWordLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token 
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token NumberLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, AggregationType token);
+Token OrderByFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, OrderByFunctionType token) ;
 
 #endif

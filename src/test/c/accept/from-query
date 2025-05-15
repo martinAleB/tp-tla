@@ -14,5 +14,10 @@
         },
         "as": "c"
     }
+    ],
+    "order_by":[
+        {"attribute":"attr1", "order":"asc"},
+        {"function":"count", "attribute":"attr2", "order":"desc"},
+        {"attribute":"attr3"}
     ]
 }

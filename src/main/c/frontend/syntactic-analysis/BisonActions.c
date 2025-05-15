@@ -181,6 +181,87 @@ AggregationFunction * AggregationFunctionSemanticAction(AggregationType aggrType
 	return aggrFunc;
 }
 
+ CompositeOrderByClause * OrderBySemanticAction(OrderByType orderByType) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	CompositeOrderByClause * orderBy = calloc(1, sizeof(CompositeOrderByClause));
+	orderBy->orderByFunctionType = orderByType;
+	if (orderByType == ASC_T) {
+		orderBy->string = NULL;
+		orderBy->orderByFunctionType = ORDER_BY_ASC;
+	}
+	else if (orderByType == DESC_T) {
+		orderBy->string = NULL;
+		orderBy->orderByFunctionType = ORDER_BY_DESC;
+	}
+	return orderBy;
+} 
+
+/* ClauseValue * OrderBySemanticAction(OrderByClauseValueType orderByType) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	OrderByClauseValue * orderBy = calloc(1, sizeof(OrderByClauseValue));
+	orderBy->orderByClauseValueType = orderByType;
+	if (orderByType == ORDER_BY_STRING) {
+		orderBy->string = NULL;
+	}
+	else if (orderByType == ORDER_BY_COMPOSITE) {
+		orderBy->compositeOrderByClause = NULL;
+	}
+	return orderBy;
+} 
+
+/* OrderByFunctionType OrderByFunctionSemanticAction(OrderByType orderByType) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	OrderByFunctionType translatedOrderByType;
+	switch (orderByType) {
+		case ASC_T:
+			translatedOrderByType = ORDER_BY_ASC;
+			break;
+		case DESC_T:
+			translatedOrderByType = ORDER_BY_DESC;
+			break;
+		
+	}
+	return translatedOrderByType;
+} */
+
+
+
+
+ClauseValue *StringOrderByClauseValueSemanticAction(char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	OrderByClauseValue * orderBy = calloc(1, sizeof(OrderByClauseValue));
+	clauseValue->clauseType = ORDER_BY_CLAUSE;
+	clauseValue->orderByClauseValue = orderBy;
+	orderBy->orderByClauseValueType = ORDER_BY_STRING;
+	orderBy->string = string;
+	return clauseValue;
+}
+
+ClauseValue * CompositeOrderByClauseValueSemanticAction(char * string, CompositeOrderByClause * compositeOrderByClause) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	OrderByClauseValue * orderBy = calloc(1, sizeof(OrderByClauseValue));
+	clauseValue->clauseType = ORDER_BY_CLAUSE;
+	clauseValue->orderByClauseValue = orderBy;
+	orderBy->orderByClauseValueType = ORDER_BY_COMPOSITE;
+	orderBy->compositeOrderByClause = compositeOrderByClause;
+	orderBy->compositeOrderByClause->string = string;
+	return clauseValue;
+}
+
+ClauseValue * AggregationFunctionOrderByClauseValueSemanticAction(AggregationFunction * aggrFunc, char * string, CompositeOrderByClause * compositeOrderByClause) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->clauseType = ORDER_BY_CLAUSE;
+	clauseValue->orderByClauseValue = calloc(1, sizeof(OrderByClauseValue));
+	clauseValue->orderByClauseValue->orderByClauseValueType = ORDER_BY_AGGR_FUNC;
+	clauseValue->orderByClauseValue->compositeOrderByClause = compositeOrderByClause;
+	clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc = aggrFunc;
+	clauseValue->orderByClauseValue->compositeOrderByClause->string = string;
+	return clauseValue;
+}
+
 AttributeRename * AttributeRenameSemanticAction(ClauseValue * clausevalue, char * string) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	AttributeRename * attrRename = calloc(1, sizeof(AttributeRename));
@@ -199,6 +280,8 @@ ClauseValue * AggregationFunctionAttributesClauseValueSemanticAction(Aggregation
 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
 	return clauseValue;
 }
+
+
 
 ClauseValue * AttributeRenameAttributesClauseValueSemanticAction(AttributeRename * attrRename) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
