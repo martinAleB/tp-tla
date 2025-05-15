@@ -13,6 +13,7 @@
 	int integer;
 	float number;
 	char * string;
+	AggregationType aggrType;
 	Token token;
 
 	/** Non-terminals. */
@@ -24,6 +25,8 @@
 	ClauseList * clauseList;
 	ClauseArgsList * clauseArgsList;
 	ClauseValue * clauseValue;
+	TableRename * tableRename;
+	AggregationFunction * aggregationFunction;
 	Json * json;
 	Program * program;
 }
@@ -44,6 +47,7 @@
 %destructor { releaseClauseValue($$); } <clauseValue>
 %destructor { releaseClause($$); } <clause>
 %destructor { releaseClauseList($$); } <clauseList>
+%destructor { releaseAggregationFunction($$); } <aggregationFunction>
 
 /** Terminals. */
 %token <integer> INTEGER
@@ -60,6 +64,11 @@
 %token <token> WHERE
 %token <token> TABLE
 %token <token> AS
+%token <token> FUNCTION
+%token <token> ATTRIBUTE
+%token <aggrType> COUNT
+%token <aggrType> SUM
+%token <aggrType> AVERAGE
 %token <token> COLON
 %token <token> COMMA
 %token <token> OPEN_BRACKET
@@ -81,6 +90,7 @@
 %type <clauseArgsList> fromClauseValues
 %type <clauseValue> fromClauseValue
 
+%type <aggregationFunction> aggregationFunction
 %type <clauseArgsList> attributesClauseArgsList
 %type <clauseArgsList> attributesClauseValues
 %type <clauseValue> attributesClauseValue
@@ -134,8 +144,13 @@ fromClauseArgsList: fromClauseValue									{ $$ = ClauseArgsListSemanticAction(
 
 
 //ATTRIBUTES CLAUSE
+aggregationFunction: COUNT											{ $$ = AggregationFunctionSemanticAction($1); }
+	| SUM 															{ $$ = AggregationFunctionSemanticAction($1); }
+	| AVERAGE														{ $$ = AggregationFunctionSemanticAction($1); }
+	;
+
 attributesClauseValue: STRING										{ $$ = StringAttributesClauseValueSemanticAction($1); }
-	
+	| OPEN_CURLY_BRACE FUNCTION COLON aggregationFunction[aggr] COMMA ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionAttributesClauseValueSemanticAction($aggr, $attr); }
 	;
 
 attributesClauseValues: attributesClauseValue						{ $$ = ClauseArgsListSemanticAction($1, NULL); }

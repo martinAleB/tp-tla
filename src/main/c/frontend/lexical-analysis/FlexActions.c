@@ -108,3 +108,22 @@ Token NumberLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext) {
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return NUMBER;
 }
+
+Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, AggregationType token) {
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	AggregationType aggF;
+	switch(token) {
+		case COUNT:
+			aggF = COUNT_F;
+			break;
+		case SUM:
+			aggF = SUM_F;
+			break;
+		case AVERAGE:
+			aggF = AVERAGE_F;
+			break;
+	}
+	lexicalAnalyzerContext->semanticValue->aggrType = aggF;
+	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+	return token;
+}

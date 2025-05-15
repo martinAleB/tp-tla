@@ -20,6 +20,8 @@ typedef enum ProgramType ProgramType;
 
 typedef enum ClauseType ClauseType;
 typedef enum FromClauseValueType FromClauseValueType;
+typedef enum AttributesClauseValueType AttributesClauseValueType;
+typedef enum AggregationType AggregationType;
 
 
 typedef struct Constant Constant;
@@ -30,6 +32,7 @@ typedef struct Program Program;
 typedef struct Json Json;
 typedef struct FromClauseValue FromClauseValue;
 typedef struct TableRename TableRename;
+typedef struct AggregationFunction AggregationFunction;
 typedef struct AttributesClauseValue AttributesClauseValue;
 typedef struct ClauseValue ClauseValue;
 typedef struct ClauseArgsList ClauseArgsList;
@@ -39,6 +42,12 @@ typedef struct Clause Clause;
 /**
  * Node types for the Abstract Syntax Tree (AST).
  */
+
+enum AggregationType {
+	COUNT_F,
+	SUM_F,
+	AVERAGE_F
+};
 
 enum ExpressionType {
 	ADDITION,
@@ -67,6 +76,11 @@ enum FromClauseValueType {
 	STR,
 	TABLE_RENAME
 };
+
+enum AttributesClauseValueType {
+	ATTR_STR,
+	AGGR_FUNC
+};
 struct Constant {
 	int value;
 };
@@ -83,6 +97,11 @@ struct TableRename {
 	char * name;
 	char * rename;
 };
+
+struct AggregationFunction {
+	AggregationType token;
+	char * attribute;
+};
 struct FromClauseValue {
 	union {
 		char * string;
@@ -92,7 +111,11 @@ struct FromClauseValue {
 };
 
 struct AttributesClauseValue {
-	char * string;
+	union {
+		char * string;
+		AggregationFunction * aggrFunc;
+	};
+	AttributesClauseValueType attributeClauseValueType;
 };
 
 struct ClauseArgsList {
@@ -155,5 +178,6 @@ void releaseClause(Clause * clause);
 void releaseClauseList(ClauseList * clauseList);
 
 void releaseTableRename(TableRename * tableRename);
+void releaseAggregationFunction(AggregationFunction * aggFunc);
 
 #endif

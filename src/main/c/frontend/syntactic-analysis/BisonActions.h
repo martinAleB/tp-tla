@@ -39,6 +39,8 @@ ClauseValue * StringFromClauseValueSemanticAction(char * string);
 ClauseValue * TableRenameFromClauseValueSemanticAction(char * trueName, char * alias);
 
 //ATTRIBUTES CLAUSE VALUES
+AggregationFunction * AggregationFunctionSemanticAction(AggregationType token);
+ClauseValue * AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction * aggrFunc, char * string);
 ClauseValue * StringAttributesClauseValueSemanticAction(char * string);
 
 #endif

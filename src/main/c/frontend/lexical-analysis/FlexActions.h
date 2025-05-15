@@ -34,5 +34,6 @@ Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
 Token KeyWordLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token NumberLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, AggregationType token);
 
 #endif

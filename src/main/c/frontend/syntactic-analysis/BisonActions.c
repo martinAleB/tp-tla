@@ -174,11 +174,30 @@ ClauseValue * TableRenameFromClauseValueSemanticAction(char * trueName, char * a
 
 //ATTRIBUTES CLAUSE VALUES
 
+AggregationFunction * AggregationFunctionSemanticAction(AggregationType aggrType) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	AggregationFunction * aggrFunc = calloc(1, sizeof(AggregationFunction));
+	aggrFunc->token = aggrType;
+	return aggrFunc;
+}
+
+ClauseValue * AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction * aggrFunc, char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
+	clauseValue->attributesClauseValue->aggrFunc = aggrFunc;
+	clauseValue->attributesClauseValue->aggrFunc->attribute = string;
+	clauseValue->attributesClauseValue->attributeClauseValueType = AGGR_FUNC;
+	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+	return clauseValue;
+}
+
 ClauseValue * StringAttributesClauseValueSemanticAction(char * string) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
 	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
 	clauseValue->attributesClauseValue->string = string;
+	clauseValue->attributesClauseValue->attributeClauseValueType = ATTR_STR;
 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
 	return clauseValue;
 }

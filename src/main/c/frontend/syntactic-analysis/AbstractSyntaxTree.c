@@ -113,8 +113,16 @@ void releaseClauseValue(ClauseValue * clauseValue) {
 				free(clauseValue->fromClauseValue);
 				break;
 			case ATTRIBUTES_CLAUSE:
-				free(clauseValue->attributesClauseValue->string);
+				switch(clauseValue->attributesClauseValue->attributeClauseValueType) {
+					case ATTR_STR:
+						free(clauseValue->attributesClauseValue->string);
+						break;
+					case AGGR_FUNC:
+						releaseAggregationFunction(clauseValue->attributesClauseValue->aggrFunc);
+						break;
+				}
 				free(clauseValue->attributesClauseValue);
+				break;
 		}
 		free(clauseValue);
 	}
@@ -139,4 +147,12 @@ void releaseClause(Clause * clause) {
     }
     releaseClause(clauseList->clause);
     free(clauseList);
+}
+
+void releaseAggregationFunction(AggregationFunction * aggFunc) {
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (aggFunc != NULL) {
+		free(aggFunc->attribute);
+		free(aggFunc);
+	}
 }
