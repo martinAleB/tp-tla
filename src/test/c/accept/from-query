@@ -28,9 +28,11 @@
     "where": [
         [
             {
-                "operator": "!=",
-                "value1": 1,
-                "value2": 2
+                "not": {
+                    "operator": "!=",
+                    "value1": 1,
+                    "value2": 2
+                }
             },
             {
                 "and": [
@@ -38,6 +40,17 @@
                         "operator": "=",
                         "value1": 5,
                         "value2": 5
+                    },
+                    {
+                        "and": {
+                            "not": {
+                                "not": {
+                                    "operator": ">",
+                                    "value1": 2,
+                                    "value2": 5
+                                }
+                            }
+                        }
                     }
                 ]
             }

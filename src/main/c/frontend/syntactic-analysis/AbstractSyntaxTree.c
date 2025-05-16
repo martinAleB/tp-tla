@@ -254,6 +254,10 @@ void releaseWhereNotCondition(WhereNotCondition *whereNotCondition)
 		case CONDITION_NODE:
 			releaseWhereCondition(whereNotCondition->condition);
 			break;
+
+		case BINARY_CONDITION_NODE:
+			releaseWhereBinaryCondition(whereNotCondition->whereBinaryCondition);
+			break;
 		}
 		free(whereNotCondition);
 	}
@@ -271,6 +275,9 @@ void releaseWhereCondition(WhereCondition *whereCondition)
 			break;
 		case NODE_TYPE_WHERE_CONDITION:
 			releaseWhereCondition(whereCondition->whereCondition);
+			break;
+		case NODE_TYPE_WHERE_NOT_CONDITION:
+			releaseWhereNotCondition(whereCondition->whereNotCondition);
 			break;
 		}
 		releaseWhereCondition(whereCondition->next);

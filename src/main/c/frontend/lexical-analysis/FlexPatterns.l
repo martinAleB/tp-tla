@@ -51,6 +51,7 @@
 "\"value1\""                        { return KeyWordLexemeAction(createLexicalAnalyzerContext(), FIRST_VALUE); }
 "\"value2\""                        { return KeyWordLexemeAction(createLexicalAnalyzerContext(), SECOND_VALUE); }
 "\"operator\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), OPERATOR); }
+"\"not\""                           { return KeyWordLexemeAction(createLexicalAnalyzerContext(), NOT); }
 "\"and\""                           { return PreconditionalLexemeAction(createLexicalAnalyzerContext(), AND); }
 "\"or\""                            { return PreconditionalLexemeAction(createLexicalAnalyzerContext(), OR); }
 

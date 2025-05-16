@@ -308,6 +308,37 @@ WhereBinaryCondition *WhereBinaryConditionSemanticAction(WhereConditionValue *va
 	return whereBinaryCondition;
 }
 
+WhereNotCondition *WhereNotConditionWithBinaryConditionSemanticAction(WhereBinaryCondition *whereBinaryCondition) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereNotCondition * newWhereNotCondition = calloc(1, sizeof(WhereNotCondition));
+	newWhereNotCondition->nodeSelected = BINARY_CONDITION_NODE;
+	newWhereNotCondition->whereBinaryCondition = whereBinaryCondition;
+	return newWhereNotCondition;
+}
+
+WhereNotCondition *WhereNotConditionWithNotConditionSemanticAction(WhereNotCondition *whereNotCondition) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereNotCondition * newWhereNotCondition = calloc(1, sizeof(WhereNotCondition));
+	newWhereNotCondition->nodeSelected = NOT_NODE;
+	newWhereNotCondition->not = whereNotCondition;
+	return newWhereNotCondition;
+}
+
+WhereNotCondition *WhereNotConditionWithWhereConditionSemanticAction(WhereCondition *whereCondition) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereNotCondition * newWhereNotCondition = calloc(1, sizeof(WhereNotCondition));
+	newWhereNotCondition->nodeSelected = CONDITION_NODE;
+	newWhereNotCondition->condition = whereCondition;
+	return newWhereNotCondition;
+}
+
+WhereCondition *FirstNotConditionAndNextWhereConditionSemanticAction(WhereNotCondition *whereNotCondition, WhereCondition *next) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereCondition *whereCondition = NotConditionAndNextWhereConditionSemanticAction(whereNotCondition, next);
+	whereCondition->preconditional = PRECONDITIONAL_FIRST;
+	return whereCondition;
+}
+
 WhereCondition *CurrentAndNextWhereConditionsSemanticAction(WhereCondition *current, WhereCondition *next)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
@@ -315,7 +346,6 @@ WhereCondition *CurrentAndNextWhereConditionsSemanticAction(WhereCondition *curr
 	whereCondition->whereCondition = current;
 	whereCondition->nodeType = NODE_TYPE_WHERE_CONDITION;
 	whereCondition->next = next;
-	whereCondition->preconditional;
 	return whereCondition;
 }
 
@@ -325,6 +355,15 @@ WhereCondition *BinaryConditionAndNextWhereConditionSemanticAction(WhereBinaryCo
 	WhereCondition *whereCondition = calloc(1, sizeof(WhereCondition));
 	whereCondition->binaryCondition = condition;
 	whereCondition->nodeType = NODE_TYPE_WHERE_BINARY_CONDITION;
+	whereCondition->next = next;
+	return whereCondition;
+}
+
+WhereCondition *NotConditionAndNextWhereConditionSemanticAction(WhereNotCondition *condition, WhereCondition *next) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereCondition *whereCondition = calloc(1, sizeof(WhereCondition));
+	whereCondition->whereNotCondition = condition;
+	whereCondition->nodeType = NODE_TYPE_WHERE_NOT_CONDITION;
 	whereCondition->next = next;
 	return whereCondition;
 }

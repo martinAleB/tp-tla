@@ -54,9 +54,22 @@ WhereConditionValue *BooleanWhereConditionValueSemanticAction(boolean bool);
 WhereConditionValue *NullWhereConditionValueSemanticAction();
 WhereConditionValue *WhereBinaryConditionWhereConditionValueSemanticAction(WhereBinaryCondition *whereBinaryCondition);
 WhereBinaryCondition *WhereBinaryConditionSemanticAction(WhereConditionValue *value1, WhereConditionValue *value2, BinaryConditionOperator operator);
+
+WhereNotCondition *WhereNotConditionWithBinaryConditionSemanticAction(WhereBinaryCondition *whereBinaryCondition);
+WhereNotCondition *WhereNotConditionWithNotConditionSemanticAction(WhereNotCondition *whereNotCondition);
+WhereNotCondition *WhereNotConditionWithWhereConditionSemanticAction(WhereCondition *whereCondition);
+
 WhereCondition *CurrentAndNextWhereConditionsSemanticAction(WhereCondition *current, WhereCondition *next);
 WhereCondition *BinaryConditionAndNextWhereConditionSemanticAction(WhereBinaryCondition *condition, WhereCondition *next);
+
+WhereCondition *NotConditionAndNextWhereConditionSemanticAction(WhereNotCondition *condition, WhereCondition *next);
+
 WhereCondition *PreconditionalWhereConditionSemanticAction(WhereCondition *node, WhereConditionPreconditional preconditional);
 WhereCondition *FirstCurrentAndNextWhereConditionsSemanticAction(WhereCondition *current, WhereCondition *next);
 WhereCondition *FirstBinaryConditionAndNextWhereConditionSemanticAction(WhereBinaryCondition *condition, WhereCondition *next);
+
+WhereCondition *FirstNotConditionAndNextWhereConditionSemanticAction(WhereNotCondition *whereNotCondition, WhereCondition *next);
+
+
+
 #endif

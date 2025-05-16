@@ -132,13 +132,15 @@ enum WhereConditionPreconditional
 enum WhereConditionNodeType
 {
 	NODE_TYPE_WHERE_BINARY_CONDITION,
-	NODE_TYPE_WHERE_CONDITION
+	NODE_TYPE_WHERE_CONDITION,
+	NODE_TYPE_WHERE_NOT_CONDITION
 };
 
 enum NotNodeSelected
 {
 	NOT_NODE,
-	CONDITION_NODE
+	CONDITION_NODE,
+	BINARY_CONDITION_NODE
 };
 
 struct Constant
@@ -263,6 +265,7 @@ struct WhereCondition
 		// @TODO: ver de agregar el Value tambien para contemplar los booleanos
 		WhereBinaryCondition *binaryCondition;
 		WhereCondition *whereCondition;
+		WhereNotCondition *whereNotCondition;
 	};
 	WhereConditionNodeType nodeType;
 	WhereCondition *next;
@@ -275,6 +278,7 @@ struct WhereNotCondition
 	{
 		WhereNotCondition * not;
 		WhereCondition *condition; // admite NOT <ALGO_NO_BOOLEANO>, pero luego se valida en backend
+		WhereBinaryCondition *whereBinaryCondition;
 	};
 	NotNodeSelected nodeSelected;
 };
