@@ -11,10 +11,13 @@
 	/** Terminals. */
 
 	int integer;
+	boolean bool;
 	float number;
 	char * string;
 	AggregationType aggrType;
 	Token token;
+	BinaryConditionOperator binaryConditionOperator;
+	WhereConditionPreconditional whereConditionPreconditional;
 
 	/** Non-terminals. */
 
@@ -30,6 +33,9 @@
 	AggregationFunction * aggregationFunction;
 	Json * json;
 	Program * program;
+	WhereConditionValue * whereConditionValue;
+	WhereBinaryCondition * whereBinaryCondition;
+	WhereCondition * whereCondition;
 }
 
 /**
@@ -50,6 +56,9 @@
 %destructor { releaseClauseList($$); } <clauseList>
 %destructor { releaseAggregationFunction($$); } <aggregationFunction>
 %destructor { releaseAttributeRename($$); } <attrRename>
+%destructor { releaseWhereBinaryCondition($$); } <whereBinaryCondition>
+%destructor { releaseWhereConditionValue($$); } <whereConditionValue>
+%destructor { releaseWhereCondition($$); } <whereCondition>
 
 /** Terminals. */
 %token <integer> INTEGER
@@ -77,6 +86,22 @@
 %token <token> CLOSE_BRACKET
 %token <string> STRING
 %token <number> NUMBER
+%token <bool> BOOLEAN
+%token <token> TRUE
+%token <token> FALSE
+%token <token> NULLV
+%token <token> FIRST_VALUE
+%token <token> SECOND_VALUE
+%token <token> OPERATOR
+%token <binaryConditionOperator> BINARY_OPERATOR
+%token <token> LOWER
+%token <token> GREATER
+%token <token> LOWER_OR_EQUAL
+%token <token> GREATER_OR_EQUAL
+%token <token> EQUAL
+%token <token> NOT_EQUAL
+%token <token> AND
+%token <token> OR
 
 %token <token> UNKNOWN
 
@@ -98,6 +123,12 @@
 %type <clauseArgsList> attributesClauseArgsList
 %type <clauseArgsList> attributesClauseValues
 %type <clauseValue> attributesClauseValue
+%type <whereConditionValue> whereConditionValue
+%type <whereBinaryCondition> whereBinaryCondition
+%type <whereCondition> whereCondition
+%type <whereCondition> colonWhere
+%type <whereCondition> whereConditionWithPrecond
+%type <whereCondition> whereConditionWithPrecondAfter
 
 %type <program> program
 
@@ -130,6 +161,7 @@ clauseList: clause													{ $$ = ClauseListSemanticAction($1, NULL); }
 
 clause: FROM COLON fromClauseArgsList               				{ $$ = ClauseSemanticAction($3, FROM_CLAUSE); }
 	| ATTRIBUTES COLON attributesClauseArgsList						{ $$ = ClauseSemanticAction($3, ATTRIBUTES_CLAUSE); }
+	| WHERE COLON whereCondition									{ $$ = WhereClauseSemanticAction($3); }
 	;
 
 
@@ -146,6 +178,27 @@ fromClauseArgsList: fromClauseValue									{ $$ = ClauseArgsListSemanticAction(
 	| OPEN_BRACKET fromClauseValues CLOSE_BRACKET					{ $$ = $2; }
 	;
 
+// WHERE CLAUSE
+whereConditionValue: STRING											{ $$ = StringWhereConditionValueSemanticAction($1); }
+	| INTEGER														{ $$ = IntegerWhereConditionValueSemanticAction($1); }
+	| NUMBER														{ $$ = NumberWhereConditionValueSemanticAction($1); }
+	| BOOLEAN														{ $$ = BooleanWhereConditionValueSemanticAction($1); }
+	| NULLV															{ $$ = NullWhereConditionValueSemanticAction(); }
+	| whereBinaryCondition											{ $$ = WhereBinaryConditionWhereConditionValueSemanticAction($1); }
+
+whereBinaryCondition: OPEN_CURLY_BRACE OPERATOR[op] COLON BINARY_OPERATOR COMMA FIRST_VALUE COLON whereConditionValue[value1] COMMA SECOND_VALUE COLON whereConditionValue[value2] CLOSE_CURLY_BRACE	{ $$ = WhereBinaryConditionSemanticAction($value1, $value2, $op); }
+
+colonWhere:	COLON whereCondition[current1] CLOSE_CURLY_BRACE whereConditionWithPrecondAfter[next1]		{ $$ = CurrentAndNextWhereConditionsSemanticAction($current1, $next1); }
+	| COLON whereBinaryCondition[binary1] CLOSE_CURLY_BRACE whereConditionWithPrecondAfter[next2]		{ $$ = BinaryConditionAndNextWhereConditionSemanticAction($binary1, $next2); }
+
+whereConditionWithPrecond: OPEN_CURLY_BRACE AND colonWhere[node1]												{ $$ = PreconditionalWhereConditionSemanticAction($node1, $2); }
+	| OPEN_CURLY_BRACE OR colonWhere[node2]																		{ $$ = PreconditionalWhereConditionSemanticAction($node2, $2); }
+
+whereConditionWithPrecondAfter: COMMA whereConditionWithPrecond													{ $$ = $2; }
+	| %empty																									{ $$ = NULL; }
+
+whereCondition: OPEN_BRACKET whereCondition[current2] whereConditionWithPrecondAfter[next3] CLOSE_BRACKET			{ $$ = FirstCurrentAndNextWhereConditionsSemanticAction($current2, $next3); }						
+	| OPEN_BRACKET whereBinaryCondition[binary2] whereConditionWithPrecondAfter[next4] CLOSE_BRACKET				{ $$ = FirstBinaryConditionAndNextWhereConditionSemanticAction($binary2, $next4); }
 
 //ATTRIBUTES CLAUSE
 aggregationFunction: COUNT											{ $$ = AggregationFunctionSemanticAction($1); }
