@@ -37,6 +37,8 @@
 	WhereBinaryCondition * whereBinaryCondition;
 	WhereNotCondition * whereNotCondition;
 	WhereCondition * whereCondition;
+	WhereInCondition * whereInCondition;
+	WhereIsCondition * whereIsCondition;
 }
 
 /**
@@ -61,6 +63,8 @@
 %destructor { releaseWhereNotCondition($$); } <whereNotCondition>
 %destructor { releaseWhereConditionValue($$); } <whereConditionValue>
 %destructor { releaseWhereCondition($$); } <whereCondition>
+%destructor { releaseWhereInCondition($$); } <whereInCondition>
+%destructor { releaseWhereIsCondition($$); } <whereIsCondition>
 
 /** Terminals. */
 %token <integer> INTEGER
@@ -105,6 +109,8 @@
 %token <token> AND
 %token <token> OR
 %token <token> NOT
+%token <token> IN
+%token <token> IS
 
 %token <token> UNKNOWN
 
@@ -133,6 +139,8 @@
 %type <whereCondition> colonWhere
 %type <whereCondition> whereConditionWithPrecond
 %type <whereCondition> whereConditionWithPrecondAfter
+%type <whereInCondition> whereInCondition
+%type <whereIsCondition> whereIsCondition
 
 %type <program> program
 
@@ -194,14 +202,16 @@ whereConditionValue: STRING											{ $$ = StringWhereConditionValueSemanticAc
 whereBinaryCondition: OPEN_CURLY_BRACE OPERATOR[op] COLON BINARY_OPERATOR COMMA FIRST_VALUE COLON whereConditionValue[value1] COMMA SECOND_VALUE COLON whereConditionValue[value2] CLOSE_CURLY_BRACE	{ $$ = WhereBinaryConditionSemanticAction($value1, $value2, $op); }
 	;
 
-whereNotCondition: OPEN_CURLY_BRACE NOT COLON whereBinaryCondition[binaryCond] CLOSE_CURLY_BRACE					{ $$ = WhereNotConditionWithBinaryConditionSemanticAction($binaryCond); }
-	| OPEN_CURLY_BRACE NOT COLON whereCondition[whereCond] CLOSE_CURLY_BRACE										{ $$ = WhereNotConditionWithWhereConditionSemanticAction($whereCond); }
-	| OPEN_CURLY_BRACE NOT COLON whereNotCondition[whereNotCond] CLOSE_CURLY_BRACE								{ $$ = WhereNotConditionWithNotConditionSemanticAction($whereNotCond); }
+whereNotCondition: OPEN_CURLY_BRACE NOT COLON whereBinaryCondition CLOSE_CURLY_BRACE				{ $$ = WhereNotConditionWithBinaryConditionSemanticAction($4); }
+	| OPEN_CURLY_BRACE NOT COLON whereCondition CLOSE_CURLY_BRACE									{ $$ = WhereNotConditionWithWhereConditionSemanticAction($4); }
+	| OPEN_CURLY_BRACE NOT COLON whereNotCondition CLOSE_CURLY_BRACE								{ $$ = WhereNotConditionWithNotConditionSemanticAction($4); }
+	| OPEN_CURLY_BRACE NOT COLON whereInCondition CLOSE_CURLY_BRACE									{ $$ = WhereNotConditionWithInConditionSemanticAction($4); }
 	;
 
-colonWhere:	COLON whereCondition[current1] CLOSE_CURLY_BRACE whereConditionWithPrecondAfter[next1]		{ $$ = CurrentAndNextWhereConditionsSemanticAction($current1, $next1); }
-	| COLON whereBinaryCondition[binary1] CLOSE_CURLY_BRACE whereConditionWithPrecondAfter[next2]		{ $$ = BinaryConditionAndNextWhereConditionSemanticAction($binary1, $next2); }
-	| COLON whereNotCondition[notCond1] CLOSE_CURLY_BRACE whereConditionWithPrecondAfter[next6]			{ $$ = NotConditionAndNextWhereConditionSemanticAction($notCond1, $next6); }
+colonWhere:	COLON whereCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter			{ $$ = CurrentAndNextWhereConditionsSemanticAction($2, $4); }
+	| COLON whereBinaryCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter			{ $$ = BinaryConditionAndNextWhereConditionSemanticAction($2, $4); }
+	| COLON whereNotCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter				{ $$ = NotConditionAndNextWhereConditionSemanticAction($2, $4); }
+	| COLON whereIsCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter				{ $$ = IsConditionAndNextWhereConditionSemanticAction($2, $4); }
 	;
 
 whereConditionWithPrecond: OPEN_CURLY_BRACE AND colonWhere[node1]												{ $$ = PreconditionalWhereConditionSemanticAction($node1, $2); }
@@ -212,11 +222,18 @@ whereConditionWithPrecondAfter: COMMA whereConditionWithPrecond													{ $$
 	| %empty																									{ $$ = NULL; }
 	;
 
-whereCondition: OPEN_BRACKET whereCondition[current2] whereConditionWithPrecondAfter[next3] CLOSE_BRACKET			{ $$ = FirstCurrentAndNextWhereConditionsSemanticAction($current2, $next3); }						
-	| OPEN_BRACKET whereBinaryCondition[binary2] whereConditionWithPrecondAfter[next4] CLOSE_BRACKET				{ $$ = FirstBinaryConditionAndNextWhereConditionSemanticAction($binary2, $next4); }
-	| OPEN_BRACKET whereNotCondition[notCond] whereConditionWithPrecondAfter[next5] CLOSE_BRACKET					{ $$ = FirstNotConditionAndNextWhereConditionSemanticAction($notCond, $next5); }
+whereCondition: OPEN_BRACKET whereCondition whereConditionWithPrecondAfter CLOSE_BRACKET			{ $$ = FirstCurrentAndNextWhereConditionsSemanticAction($2, $3); }						
+	| OPEN_BRACKET whereBinaryCondition whereConditionWithPrecondAfter CLOSE_BRACKET				{ $$ = FirstBinaryConditionAndNextWhereConditionSemanticAction($2, $3); }
+	| OPEN_BRACKET whereNotCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstNotConditionAndNextWhereConditionSemanticAction($2, $3); }
+	| OPEN_BRACKET whereIsCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstIsConditionAndNextWhereConditionSemanticAction($2, $3); }
 	;
 
+whereInCondition: OPEN_CURLY_BRACE IN COLON json CLOSE_CURLY_BRACE									{ $$ = QueryWhereInConditionSemanticAction($4); }
+	;
+
+whereIsCondition: OPEN_CURLY_BRACE IS COLON whereNotCondition CLOSE_CURLY_BRACE						{ $$ = WhereNotConditionWhereIsConditionSemanticAction($4); }
+	| OPEN_CURLY_BRACE IS COLON whereInCondition CLOSE_CURLY_BRACE									{ $$ = WhereInConditionWhereIsConditionSemanticAction($4); }
+	;
 
 //ATTRIBUTES CLAUSE
 aggregationFunction: COUNT											{ $$ = AggregationFunctionSemanticAction($1); }

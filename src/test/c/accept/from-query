@@ -77,6 +77,46 @@
                     }
                 }
             ]
+        },
+        {
+            "and": {
+                "is": {
+                    "in": {
+                        "from": [
+                            "table3"
+                        ],
+                        "attributes": "*",
+                        "where": [
+                            {
+                                "operator": "=",
+                                "value1": "1",
+                                "value2": "1"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "and": {
+                "is": {
+                    "not": {
+                        "in": {
+                            "from": [
+                                "table3"
+                            ],
+                            "attributes": "*",
+                            "where": [
+                                {
+                                    "operator": "=",
+                                    "value1": "1",
+                                    "value2": "1"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     ]
 }

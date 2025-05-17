@@ -28,6 +28,8 @@ typedef enum BinaryConditionOperator BinaryConditionOperator;
 typedef enum WhereConditionPreconditional WhereConditionPreconditional;
 typedef enum WhereConditionNodeType WhereConditionNodeType;
 typedef enum NotNodeSelected NotNodeSelected;
+typedef enum WhereInConditionType WhereInConditionType;
+typedef enum WhereIsConditionType WhereIsConditionType;
 
 typedef struct Constant Constant;
 typedef struct Expression Expression;
@@ -48,6 +50,8 @@ typedef struct WhereCondition WhereCondition;
 typedef struct WhereNotCondition WhereNotCondition;
 typedef struct WhereConditionValue WhereConditionValue;
 typedef struct WhereBinaryCondition WhereBinaryCondition;
+typedef struct WhereInCondition WhereInCondition;
+typedef struct WhereIsCondition WhereIsCondition;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -133,14 +137,27 @@ enum WhereConditionNodeType
 {
 	NODE_TYPE_WHERE_BINARY_CONDITION,
 	NODE_TYPE_WHERE_CONDITION,
-	NODE_TYPE_WHERE_NOT_CONDITION
+	NODE_TYPE_WHERE_NOT_CONDITION,
+	NODE_TYPE_WHERE_IS_CONDITION
 };
 
 enum NotNodeSelected
 {
+	IN_NODE,
 	NOT_NODE,
 	CONDITION_NODE,
 	BINARY_CONDITION_NODE
+};
+
+enum WhereInConditionType
+{
+	WHERE_IN_CONDITION_QUERY
+};
+
+enum WhereIsConditionType
+{
+	WHERE_IS_CONDITION_NOT,
+	WHERE_IS_CONDITION_IN
 };
 
 struct Constant
@@ -266,6 +283,7 @@ struct WhereCondition
 		WhereBinaryCondition *binaryCondition;
 		WhereCondition *whereCondition;
 		WhereNotCondition *whereNotCondition;
+		WhereIsCondition *whereIsCondition;
 	};
 	WhereConditionNodeType nodeType;
 	WhereCondition *next;
@@ -276,11 +294,31 @@ struct WhereNotCondition
 {
 	union
 	{
+		WhereInCondition *in;
 		WhereNotCondition * not;
 		WhereCondition *condition; // admite NOT <ALGO_NO_BOOLEANO>, pero luego se valida en backend
 		WhereBinaryCondition *whereBinaryCondition;
 	};
 	NotNodeSelected nodeSelected;
+};
+
+struct WhereIsCondition
+{
+	union
+	{
+		WhereNotCondition *whereNotCondition;
+		WhereInCondition *whereInCondition;
+	};
+	WhereIsConditionType type;
+};
+
+struct WhereInCondition
+{
+	union
+	{
+		Json *query;
+	};
+	WhereInConditionType type;
 };
 
 struct WhereConditionValue
@@ -323,5 +361,7 @@ void releaseWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition);
 void releaseWhereConditionValue(WhereConditionValue *whereConditionValue);
 void releaseWhereNotCondition(WhereNotCondition *whereNotCondition);
 void releaseWhereCondition(WhereCondition *whereCondition);
+void releaseWhereInCondition(WhereInCondition *whereInCondition);
+void releaseWhereIsCondition(WhereIsCondition *whereIsCondition);
 
 #endif

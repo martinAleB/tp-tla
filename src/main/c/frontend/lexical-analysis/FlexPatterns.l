@@ -54,6 +54,8 @@
 "\"not\""                           { return KeyWordLexemeAction(createLexicalAnalyzerContext(), NOT); }
 "\"and\""                           { return PreconditionalLexemeAction(createLexicalAnalyzerContext(), AND); }
 "\"or\""                            { return PreconditionalLexemeAction(createLexicalAnalyzerContext(), OR); }
+"\"in\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), IN); }
+"\"is\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), IS); }
 
 "\"<\""                                 { return BinaryConditionOperatorLexemeAction(createLexicalAnalyzerContext(), LOWER); }
 "\">\""                                 { return BinaryConditionOperatorLexemeAction(createLexicalAnalyzerContext(), GREATER); }

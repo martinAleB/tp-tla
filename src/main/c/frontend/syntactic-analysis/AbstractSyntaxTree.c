@@ -258,6 +258,9 @@ void releaseWhereNotCondition(WhereNotCondition *whereNotCondition)
 		case BINARY_CONDITION_NODE:
 			releaseWhereBinaryCondition(whereNotCondition->whereBinaryCondition);
 			break;
+		case IN_NODE:
+			releaseWhereInCondition(whereNotCondition->in);
+			break;
 		}
 		free(whereNotCondition);
 	}
@@ -279,8 +282,44 @@ void releaseWhereCondition(WhereCondition *whereCondition)
 		case NODE_TYPE_WHERE_NOT_CONDITION:
 			releaseWhereNotCondition(whereCondition->whereNotCondition);
 			break;
+		case NODE_TYPE_WHERE_IS_CONDITION:
+			releaseWhereIsCondition(whereCondition->whereIsCondition);
+			break;
 		}
 		releaseWhereCondition(whereCondition->next);
 		free(whereCondition);
+	}
+}
+
+void releaseWhereInCondition(WhereInCondition *whereInCondition)
+{
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (whereInCondition != NULL)
+	{
+		switch (whereInCondition->type)
+		{
+		case WHERE_IN_CONDITION_QUERY:
+			releaseJson(whereInCondition->query);
+			break;
+		}
+		free(whereInCondition);
+	}
+}
+
+void releaseWhereIsCondition(WhereIsCondition *whereIsCondition)
+{
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (whereIsCondition != NULL)
+	{
+		switch (whereIsCondition->type)
+		{
+		case WHERE_IS_CONDITION_IN:
+			releaseWhereInCondition(whereIsCondition->whereInCondition);
+			break;
+		case WHERE_IS_CONDITION_NOT:
+			releaseWhereNotCondition(whereIsCondition->whereNotCondition);
+			break;
+		}
+		free(whereIsCondition);
 	}
 }
