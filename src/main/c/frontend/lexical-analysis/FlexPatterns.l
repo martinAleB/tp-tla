@@ -46,8 +46,8 @@
 "\"average\""                       { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), AVERAGE); }
 
 "\"null\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), NULLV); }
-"\"true\""                          { return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE); }
-"\"false\""                         { return BooleanLexemeAction(createLexicalAnalyzerContext(), FALSE); }
+"true"                          { return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE); }
+"false"                         { return BooleanLexemeAction(createLexicalAnalyzerContext(), FALSE); }
 "\"value1\""                        { return KeyWordLexemeAction(createLexicalAnalyzerContext(), FIRST_VALUE); }
 "\"value2\""                        { return KeyWordLexemeAction(createLexicalAnalyzerContext(), SECOND_VALUE); }
 "\"operator\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), OPERATOR); }

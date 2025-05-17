@@ -35,8 +35,8 @@
                 "and": [
                     {
                         "operator": "=",
-                        "value1": 5,
-                        "value2": 5
+                        "value1": true,
+                        "value2": true
                     },
                     {
                         "and": {
