@@ -21,20 +21,23 @@ void shutdownFlexActionsModule();
  * Flex lexeme processing actions.
  */
 
-void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-void EndMultilineCommentLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-void IgnoredLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+void EndMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
-Token IntegerLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
-Token ParenthesisLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext, Token token);
+Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
+Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 
-Token UnknownLexemeAction(LexicalAnalyzerContext * lexicalAnalyzerContext);
+Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token KeyWordLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token NumberLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
-Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, AggregationType token);
+Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token BooleanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token BinaryConditionOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token PreconditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token OrderByFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, OrderByFunctionType token) ;
 
 #endif

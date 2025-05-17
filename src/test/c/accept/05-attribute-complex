@@ -1,14 +1,123 @@
 {
-    "from":"table1",
-    "attributes":["attr1", {"attribute": "attr2", "as":"b"}, {
-        "function": "count",
-        "attribute": "attr3"
-    },
-    {   
-        "attribute":{
-            "function": "sum",
-            "attribute": "attr4"
+    "from": [
+        "table1",
+        "table2",
+        {
+            "table": "table3",
+            "as": "a"
+        }
+    ],
+    "attributes": [
+        {
+            "name": "attr2",
+            "as": "b"
         },
-        "as": "c"
-    }]
+        {
+            "function": "count",
+            "name": "attr3"
+        },
+        {         
+            "function": "sum",
+            "name": "blabla",
+            "as": "c"
+        }
+    ],
+    "where": [
+        [
+            {
+                "not": {
+                    "operator": "!=",
+                    "value1": 1,
+                    "value2": 2
+                }
+            },
+            {
+                "and": [
+                    {
+                        "operator": "=",
+                        "value1": true,
+                        "value2": true
+                    },
+                    {
+                        "and": {
+                            "not": {
+                                "not": {
+                                    "operator": ">",
+                                    "value1": 2,
+                                    "value2": 5
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        {
+            "or": [
+                {
+                    "operator": ">",
+                    "value1": 3,
+                    "value2": 4
+                },
+                {
+                    "and": {
+                        "operator": "<",
+                        "value1": 10,
+                        "value2": 3
+                    }
+                },
+                {
+                    "or": {
+                        "operator": "=",
+                        "value1": "Martin",
+                        "value2": "Alejandro"
+                    }
+                }
+            ]
+        },
+        {
+            "and": {
+                "is": {
+                    "in": {
+                        "from": [
+                            "table3"
+                        ],
+                        "attributes": [{
+                            "name": "*"
+                        }],
+                        "where": [
+                            {
+                                "operator": "=",
+                                "value1": "1",
+                                "value2": "1"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "and": {
+                "is": {
+                    "not": {
+                        "in": {
+                            "from": [
+                                "table3"
+                            ],
+                            "attributes": [{
+                                "name": "*"
+                            }],
+                            "where": [
+                                {
+                                    "operator": "=",
+                                    "value1": "1",
+                                    "value2": "1"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ]
 }
