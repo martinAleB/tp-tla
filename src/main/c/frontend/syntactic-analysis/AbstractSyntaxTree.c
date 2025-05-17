@@ -131,21 +131,22 @@ void releaseClauseValue(ClauseValue *clauseValue)
 				break;
 			case TABLE_RENAME:
 				releaseTableRename(clauseValue->fromClauseValue->tableRename);
+				break;
 			}
 			free(clauseValue->fromClauseValue);
 			break;
 		case ATTRIBUTES_CLAUSE:
-			switch (clauseValue->attributesClauseValue->attributeClauseValueType)
-			{
-			case ATTR_STR:
-				free(clauseValue->attributesClauseValue->string);
-				break;
-			case AGGR_FUNC:
-				releaseAggregationFunction(clauseValue->attributesClauseValue->aggrFunc);
-				break;
-			case ATTR_RENAME:
-				releaseAttributeRename(clauseValue->attributesClauseValue->attrRename);
-				break;
+			if (clauseValue->attributesClauseValue->name != NULL) {
+				free(clauseValue->attributesClauseValue->name);
+			}
+			if (clauseValue->attributesClauseValue->rename != NULL) {
+				free(clauseValue->attributesClauseValue->rename);
+			}
+			if (clauseValue->attributesClauseValue->table != NULL) {
+				free(clauseValue->attributesClauseValue->table);
+			}
+			if (clauseValue->attributesClauseValue->aggregationFunction != NULL) {
+				free(clauseValue->attributesClauseValue->aggregationFunction);
 			}
 			free(clauseValue->attributesClauseValue);
 			break;

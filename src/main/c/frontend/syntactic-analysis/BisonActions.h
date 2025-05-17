@@ -44,6 +44,12 @@ AggregationFunction *AggregationFunctionSemanticAction(AggregationType token);
 ClauseValue *AttributeRenameAttributesClauseValueSemanticAction(AttributeRename *attrRename);
 ClauseValue *AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction *aggrFunc, char *string);
 ClauseValue *StringAttributesClauseValueSemanticAction(char *string);
+AttributesClauseValue *OnlyTableAttributeOptionSemanticAction(char * table);
+AttributesClauseValue *OnlyAsAttributeOptionSemanticAction(char * rename);
+AttributesClauseValue *TableAndAsAttributeOptionSemanticAction(char * table, char * rename);
+AttributesClauseValue *AttributeSemanticAction(char * name, AttributesClauseValue *clauseValue);
+AttributesClauseValue *AggregationSemanticAction(char * function, AttributesClauseValue *clauseValue);
+ClauseValue *AttributeClauseValueSemanticAction(AttributesClauseValue *attributeClauseValue);
 
 // WHERE CLAUSE
 Clause *WhereClauseSemanticAction(WhereCondition *whereCondition);

@@ -29,8 +29,6 @@
 	ClauseArgsList * clauseArgsList;
 	ClauseValue * clauseValue;
 	TableRename * tableRename;
-	AttributeRename * attrRename;
-	AggregationFunction * aggregationFunction;
 	Json * json;
 	Program * program;
 	WhereConditionValue * whereConditionValue;
@@ -39,6 +37,7 @@
 	WhereCondition * whereCondition;
 	WhereInCondition * whereInCondition;
 	WhereIsCondition * whereIsCondition;
+	AttributesClauseValue * attributeClauseValue;
 }
 
 /**
@@ -57,8 +56,6 @@
 %destructor { releaseClauseValue($$); } <clauseValue>
 %destructor { releaseClause($$); } <clause>
 %destructor { releaseClauseList($$); } <clauseList>
-%destructor { releaseAggregationFunction($$); } <aggregationFunction>
-%destructor { releaseAttributeRename($$); } <attrRename>
 %destructor { releaseWhereBinaryCondition($$); } <whereBinaryCondition>
 %destructor { releaseWhereNotCondition($$); } <whereNotCondition>
 %destructor { releaseWhereConditionValue($$); } <whereConditionValue>
@@ -111,6 +108,7 @@
 %token <token> NOT
 %token <token> IN
 %token <token> IS
+%token <token> NAME
 
 %token <token> UNKNOWN
 
@@ -125,10 +123,12 @@
 %type <clauseArgsList> fromClauseArgsList
 %type <clauseArgsList> fromClauseValues
 %type <clauseValue> fromClauseValue
+%type <attributeClauseValue> attribute
+%type <attributeClauseValue> attributeOptions
+%type <attributeClauseValue> aggregation
 
-%type <attrRename> attributeRename
+%type <string> aggregationFunction
 
-%type <aggregationFunction> aggregationFunction
 %type <clauseArgsList> attributesClauseArgsList
 %type <clauseArgsList> attributesClauseValues
 %type <clauseValue> attributesClauseValue
@@ -236,24 +236,31 @@ whereIsCondition: OPEN_CURLY_BRACE IS COLON whereNotCondition CLOSE_CURLY_BRACE	
 	;
 
 //ATTRIBUTES CLAUSE
-aggregationFunction: COUNT											{ $$ = AggregationFunctionSemanticAction($1); }
-	| SUM 															{ $$ = AggregationFunctionSemanticAction($1); }
-	| AVERAGE														{ $$ = AggregationFunctionSemanticAction($1); }
+aggregationFunction: COUNT											{ $$ = $1; }
+	| SUM 															{ $$ = $1; }
+	| AVERAGE														{ $$ = $1; }
 	;
 
-attributeRename: ATTRIBUTE COLON attributesClauseValue[val] COMMA AS COLON STRING[str]	{ $$ = AttributeRenameSemanticAction($val, $str); } 
+aggregation: FUNCTION COLON aggregationFunction COMMA attribute		{ $$ = AggregationSemanticAction($3, $5); }
+
+attributeOptions: COMMA TABLE COLON STRING							{ $$ = OnlyTableAttributeOptionSemanticAction($4); }
+	| COMMA AS COLON STRING											{ $$ = OnlyAsAttributeOptionSemanticAction($4); }
+	| COMMA TABLE COLON STRING COMMA AS COLON STRING				{ $$ = TableAndAsAttributeOptionSemanticAction($4, $7); }
+	| %empty														{ $$ = NULL; }
 	;
-attributesClauseValue: STRING										{ $$ = StringAttributesClauseValueSemanticAction($1); }
-	| OPEN_CURLY_BRACE FUNCTION COLON aggregationFunction[aggr] COMMA ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionAttributesClauseValueSemanticAction($aggr, $attr); }
-	| OPEN_CURLY_BRACE attributeRename[attrRename] CLOSE_CURLY_BRACE { $$ = AttributeRenameAttributesClauseValueSemanticAction($attrRename); }
+
+attribute: NAME COLON STRING attributeOptions						{ $$ = AttributeSemanticAction($3, $4); }
+	;
+
+attributesClauseValue: OPEN_CURLY_BRACE attribute CLOSE_CURLY_BRACE		{ $$ = AttributeClauseValueSemanticAction($2); }																					{ $$ = StringAttributesClauseValueSemanticAction($1); }
+	| OPEN_CURLY_BRACE aggregation CLOSE_CURLY_BRACE					{ $$ = AttributeClauseValueSemanticAction($2); }
 	;
 
 attributesClauseValues: attributesClauseValue						{ $$ = ClauseArgsListSemanticAction($1, NULL); }
 	| attributesClauseValue COMMA attributesClauseValues			{ $$ = ClauseArgsListSemanticAction($1, $3); }
 	;
 
-attributesClauseArgsList: attributesClauseValue						{ $$ = ClauseArgsListSemanticAction($1, NULL); }
-	| OPEN_BRACKET attributesClauseValues CLOSE_BRACKET				{ $$ = $2; }
+attributesClauseArgsList: OPEN_BRACKET attributesClauseValues CLOSE_BRACKET				{ $$ = $2; }
 	;
 
 // THE OG, KEEP THEM AS REFERENCE

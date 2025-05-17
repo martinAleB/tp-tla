@@ -8,20 +8,17 @@
         }
     ],
     "attributes": [
-        "attr1",
         {
-            "attribute": "attr2",
+            "name": "attr2",
             "as": "b"
         },
         {
             "function": "count",
-            "attribute": "attr3"
+            "name": "attr3"
         },
-        {
-            "attribute": {
-                "function": "sum",
-                "attribute": "attr4"
-            },
+        {         
+            "function": "sum",
+            "name": "blabla",
             "as": "c"
         }
     ],
@@ -85,7 +82,9 @@
                         "from": [
                             "table3"
                         ],
-                        "attributes": "*",
+                        "attributes": {
+                            "name": "*"
+                        },
                         "where": [
                             {
                                 "operator": "=",
@@ -105,7 +104,9 @@
                             "from": [
                                 "table3"
                             ],
-                            "attributes": "*",
+                            "attributes": {
+                                "name": "*"
+                            },
                             "where": [
                                 {
                                     "operator": "=",

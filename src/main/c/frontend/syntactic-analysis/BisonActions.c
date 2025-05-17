@@ -168,6 +168,14 @@ ClauseArgsList *ClauseArgsListSemanticAction(ClauseValue *clauseValue, ClauseArg
 	return clauseArgsList;
 }
 
+ClauseValue *AttributeClauseValueSemanticAction(AttributesClauseValue *attributeClauseValue) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->attributesClauseValue = attributeClauseValue;
+	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+	return clauseValue;
+}
+
 // FROM CLAUSE VALUES
 
 ClauseValue *StringFromClauseValueSemanticAction(char *string)
@@ -212,39 +220,71 @@ AttributeRename *AttributeRenameSemanticAction(ClauseValue *clausevalue, char *s
 	return attrRename;
 }
 
-ClauseValue *AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction *aggrFunc, char *string)
-{
+AttributesClauseValue *OnlyTableAttributeOptionSemanticAction(char * table) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
-	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
-	clauseValue->attributesClauseValue->aggrFunc = aggrFunc;
-	clauseValue->attributesClauseValue->aggrFunc->attribute = string;
-	clauseValue->attributesClauseValue->attributeClauseValueType = AGGR_FUNC;
-	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+	AttributesClauseValue * clauseValue = calloc(1, sizeof(AttributesClauseValue));
+	clauseValue->table = table;
 	return clauseValue;
 }
 
-ClauseValue *AttributeRenameAttributesClauseValueSemanticAction(AttributeRename *attrRename)
-{
+AttributesClauseValue *OnlyAsAttributeOptionSemanticAction(char * rename) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
-	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
-	clauseValue->attributesClauseValue->attrRename = attrRename;
-	clauseValue->attributesClauseValue->attributeClauseValueType = ATTR_RENAME;
-	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+	AttributesClauseValue * clauseValue = calloc(1, sizeof(AttributesClauseValue));
+	clauseValue->rename = rename;
 	return clauseValue;
 }
 
-ClauseValue *StringAttributesClauseValueSemanticAction(char *string)
-{
+AttributesClauseValue *TableAndAsAttributeOptionSemanticAction(char * table, char * rename) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
-	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
-	clauseValue->attributesClauseValue->string = string;
-	clauseValue->attributesClauseValue->attributeClauseValueType = ATTR_STR;
-	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+	AttributesClauseValue * clauseValue = calloc(1, sizeof(AttributesClauseValue));
+	clauseValue->table = table;
+	clauseValue->rename = rename;
 	return clauseValue;
 }
+
+AttributesClauseValue *AttributeSemanticAction(char * name, AttributesClauseValue *clauseValue) {
+	clauseValue->name = name;
+	return clauseValue;
+}
+
+AttributesClauseValue *AggregationSemanticAction(char * function, AttributesClauseValue *clauseValue) {
+	clauseValue->aggregationFunction = function;
+	return clauseValue;
+}
+
+// ClauseValue *AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction *aggrFunc, char *string)
+// {
+// 	_logSyntacticAnalyzerAction(__FUNCTION__);
+// 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
+// 	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
+// 	clauseValue->attributesClauseValue->aggrFunc = aggrFunc;
+// 	clauseValue->attributesClauseValue->aggrFunc->attribute = string;
+// 	clauseValue->attributesClauseValue->attributeClauseValueType = AGGR_FUNC;
+// 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+// 	return clauseValue;
+// }
+
+// ClauseValue *AttributeRenameAttributesClauseValueSemanticAction(AttributeRename *attrRename)
+// {
+// 	_logSyntacticAnalyzerAction(__FUNCTION__);
+// 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
+// 	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
+// 	clauseValue->attributesClauseValue->attrRename = attrRename;
+// 	clauseValue->attributesClauseValue->attributeClauseValueType = ATTR_RENAME;
+// 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+// 	return clauseValue;
+// }
+
+// ClauseValue *StringAttributesClauseValueSemanticAction(char *string)
+// {
+// 	_logSyntacticAnalyzerAction(__FUNCTION__);
+// 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
+// 	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
+// 	clauseValue->attributesClauseValue->string = string;
+// 	clauseValue->attributesClauseValue->attributeClauseValueType = ATTR_STR;
+// 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
+// 	return clauseValue;
+// }
 
 // WHERE CONDITION VALUES
 

@@ -20,7 +20,6 @@ typedef enum ProgramType ProgramType;
 
 typedef enum ClauseType ClauseType;
 typedef enum FromClauseValueType FromClauseValueType;
-typedef enum AttributesClauseValueType AttributesClauseValueType;
 typedef enum AggregationType AggregationType;
 typedef enum BooleanTypes BooleanTypes;
 typedef enum ConditionValueType ConditionValueType;
@@ -96,13 +95,6 @@ enum FromClauseValueType
 {
 	STR,
 	TABLE_RENAME
-};
-
-enum AttributesClauseValueType
-{
-	ATTR_STR,
-	AGGR_FUNC,
-	ATTR_RENAME
 };
 
 enum BinaryConditionOperator
@@ -204,13 +196,10 @@ struct FromClauseValue
 
 struct AttributesClauseValue
 {
-	union
-	{
-		char *string;
-		AggregationFunction *aggrFunc;
-		AttributeRename *attrRename;
-	};
-	AttributesClauseValueType attributeClauseValueType;
+	char * name;
+	char * table;
+	char * aggregationFunction;
+	char * rename;	
 };
 
 struct ClauseArgsList

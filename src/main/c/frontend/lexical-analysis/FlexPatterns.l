@@ -38,7 +38,7 @@
 "\"table\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TABLE); }
 "\"as\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), AS); }
 
-"\"attribute\""                     { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ATTRIBUTE); }
+"\"name\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), NAME); }
 "\"function\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), FUNCTION); }
 
 "\"count\""                         { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), COUNT); }
