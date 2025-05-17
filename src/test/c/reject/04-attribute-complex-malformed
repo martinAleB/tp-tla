@@ -1,0 +1,12 @@
+{
+    "from":"table1",
+    "attributes":["attr1", {"attribute": "attr2", "as":"b"}, {
+        "function": "count",
+        "attribute": "attr3"
+    },
+    "attribute":{
+        "function": "sum",
+        "attribute": "attr4"
+    },
+    "as": "c"
+}

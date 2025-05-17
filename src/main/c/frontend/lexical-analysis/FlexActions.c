@@ -111,8 +111,8 @@ Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
-	//@todo: check if this is a security liability (would strncpy be better?)
-	strcpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme);
+	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
+	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = '\0';
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return STRING;
 }
@@ -155,6 +155,22 @@ Token PreconditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	lexicalAnalyzerContext->semanticValue->whereConditionPreconditional = token - AND;
+	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+	return token;
+}
+
+Token OrderByFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, OrderByFunctionType token) {
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	OrderByFunctionType orderByF;
+	switch(token) {
+		case DESC:
+			orderByF = ORDER_BY_DESC;
+			break;
+		case ASC:
+			orderByF = ORDER_BY_ASC;
+			break;
+	}
+	lexicalAnalyzerContext->semanticValue->orderByType = orderByF;
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return token;
 }

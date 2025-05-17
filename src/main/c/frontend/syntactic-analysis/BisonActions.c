@@ -216,8 +216,57 @@ AggregationFunction *AggregationFunctionSemanticAction(AggregationType aggrType)
 	return aggrFunc;
 }
 
-AttributeRename *AttributeRenameSemanticAction(ClauseValue *clausevalue, char *string)
-{
+CompositeOrderByClause * OrderBySemanticAction(OrderByType orderByType) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	CompositeOrderByClause * orderBy = calloc(1, sizeof(CompositeOrderByClause));
+	orderBy->orderByFunctionType = orderByType;
+	if (orderByType == ASC_T) {
+		orderBy->string = NULL;
+		orderBy->orderByFunctionType = ORDER_BY_ASC;
+	}
+	else if (orderByType == DESC_T) {
+		orderBy->string = NULL;
+		orderBy->orderByFunctionType = ORDER_BY_DESC;
+	}
+	return orderBy;
+} 
+
+ClauseValue *StringOrderByClauseValueSemanticAction(char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	OrderByClauseValue * orderBy = calloc(1, sizeof(OrderByClauseValue));
+	clauseValue->clauseType = ORDER_BY_CLAUSE;
+	clauseValue->orderByClauseValue = orderBy;
+	orderBy->orderByClauseValueType = ORDER_BY_STRING;
+	orderBy->string = string;
+	return clauseValue;
+}
+
+ClauseValue * CompositeOrderByClauseValueSemanticAction(char * string, CompositeOrderByClause * compositeOrderByClause) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	OrderByClauseValue * orderBy = calloc(1, sizeof(OrderByClauseValue));
+	clauseValue->clauseType = ORDER_BY_CLAUSE;
+	clauseValue->orderByClauseValue = orderBy;
+	orderBy->orderByClauseValueType = ORDER_BY_COMPOSITE;
+	orderBy->compositeOrderByClause = compositeOrderByClause;
+	orderBy->compositeOrderByClause->string = string;
+	return clauseValue;
+}
+
+ClauseValue * AggregationFunctionOrderByClauseValueSemanticAction(char * aggrFunc, char * string, CompositeOrderByClause * compositeOrderByClause) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->clauseType = ORDER_BY_CLAUSE;
+	clauseValue->orderByClauseValue = calloc(1, sizeof(OrderByClauseValue));
+	clauseValue->orderByClauseValue->orderByClauseValueType = ORDER_BY_AGGR_FUNC;
+	clauseValue->orderByClauseValue->compositeOrderByClause = compositeOrderByClause;
+	clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc = aggrFunc;
+	clauseValue->orderByClauseValue->compositeOrderByClause->string = string;
+	return clauseValue;
+}
+
+AttributeRename * AttributeRenameSemanticAction(ClauseValue * clausevalue, char * string) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	AttributeRename *attrRename = calloc(1, sizeof(AttributeRename));
 	attrRename->value = clausevalue;
@@ -256,40 +305,6 @@ AttributesClauseValue *AggregationSemanticAction(char * function, AttributesClau
 	clauseValue->aggregationFunction = function;
 	return clauseValue;
 }
-
-// ClauseValue *AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction *aggrFunc, char *string)
-// {
-// 	_logSyntacticAnalyzerAction(__FUNCTION__);
-// 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
-// 	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
-// 	clauseValue->attributesClauseValue->aggrFunc = aggrFunc;
-// 	clauseValue->attributesClauseValue->aggrFunc->attribute = string;
-// 	clauseValue->attributesClauseValue->attributeClauseValueType = AGGR_FUNC;
-// 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
-// 	return clauseValue;
-// }
-
-// ClauseValue *AttributeRenameAttributesClauseValueSemanticAction(AttributeRename *attrRename)
-// {
-// 	_logSyntacticAnalyzerAction(__FUNCTION__);
-// 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
-// 	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
-// 	clauseValue->attributesClauseValue->attrRename = attrRename;
-// 	clauseValue->attributesClauseValue->attributeClauseValueType = ATTR_RENAME;
-// 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
-// 	return clauseValue;
-// }
-
-// ClauseValue *StringAttributesClauseValueSemanticAction(char *string)
-// {
-// 	_logSyntacticAnalyzerAction(__FUNCTION__);
-// 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
-// 	clauseValue->attributesClauseValue = calloc(1, sizeof(AttributesClauseValue));
-// 	clauseValue->attributesClauseValue->string = string;
-// 	clauseValue->attributesClauseValue->attributeClauseValueType = ATTR_STR;
-// 	clauseValue->clauseType = ATTRIBUTES_CLAUSE;
-// 	return clauseValue;
-// }
 
 // WHERE CONDITION VALUES
 
@@ -493,4 +508,24 @@ WhereIsCondition *WhereInConditionWhereIsConditionSemanticAction(WhereInConditio
 	whereIsCondition->whereInCondition = whereInCondition;
 	whereIsCondition->type = WHERE_IS_CONDITION_IN;
 	return whereIsCondition;
+}
+// GROUP BY CLAUSE VALUES
+
+ClauseArgsList * StringGroupByClauseSemanticAction(char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseArgsList * clauseArgsList = calloc(1, sizeof(ClauseArgsList));
+	clauseArgsList->clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseArgsList->clauseValue->groupByClauseValue = calloc(1, sizeof(GroupByClauseValue));
+	clauseArgsList->clauseValue->groupByClauseValue->string = string;
+	clauseArgsList->clauseValue->clauseType = GROUP_BY_CLAUSE;
+	return clauseArgsList;
+}
+
+ClauseValue * GroupByValueSemanticAction(char * string) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->groupByClauseValue = calloc(1, sizeof(GroupByClauseValue));
+	clauseValue->groupByClauseValue->string = string;
+	clauseValue->clauseType = GROUP_BY_CLAUSE;
+	return clauseValue;
 }

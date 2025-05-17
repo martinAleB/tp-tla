@@ -38,5 +38,6 @@ Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerCon
 Token BooleanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token BinaryConditionOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token PreconditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token OrderByFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, OrderByFunctionType token) ;
 
 #endif

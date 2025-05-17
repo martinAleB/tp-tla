@@ -14,6 +14,9 @@
 	boolean bool;
 	float number;
 	char * string;
+	AggregationType aggrType;
+	OrderByClauseValueType orderByType;
+	//CompositeOrderByClause compositeOrderByClause;
 	Token token;
 	BinaryConditionOperator binaryConditionOperator;
 	WhereConditionPreconditional whereConditionPreconditional;
@@ -37,6 +40,7 @@
 	WhereInCondition * whereInCondition;
 	WhereIsCondition * whereIsCondition;
 	AttributesClauseValue * attributeClauseValue;
+	CompositeOrderByClause * orderByExplicit;
 }
 
 /**
@@ -75,6 +79,9 @@
 %token <token> FROM
 %token <token> ATTRIBUTES
 %token <token> WHERE
+%token <token> GROUP_BY
+%token <token> ORDER_BY
+%token <token> ORDER
 %token <token> TABLE
 %token <token> AS
 %token <token> FUNCTION
@@ -82,6 +89,8 @@
 %token <string> COUNT
 %token <string> SUM
 %token <string> AVERAGE
+%token <token> ASC
+%token <token> DESC
 %token <token> COLON
 %token <token> COMMA
 %token <token> OPEN_BRACKET
@@ -127,6 +136,10 @@
 %type <attributeClauseValue> aggregation
 
 %type <string> aggregationFunction
+%type <clauseArgsList> orderByClauseArgsList
+%type <clauseArgsList> orderByClauseValues
+%type <clauseValue> orderByClauseValue
+%type <orderByExplicit> orderByExplicit
 
 %type <clauseArgsList> attributesClauseArgsList
 %type <clauseArgsList> attributesClauseValues
@@ -140,6 +153,10 @@
 %type <whereCondition> whereConditionWithPrecondAfter
 %type <whereInCondition> whereInCondition
 %type <whereIsCondition> whereIsCondition
+
+%type <clauseArgsList> groupByClause
+%type <clauseArgsList> groupByValues
+%type <clauseValue> groupByValue
 
 %type <program> program
 
@@ -173,6 +190,8 @@ clauseList: clause													{ $$ = ClauseListSemanticAction($1, NULL); }
 clause: FROM COLON fromClauseArgsList               				{ $$ = ClauseSemanticAction($3, FROM_CLAUSE); }
 	| ATTRIBUTES COLON attributesClauseArgsList						{ $$ = ClauseSemanticAction($3, ATTRIBUTES_CLAUSE); }
 	| WHERE COLON whereCondition									{ $$ = WhereClauseSemanticAction($3); }
+	| GROUP_BY COLON groupByClause									{ $$ = ClauseSemanticAction($3, GROUP_BY_CLAUSE); }
+	| ORDER_BY COLON orderByClauseArgsList							{ $$ = ClauseSemanticAction($3, ORDER_BY_CLAUSE); }
 	;
 
 
@@ -233,6 +252,27 @@ whereInCondition: OPEN_CURLY_BRACE IN COLON json CLOSE_CURLY_BRACE									{ $$ 
 whereIsCondition: OPEN_CURLY_BRACE IS COLON whereNotCondition CLOSE_CURLY_BRACE						{ $$ = WhereNotConditionWhereIsConditionSemanticAction($4); }
 	| OPEN_CURLY_BRACE IS COLON whereInCondition CLOSE_CURLY_BRACE									{ $$ = WhereInConditionWhereIsConditionSemanticAction($4); }
 	;
+//ORDER BY CLAUSE
+orderByClauseArgsList: orderByClauseValue							{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| OPEN_BRACKET orderByClauseValues CLOSE_BRACKET				{ $$ = $2; }
+	;
+
+orderByClauseValues: orderByClauseValue								{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| orderByClauseValue COMMA orderByClauseValues					{ $$ = ClauseArgsListSemanticAction($1, $3); }
+	;
+
+orderByClauseValue: STRING											{ $$ = StringOrderByClauseValueSemanticAction($1); }
+	//Funcion de agregacion
+	| OPEN_CURLY_BRACE FUNCTION COLON aggregationFunction[aggr] COMMA ATTRIBUTE COLON STRING[attr] COMMA ORDER COLON orderByExplicit[order] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionOrderByClauseValueSemanticAction($aggr, $attr, $order); }
+	//Solo atributo, como en sql y que defaultee a ASC (el motor de BD)
+	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = StringOrderByClauseValueSemanticAction($attr); }
+	//Atributo con order ASC o DESC
+	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING[attr] COMMA ORDER COLON orderByExplicit[expl] CLOSE_CURLY_BRACE { $$ = CompositeOrderByClauseValueSemanticAction($attr, $expl); }
+	;
+
+orderByExplicit: ASC												{ $$ = OrderBySemanticAction($1); }
+	| DESC															{ $$ = OrderBySemanticAction($1); }
+;
 
 //ATTRIBUTES CLAUSE
 aggregationFunction: COUNT											{ $$ = $1; }
@@ -260,6 +300,18 @@ attributesClauseValues: attributesClauseValue						{ $$ = ClauseArgsListSemantic
 	;
 
 attributesClauseArgsList: OPEN_BRACKET attributesClauseValues CLOSE_BRACKET				{ $$ = $2; }
+	;
+
+//GROUP BY CLAUSE
+groupByClause: STRING												{ $$ = StringGroupByClauseSemanticAction($1); }
+	| OPEN_BRACKET groupByValues CLOSE_BRACKET						{ $$ = $2; }
+	;
+
+groupByValues: groupByValue											{ $$ = ClauseArgsListSemanticAction($1, NULL); }		
+	| groupByValue COMMA groupByValues								{ $$ = ClauseArgsListSemanticAction($1, $3); }	
+	;
+
+groupByValue: STRING												{ $$ = GroupByValueSemanticAction($1); }
 	;
 
 // THE OG, KEEP THEM AS REFERENCE

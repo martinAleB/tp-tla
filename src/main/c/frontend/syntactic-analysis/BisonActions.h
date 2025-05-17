@@ -82,4 +82,13 @@ WhereInCondition *QueryWhereInConditionSemanticAction(Json *query);
 WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondition *whereNotCondition);
 WhereIsCondition *WhereInConditionWhereIsConditionSemanticAction(WhereInCondition *whereInCondition);
 
+//GROUP BY CLAUSE VALUES
+ClauseArgsList * StringGroupByClauseSemanticAction(char * string);
+ClauseValue * GroupByValueSemanticAction(char * string);
+
+ClauseValue * StringOrderByClauseValueSemanticAction(char * string);
+ClauseValue * AggregationFunctionOrderByClauseValueSemanticAction(char * aggrFunc, char * string, CompositeOrderByClause * compositeOrderByClause);
+ClauseValue * CompositeOrderByClauseValueSemanticAction(char * string, CompositeOrderByClause * compositeOrderByClause);
+CompositeOrderByClause * OrderBySemanticAction(OrderByType orderByType);
+
 #endif

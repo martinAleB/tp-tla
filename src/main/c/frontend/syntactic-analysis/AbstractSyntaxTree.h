@@ -21,6 +21,9 @@ typedef enum ProgramType ProgramType;
 typedef enum ClauseType ClauseType;
 typedef enum FromClauseValueType FromClauseValueType;
 typedef enum AggregationType AggregationType;
+typedef enum OrderByType OrderByType;
+typedef enum OrderByFunctionType OrderByFunctionType;
+typedef enum OrderByClauseValueType OrderByClauseValueType;
 typedef enum BooleanTypes BooleanTypes;
 typedef enum ConditionValueType ConditionValueType;
 typedef enum BinaryConditionOperator BinaryConditionOperator;
@@ -45,6 +48,9 @@ typedef struct ClauseValue ClauseValue;
 typedef struct ClauseArgsList ClauseArgsList;
 typedef struct ClauseList ClauseList;
 typedef struct Clause Clause;
+typedef struct GroupByClauseValue GroupByClauseValue;
+typedef struct OrderByClauseValue  OrderByClauseValue;
+typedef struct CompositeOrderByClause CompositeOrderByClause;
 typedef struct WhereCondition WhereCondition;
 typedef struct WhereNotCondition WhereNotCondition;
 typedef struct WhereConditionValue WhereConditionValue;
@@ -61,6 +67,22 @@ enum AggregationType
 	COUNT_F,
 	SUM_F,
 	AVERAGE_F
+};
+
+enum OrderByType{
+	ASC_T,
+	DESC_T
+};
+
+enum OrderByFunctionType {
+	ORDER_BY_ASC,
+	ORDER_BY_DESC
+};
+
+enum OrderByClauseValueType{
+	ORDER_BY_STRING,
+	ORDER_BY_COMPOSITE,
+	ORDER_BY_AGGR_FUNC
 };
 
 enum ExpressionType
@@ -88,6 +110,8 @@ enum ClauseType
 {
 	FROM_CLAUSE,
 	ATTRIBUTES_CLAUSE,
+	GROUP_BY_CLAUSE,
+	ORDER_BY_CLAUSE,
 	WHERE_CLAUSE
 };
 
@@ -194,6 +218,22 @@ struct FromClauseValue
 	FromClauseValueType fromClauseValueType;
 };
 
+struct CompositeOrderByClause{
+	char* string;
+	char * aggrFunc;
+	OrderByFunctionType orderByFunctionType;
+};
+
+
+struct OrderByClauseValue {
+	union {
+		char * string;
+		CompositeOrderByClause * compositeOrderByClause;
+	};
+	OrderByClauseValueType orderByClauseValueType;
+};
+	
+
 struct AttributesClauseValue
 {
 	char * name;
@@ -214,6 +254,9 @@ struct ClauseValue
 	{
 		FromClauseValue *fromClauseValue;
 		AttributesClauseValue *attributesClauseValue;
+		GroupByClauseValue * groupByClauseValue;
+		OrderByClauseValue * orderByClauseValue;
+	
 		WhereCondition *whereClauseValue;
 	};
 	ClauseType clauseType;
@@ -233,6 +276,10 @@ struct ClauseList
 {
 	Clause *clause;
 	ClauseList *next;
+};
+
+struct GroupByClauseValue {
+	char * string;
 };
 
 struct Json
@@ -343,6 +390,8 @@ void releaseClauseArgsList(ClauseArgsList *fromArray);
 void releaseClauseValue(ClauseValue *fromArrayValue);
 void releaseClause(Clause *clause);
 void releaseClauseList(ClauseList *clauseList);
+
+void releaseOrderByClauseValue(OrderByClauseValue * orderBy);
 void releaseTableRename(TableRename *tableRename);
 void releaseAttributeRename(AttributeRename *attrRename);
 void releaseAggregationFunction(AggregationFunction *aggFunc);
