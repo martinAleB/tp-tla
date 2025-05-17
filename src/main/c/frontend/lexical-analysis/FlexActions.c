@@ -125,23 +125,12 @@ Token NumberLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	return NUMBER;
 }
 
-Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, AggregationType token)
+Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	AggregationType aggF;
-	switch (token)
-	{
-	case COUNT:
-		aggF = COUNT_F;
-		break;
-	case SUM:
-		aggF = SUM_F;
-		break;
-	case AVERAGE:
-		aggF = AVERAGE_F;
-		break;
-	}
-	lexicalAnalyzerContext->semanticValue->aggrType = aggF;
+	lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
+	//@todo: check if this is a security liability (would strncpy be better?)
+	strcpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme);
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return token;
 }

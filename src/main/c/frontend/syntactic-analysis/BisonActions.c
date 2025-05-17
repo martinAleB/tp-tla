@@ -203,6 +203,11 @@ ClauseValue *TableRenameFromClauseValueSemanticAction(char *trueName, char *alia
 
 // ATTRIBUTES CLAUSE VALUES
 
+AttributesClauseValue *EmptyAttributeOptionSemanticAction() {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	return calloc(1, sizeof(AttributesClauseValue));
+}
+
 AggregationFunction *AggregationFunctionSemanticAction(AggregationType aggrType)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);

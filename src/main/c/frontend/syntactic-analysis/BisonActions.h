@@ -50,6 +50,7 @@ AttributesClauseValue *TableAndAsAttributeOptionSemanticAction(char * table, cha
 AttributesClauseValue *AttributeSemanticAction(char * name, AttributesClauseValue *clauseValue);
 AttributesClauseValue *AggregationSemanticAction(char * function, AttributesClauseValue *clauseValue);
 ClauseValue *AttributeClauseValueSemanticAction(AttributesClauseValue *attributeClauseValue);
+AttributesClauseValue *EmptyAttributeOptionSemanticAction();
 
 // WHERE CLAUSE
 Clause *WhereClauseSemanticAction(WhereCondition *whereCondition);

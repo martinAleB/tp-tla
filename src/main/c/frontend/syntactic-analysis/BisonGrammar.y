@@ -14,7 +14,6 @@
 	boolean bool;
 	float number;
 	char * string;
-	AggregationType aggrType;
 	Token token;
 	BinaryConditionOperator binaryConditionOperator;
 	WhereConditionPreconditional whereConditionPreconditional;
@@ -80,9 +79,9 @@
 %token <token> AS
 %token <token> FUNCTION
 %token <token> ATTRIBUTE
-%token <aggrType> COUNT
-%token <aggrType> SUM
-%token <aggrType> AVERAGE
+%token <string> COUNT
+%token <string> SUM
+%token <string> AVERAGE
 %token <token> COLON
 %token <token> COMMA
 %token <token> OPEN_BRACKET
@@ -245,14 +244,14 @@ aggregation: FUNCTION COLON aggregationFunction COMMA attribute		{ $$ = Aggregat
 
 attributeOptions: COMMA TABLE COLON STRING							{ $$ = OnlyTableAttributeOptionSemanticAction($4); }
 	| COMMA AS COLON STRING											{ $$ = OnlyAsAttributeOptionSemanticAction($4); }
-	| COMMA TABLE COLON STRING COMMA AS COLON STRING				{ $$ = TableAndAsAttributeOptionSemanticAction($4, $7); }
-	| %empty														{ $$ = NULL; }
+	| COMMA TABLE COLON STRING COMMA AS COLON STRING				{ $$ = TableAndAsAttributeOptionSemanticAction($4, $8); }
+	| %empty														{ $$ = EmptyAttributeOptionSemanticAction(); }
 	;
 
 attribute: NAME COLON STRING attributeOptions						{ $$ = AttributeSemanticAction($3, $4); }
 	;
 
-attributesClauseValue: OPEN_CURLY_BRACE attribute CLOSE_CURLY_BRACE		{ $$ = AttributeClauseValueSemanticAction($2); }																					{ $$ = StringAttributesClauseValueSemanticAction($1); }
+attributesClauseValue: OPEN_CURLY_BRACE attribute CLOSE_CURLY_BRACE		{ $$ = AttributeClauseValueSemanticAction($2); }
 	| OPEN_CURLY_BRACE aggregation CLOSE_CURLY_BRACE					{ $$ = AttributeClauseValueSemanticAction($2); }
 	;
 
