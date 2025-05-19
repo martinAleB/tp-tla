@@ -47,6 +47,9 @@
 "\"count\""                         { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), COUNT); }
 "\"sum\""                           { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), SUM); }
 "\"average\""                       { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), AVERAGE); }
+"\"min\""                           { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), MIN); }
+"\"max\""                           { return AggregationFunctionLexemeAction(createLexicalAnalyzerContext(), MAX); }
+
 "\"asc\""                               { return OrderByFunctionLexemeAction(createLexicalAnalyzerContext(), ASC); }
 "\"desc\""                              { return OrderByFunctionLexemeAction(createLexicalAnalyzerContext(), DESC); }
 

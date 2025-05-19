@@ -62,13 +62,6 @@ typedef struct WhereIsCondition WhereIsCondition;
  * Node types for the Abstract Syntax Tree (AST).
  */
 
-enum AggregationType
-{
-	COUNT_F,
-	SUM_F,
-	AVERAGE_F
-};
-
 enum OrderByType
 {
 	ASC_T,

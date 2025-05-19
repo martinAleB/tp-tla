@@ -40,7 +40,6 @@ ClauseValue *TableRenameFromClauseValueSemanticAction(char *trueName, char *alia
 
 // ATTRIBUTES CLAUSE VALUES
 AttributeRename *AttributeRenameSemanticAction(ClauseValue *clausevalue, char *string);
-AggregationFunction *AggregationFunctionSemanticAction(AggregationType token);
 ClauseValue *AttributeRenameAttributesClauseValueSemanticAction(AttributeRename *attrRename);
 ClauseValue *AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction *aggrFunc, char *string);
 ClauseValue *StringAttributesClauseValueSemanticAction(char *string);

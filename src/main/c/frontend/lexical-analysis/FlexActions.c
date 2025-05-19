@@ -129,7 +129,6 @@ Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerCon
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
-	//@todo: check if this is a security liability (would strncpy be better?)
 	strcpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme);
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return token;

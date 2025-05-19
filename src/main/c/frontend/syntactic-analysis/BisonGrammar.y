@@ -14,9 +14,7 @@
 	boolean bool;
 	float number;
 	char * string;
-	AggregationType aggrType;
 	OrderByClauseValueType orderByType;
-	//CompositeOrderByClause compositeOrderByClause;
 	Token token;
 	BinaryConditionOperator binaryConditionOperator;
 	WhereConditionPreconditional whereConditionPreconditional;
@@ -89,6 +87,8 @@
 %token <string> COUNT
 %token <string> SUM
 %token <string> AVERAGE
+%token <string> MIN
+%token <string> MAX
 %token <token> ASC
 %token <token> DESC
 %token <token> COLON
@@ -282,6 +282,8 @@ orderByExplicit: ASC												{ $$ = OrderBySemanticAction($1); }
 aggregationFunction: COUNT											{ $$ = $1; }
 	| SUM 															{ $$ = $1; }
 	| AVERAGE														{ $$ = $1; }
+	| MIN 															{ $$ = $1; }
+	| MAX 															{ $$ = $1; }
 	;
 
 aggregation: FUNCTION COLON aggregationFunction COMMA attribute		{ $$ = AggregationSemanticAction($3, $5); }
