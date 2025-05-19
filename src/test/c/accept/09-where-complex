@@ -54,8 +54,27 @@
             ]
         },
         {
+        "and": {
+                "in": {
+                    "from": [
+                        "table3"
+                    ],
+                    "attributes": [{
+                        "name": "*"
+                    }],
+                    "where": [
+                        {
+                            "operator": "=",
+                            "value1": "1",
+                            "value2": "1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
             "and": {
-                "is": {
+                "not": {
                     "in": {
                         "from": [
                             "table3"
@@ -70,29 +89,6 @@
                                 "value2": "1"
                             }
                         ]
-                    }
-                }
-            }
-        },
-        {
-            "and": {
-                "is": {
-                    "not": {
-                        "in": {
-                            "from": [
-                                "table3"
-                            ],
-                            "attributes": [{
-                                "name": "*"
-                            }],
-                            "where": [
-                                {
-                                    "operator": "=",
-                                    "value1": "1",
-                                    "value2": "1"
-                                }
-                            ]
-                        }
                     }
                 }
             }

@@ -168,7 +168,8 @@ ClauseArgsList *ClauseArgsListSemanticAction(ClauseValue *clauseValue, ClauseArg
 	return clauseArgsList;
 }
 
-ClauseValue *AttributeClauseValueSemanticAction(AttributesClauseValue *attributeClauseValue) {
+ClauseValue *AttributeClauseValueSemanticAction(AttributesClauseValue *attributeClauseValue)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
 	clauseValue->attributesClauseValue = attributeClauseValue;
@@ -203,32 +204,35 @@ ClauseValue *TableRenameFromClauseValueSemanticAction(char *trueName, char *alia
 
 // ATTRIBUTES CLAUSE VALUES
 
-AttributesClauseValue *EmptyAttributeOptionSemanticAction() {
+AttributesClauseValue *EmptyAttributeOptionSemanticAction()
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	return calloc(1, sizeof(AttributesClauseValue));
 }
 
-
-
-CompositeOrderByClause * OrderBySemanticAction(OrderByType orderByType) {
+CompositeOrderByClause *OrderBySemanticAction(OrderByType orderByType)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	CompositeOrderByClause * orderBy = calloc(1, sizeof(CompositeOrderByClause));
+	CompositeOrderByClause *orderBy = calloc(1, sizeof(CompositeOrderByClause));
 	orderBy->orderByFunctionType = orderByType;
-	if (orderByType == ASC_T) {
+	if (orderByType == ASC_T)
+	{
 		orderBy->string = NULL;
 		orderBy->orderByFunctionType = ORDER_BY_ASC;
 	}
-	else if (orderByType == DESC_T) {
+	else if (orderByType == DESC_T)
+	{
 		orderBy->string = NULL;
 		orderBy->orderByFunctionType = ORDER_BY_DESC;
 	}
 	return orderBy;
-} 
+}
 
-ClauseValue *StringOrderByClauseValueSemanticAction(char * string) {
+ClauseValue *StringOrderByClauseValueSemanticAction(char *string)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
-	OrderByClauseValue * orderBy = calloc(1, sizeof(OrderByClauseValue));
+	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
+	OrderByClauseValue *orderBy = calloc(1, sizeof(OrderByClauseValue));
 	clauseValue->clauseType = ORDER_BY_CLAUSE;
 	clauseValue->orderByClauseValue = orderBy;
 	orderBy->orderByClauseValueType = ORDER_BY_STRING;
@@ -236,10 +240,11 @@ ClauseValue *StringOrderByClauseValueSemanticAction(char * string) {
 	return clauseValue;
 }
 
-ClauseValue * CompositeOrderByClauseValueSemanticAction(char * string, CompositeOrderByClause * compositeOrderByClause) {
+ClauseValue *CompositeOrderByClauseValueSemanticAction(char *string, CompositeOrderByClause *compositeOrderByClause)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
-	OrderByClauseValue * orderBy = calloc(1, sizeof(OrderByClauseValue));
+	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
+	OrderByClauseValue *orderBy = calloc(1, sizeof(OrderByClauseValue));
 	clauseValue->clauseType = ORDER_BY_CLAUSE;
 	clauseValue->orderByClauseValue = orderBy;
 	orderBy->orderByClauseValueType = ORDER_BY_COMPOSITE;
@@ -248,9 +253,10 @@ ClauseValue * CompositeOrderByClauseValueSemanticAction(char * string, Composite
 	return clauseValue;
 }
 
-ClauseValue * AggregationFunctionOrderByClauseValueSemanticAction(char * aggrFunc, char * string, CompositeOrderByClause * compositeOrderByClause) {
+ClauseValue *AggregationFunctionOrderByClauseValueSemanticAction(char *aggrFunc, char *string, CompositeOrderByClause *compositeOrderByClause)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
 	clauseValue->clauseType = ORDER_BY_CLAUSE;
 	clauseValue->orderByClauseValue = calloc(1, sizeof(OrderByClauseValue));
 	clauseValue->orderByClauseValue->orderByClauseValueType = ORDER_BY_AGGR_FUNC;
@@ -260,7 +266,8 @@ ClauseValue * AggregationFunctionOrderByClauseValueSemanticAction(char * aggrFun
 	return clauseValue;
 }
 
-AttributeRename * AttributeRenameSemanticAction(ClauseValue * clausevalue, char * string) {
+AttributeRename *AttributeRenameSemanticAction(ClauseValue *clausevalue, char *string)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	AttributeRename *attrRename = calloc(1, sizeof(AttributeRename));
 	attrRename->value = clausevalue;
@@ -268,34 +275,39 @@ AttributeRename * AttributeRenameSemanticAction(ClauseValue * clausevalue, char 
 	return attrRename;
 }
 
-AttributesClauseValue *OnlyTableAttributeOptionSemanticAction(char * table) {
+AttributesClauseValue *OnlyTableAttributeOptionSemanticAction(char *table)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	AttributesClauseValue * clauseValue = calloc(1, sizeof(AttributesClauseValue));
+	AttributesClauseValue *clauseValue = calloc(1, sizeof(AttributesClauseValue));
 	clauseValue->table = table;
 	return clauseValue;
 }
 
-AttributesClauseValue *OnlyAsAttributeOptionSemanticAction(char * rename) {
+AttributesClauseValue *OnlyAsAttributeOptionSemanticAction(char *rename)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	AttributesClauseValue * clauseValue = calloc(1, sizeof(AttributesClauseValue));
+	AttributesClauseValue *clauseValue = calloc(1, sizeof(AttributesClauseValue));
 	clauseValue->rename = rename;
 	return clauseValue;
 }
 
-AttributesClauseValue *TableAndAsAttributeOptionSemanticAction(char * table, char * rename) {
+AttributesClauseValue *TableAndAsAttributeOptionSemanticAction(char *table, char *rename)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	AttributesClauseValue * clauseValue = calloc(1, sizeof(AttributesClauseValue));
+	AttributesClauseValue *clauseValue = calloc(1, sizeof(AttributesClauseValue));
 	clauseValue->table = table;
 	clauseValue->rename = rename;
 	return clauseValue;
 }
 
-AttributesClauseValue *AttributeSemanticAction(char * name, AttributesClauseValue *clauseValue) {
+AttributesClauseValue *AttributeSemanticAction(char *name, AttributesClauseValue *clauseValue)
+{
 	clauseValue->name = name;
 	return clauseValue;
 }
 
-AttributesClauseValue *AggregationSemanticAction(char * function, AttributesClauseValue *clauseValue) {
+AttributesClauseValue *AggregationSemanticAction(char *function, AttributesClauseValue *clauseValue)
+{
 	clauseValue->aggregationFunction = function;
 	return clauseValue;
 }
@@ -342,14 +354,16 @@ WhereConditionValue *NullWhereConditionValueSemanticAction()
 	whereConditionValue->type = CONDITION_VALUE_NULL;
 	return whereConditionValue;
 }
-WhereConditionValue *AttributeWhereConditionValueSemanticAction(char *attribute){
+WhereConditionValue *AttributeWhereConditionValueSemanticAction(char *attribute)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereConditionValue *whereConditionValue = calloc(1, sizeof(WhereConditionValue));
 	whereConditionValue->attribute = attribute;
 	whereConditionValue->type = CONDITION_VALUE_ATTRIBUTE;
 	return whereConditionValue;
 }
-WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(char *aggr, char *attribute){
+WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(char *aggr, char *attribute)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereConditionValue *whereConditionValue = calloc(1, sizeof(WhereConditionValue));
 	whereConditionValue->aggregationFunction = calloc(1, sizeof(AggregationFunction));
@@ -462,6 +476,17 @@ WhereCondition *IsConditionAndNextWhereConditionSemanticAction(WhereIsCondition 
 	return whereCondition;
 }
 
+WhereCondition *InConditionAndNextWhereConditionSemanticAction(WhereInCondition *condition, WhereCondition *next)
+{
+
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereCondition *whereCondition = calloc(1, sizeof(WhereCondition));
+	whereCondition->whereInCondition = condition;
+	whereCondition->nodeType = NODE_TYPE_WHERE_IN_CONDITION;
+	whereCondition->next = next;
+	return whereCondition;
+}
+
 WhereCondition *PreconditionalWhereConditionSemanticAction(WhereCondition *node, WhereConditionPreconditional preconditional)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
@@ -493,6 +518,15 @@ WhereCondition *FirstIsConditionAndNextWhereConditionSemanticAction(WhereIsCondi
 	return whereCondition;
 }
 
+WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondition *whereInCondition, WhereCondition *next)
+{
+
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereCondition *whereCondition = InConditionAndNextWhereConditionSemanticAction(whereInCondition, next);
+	whereCondition->preconditional = PRECONDITIONAL_FIRST;
+	return whereCondition;
+}
+
 WhereInCondition *QueryWhereInConditionSemanticAction(Json *query)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
@@ -511,19 +545,12 @@ WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondit
 	return whereIsCondition;
 }
 
-WhereIsCondition *WhereInConditionWhereIsConditionSemanticAction(WhereInCondition *whereInCondition)
-{
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	WhereIsCondition *whereIsCondition = calloc(1, sizeof(WhereIsCondition));
-	whereIsCondition->whereInCondition = whereInCondition;
-	whereIsCondition->type = WHERE_IS_CONDITION_IN;
-	return whereIsCondition;
-}
 // GROUP BY CLAUSE VALUES
 
-ClauseArgsList * StringGroupByClauseSemanticAction(char * string) {
+ClauseArgsList *StringGroupByClauseSemanticAction(char *string)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	ClauseArgsList * clauseArgsList = calloc(1, sizeof(ClauseArgsList));
+	ClauseArgsList *clauseArgsList = calloc(1, sizeof(ClauseArgsList));
 	clauseArgsList->clauseValue = calloc(1, sizeof(ClauseValue));
 	clauseArgsList->clauseValue->groupByClauseValue = calloc(1, sizeof(GroupByClauseValue));
 	clauseArgsList->clauseValue->groupByClauseValue->string = string;
@@ -531,9 +558,10 @@ ClauseArgsList * StringGroupByClauseSemanticAction(char * string) {
 	return clauseArgsList;
 }
 
-ClauseValue * GroupByValueSemanticAction(char * string) {
+ClauseValue *GroupByValueSemanticAction(char *string)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
-	ClauseValue * clauseValue = calloc(1, sizeof(ClauseValue));
+	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
 	clauseValue->groupByClauseValue = calloc(1, sizeof(GroupByClauseValue));
 	clauseValue->groupByClauseValue->string = string;
 	clauseValue->clauseType = GROUP_BY_CLAUSE;

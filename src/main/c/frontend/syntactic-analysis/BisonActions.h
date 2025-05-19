@@ -44,11 +44,11 @@ AggregationFunction *AggregationFunctionSemanticAction(AggregationType token);
 ClauseValue *AttributeRenameAttributesClauseValueSemanticAction(AttributeRename *attrRename);
 ClauseValue *AggregationFunctionAttributesClauseValueSemanticAction(AggregationFunction *aggrFunc, char *string);
 ClauseValue *StringAttributesClauseValueSemanticAction(char *string);
-AttributesClauseValue *OnlyTableAttributeOptionSemanticAction(char * table);
-AttributesClauseValue *OnlyAsAttributeOptionSemanticAction(char * rename);
-AttributesClauseValue *TableAndAsAttributeOptionSemanticAction(char * table, char * rename);
-AttributesClauseValue *AttributeSemanticAction(char * name, AttributesClauseValue *clauseValue);
-AttributesClauseValue *AggregationSemanticAction(char * function, AttributesClauseValue *clauseValue);
+AttributesClauseValue *OnlyTableAttributeOptionSemanticAction(char *table);
+AttributesClauseValue *OnlyAsAttributeOptionSemanticAction(char *rename);
+AttributesClauseValue *TableAndAsAttributeOptionSemanticAction(char *table, char *rename);
+AttributesClauseValue *AttributeSemanticAction(char *name, AttributesClauseValue *clauseValue);
+AttributesClauseValue *AggregationSemanticAction(char *function, AttributesClauseValue *clauseValue);
 ClauseValue *AttributeClauseValueSemanticAction(AttributesClauseValue *attributeClauseValue);
 AttributesClauseValue *EmptyAttributeOptionSemanticAction();
 
@@ -64,7 +64,6 @@ WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(char *
 WhereConditionValue *WhereBinaryConditionWhereConditionValueSemanticAction(WhereBinaryCondition *whereBinaryCondition);
 WhereBinaryCondition *WhereBinaryConditionSemanticAction(WhereConditionValue *value1, WhereConditionValue *value2, BinaryConditionOperator operator);
 
-
 WhereNotCondition *WhereNotConditionWithBinaryConditionSemanticAction(WhereBinaryCondition *whereBinaryCondition);
 WhereNotCondition *WhereNotConditionWithNotConditionSemanticAction(WhereNotCondition *whereNotCondition);
 WhereNotCondition *WhereNotConditionWithWhereConditionSemanticAction(WhereCondition *whereCondition);
@@ -74,24 +73,26 @@ WhereCondition *CurrentAndNextWhereConditionsSemanticAction(WhereCondition *curr
 WhereCondition *BinaryConditionAndNextWhereConditionSemanticAction(WhereBinaryCondition *condition, WhereCondition *next);
 WhereCondition *NotConditionAndNextWhereConditionSemanticAction(WhereNotCondition *condition, WhereCondition *next);
 WhereCondition *IsConditionAndNextWhereConditionSemanticAction(WhereIsCondition *condition, WhereCondition *next);
+WhereCondition *InConditionAndNextWhereConditionSemanticAction(WhereInCondition *condition, WhereCondition *next);
 
 WhereCondition *PreconditionalWhereConditionSemanticAction(WhereCondition *node, WhereConditionPreconditional preconditional);
 WhereCondition *FirstCurrentAndNextWhereConditionsSemanticAction(WhereCondition *current, WhereCondition *next);
 WhereCondition *FirstBinaryConditionAndNextWhereConditionSemanticAction(WhereBinaryCondition *condition, WhereCondition *next);
 WhereCondition *FirstNotConditionAndNextWhereConditionSemanticAction(WhereNotCondition *whereNotCondition, WhereCondition *next);
 WhereCondition *FirstIsConditionAndNextWhereConditionSemanticAction(WhereIsCondition *whereIsCondition, WhereCondition *next);
+WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondition *whereInCondition, WhereCondition *next);
 
 WhereInCondition *QueryWhereInConditionSemanticAction(Json *query);
 WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondition *whereNotCondition);
 WhereIsCondition *WhereInConditionWhereIsConditionSemanticAction(WhereInCondition *whereInCondition);
 
-//GROUP BY CLAUSE VALUES
-ClauseArgsList * StringGroupByClauseSemanticAction(char * string);
-ClauseValue * GroupByValueSemanticAction(char * string);
+// GROUP BY CLAUSE VALUES
+ClauseArgsList *StringGroupByClauseSemanticAction(char *string);
+ClauseValue *GroupByValueSemanticAction(char *string);
 
-ClauseValue * StringOrderByClauseValueSemanticAction(char * string);
-ClauseValue * AggregationFunctionOrderByClauseValueSemanticAction(char * aggrFunc, char * string, CompositeOrderByClause * compositeOrderByClause);
-ClauseValue * CompositeOrderByClauseValueSemanticAction(char * string, CompositeOrderByClause * compositeOrderByClause);
-CompositeOrderByClause * OrderBySemanticAction(OrderByType orderByType);
+ClauseValue *StringOrderByClauseValueSemanticAction(char *string);
+ClauseValue *AggregationFunctionOrderByClauseValueSemanticAction(char *aggrFunc, char *string, CompositeOrderByClause *compositeOrderByClause);
+ClauseValue *CompositeOrderByClauseValueSemanticAction(char *string, CompositeOrderByClause *compositeOrderByClause);
+CompositeOrderByClause *OrderBySemanticAction(OrderByType orderByType);
 
 #endif

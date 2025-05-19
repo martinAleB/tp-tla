@@ -136,46 +136,53 @@ void releaseClauseValue(ClauseValue *clauseValue)
 			free(clauseValue->fromClauseValue);
 			break;
 		case ATTRIBUTES_CLAUSE:
-			if (clauseValue->attributesClauseValue->name != NULL) {
+			if (clauseValue->attributesClauseValue->name != NULL)
+			{
 				free(clauseValue->attributesClauseValue->name);
 			}
-			if (clauseValue->attributesClauseValue->rename != NULL) {
+			if (clauseValue->attributesClauseValue->rename != NULL)
+			{
 				free(clauseValue->attributesClauseValue->rename);
 			}
-			if (clauseValue->attributesClauseValue->table != NULL) {
+			if (clauseValue->attributesClauseValue->table != NULL)
+			{
 				free(clauseValue->attributesClauseValue->table);
 			}
-			if (clauseValue->attributesClauseValue->aggregationFunction != NULL) {
+			if (clauseValue->attributesClauseValue->aggregationFunction != NULL)
+			{
 				free(clauseValue->attributesClauseValue->aggregationFunction);
 			}
 			free(clauseValue->attributesClauseValue);
 			break;
-			case GROUP_BY_CLAUSE:
-				free(clauseValue->groupByClauseValue->string);
-				free(clauseValue->groupByClauseValue);
+		case GROUP_BY_CLAUSE:
+			free(clauseValue->groupByClauseValue->string);
+			free(clauseValue->groupByClauseValue);
+			break;
+		case ORDER_BY_CLAUSE:
+			switch (clauseValue->orderByClauseValue->orderByClauseValueType)
+			{
+			case ORDER_BY_STRING:
+				free(clauseValue->orderByClauseValue->string);
 				break;
-			case ORDER_BY_CLAUSE:
-				switch(clauseValue->orderByClauseValue->orderByClauseValueType) {
-					case ORDER_BY_STRING:
-						free(clauseValue->orderByClauseValue->string);
-						break;
-					case ORDER_BY_COMPOSITE:
-						if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL) {
-							free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
-							free(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
-							free(clauseValue->orderByClauseValue->compositeOrderByClause);
-						}
-						break;
-					case ORDER_BY_AGGR_FUNC:
-						if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL) {
-							free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
-							free(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
-							free(clauseValue->orderByClauseValue->compositeOrderByClause);
-						} 
- 						break;
+			case ORDER_BY_COMPOSITE:
+				if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL)
+				{
+					free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
+					free(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
+					free(clauseValue->orderByClauseValue->compositeOrderByClause);
 				}
-				free(clauseValue->orderByClauseValue);
 				break;
+			case ORDER_BY_AGGR_FUNC:
+				if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL)
+				{
+					free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
+					free(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
+					free(clauseValue->orderByClauseValue->compositeOrderByClause);
+				}
+				break;
+			}
+			free(clauseValue->orderByClauseValue);
+			break;
 		}
 		free(clauseValue);
 	}
@@ -270,7 +277,7 @@ void releaseWhereConditionValue(WhereConditionValue *whereConditionValue)
 			free(whereConditionValue->attribute);
 			break;
 		}
-		
+
 		free(whereConditionValue);
 	}
 }
@@ -319,6 +326,9 @@ void releaseWhereCondition(WhereCondition *whereCondition)
 			break;
 		case NODE_TYPE_WHERE_IS_CONDITION:
 			releaseWhereIsCondition(whereCondition->whereIsCondition);
+			break;
+		case NODE_TYPE_WHERE_IN_CONDITION:
+			releaseWhereInCondition(whereCondition->whereInCondition);
 			break;
 		}
 		releaseWhereCondition(whereCondition->next);

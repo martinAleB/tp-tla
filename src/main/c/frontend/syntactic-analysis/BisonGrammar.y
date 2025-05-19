@@ -232,6 +232,7 @@ colonWhere:	COLON whereCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfte
 	| COLON whereBinaryCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter			{ $$ = BinaryConditionAndNextWhereConditionSemanticAction($2, $4); }
 	| COLON whereNotCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter				{ $$ = NotConditionAndNextWhereConditionSemanticAction($2, $4); }
 	| COLON whereIsCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter				{ $$ = IsConditionAndNextWhereConditionSemanticAction($2, $4); }
+	| COLON whereInCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter				{ $$ = InConditionAndNextWhereConditionSemanticAction($2, $4); }
 	;
 
 whereConditionWithPrecond: OPEN_CURLY_BRACE AND colonWhere[node1]												{ $$ = PreconditionalWhereConditionSemanticAction($node1, $2); }
@@ -246,13 +247,14 @@ whereCondition: OPEN_BRACKET whereCondition whereConditionWithPrecondAfter CLOSE
 	| OPEN_BRACKET whereBinaryCondition whereConditionWithPrecondAfter CLOSE_BRACKET				{ $$ = FirstBinaryConditionAndNextWhereConditionSemanticAction($2, $3); }
 	| OPEN_BRACKET whereNotCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstNotConditionAndNextWhereConditionSemanticAction($2, $3); }
 	| OPEN_BRACKET whereIsCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstIsConditionAndNextWhereConditionSemanticAction($2, $3); }
+	| OPEN_BRACKET whereInCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstInConditionAndNextWhereConditionSemanticAction($2, $3); }
 	;
 
 whereInCondition: OPEN_CURLY_BRACE IN COLON json CLOSE_CURLY_BRACE									{ $$ = QueryWhereInConditionSemanticAction($4); }
 	;
 
+// @TODO: remove WhereIsCondition for In
 whereIsCondition: OPEN_CURLY_BRACE IS COLON whereNotCondition CLOSE_CURLY_BRACE						{ $$ = WhereNotConditionWhereIsConditionSemanticAction($4); }
-	| OPEN_CURLY_BRACE IS COLON whereInCondition CLOSE_CURLY_BRACE									{ $$ = WhereInConditionWhereIsConditionSemanticAction($4); }
 	;
 //ORDER BY CLAUSE
 orderByClauseArgsList: orderByClauseValue							{ $$ = ClauseArgsListSemanticAction($1, NULL); }

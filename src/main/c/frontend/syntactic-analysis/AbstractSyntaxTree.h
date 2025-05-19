@@ -33,7 +33,6 @@ typedef enum NotNodeSelected NotNodeSelected;
 typedef enum WhereInConditionType WhereInConditionType;
 typedef enum WhereIsConditionType WhereIsConditionType;
 
-
 typedef struct Constant Constant;
 typedef struct Expression Expression;
 typedef struct Factor Factor;
@@ -50,7 +49,7 @@ typedef struct ClauseArgsList ClauseArgsList;
 typedef struct ClauseList ClauseList;
 typedef struct Clause Clause;
 typedef struct GroupByClauseValue GroupByClauseValue;
-typedef struct OrderByClauseValue  OrderByClauseValue;
+typedef struct OrderByClauseValue OrderByClauseValue;
 typedef struct CompositeOrderByClause CompositeOrderByClause;
 typedef struct WhereCondition WhereCondition;
 typedef struct WhereNotCondition WhereNotCondition;
@@ -70,17 +69,20 @@ enum AggregationType
 	AVERAGE_F
 };
 
-enum OrderByType{
+enum OrderByType
+{
 	ASC_T,
 	DESC_T
 };
 
-enum OrderByFunctionType {
+enum OrderByFunctionType
+{
 	ORDER_BY_ASC,
 	ORDER_BY_DESC
 };
 
-enum OrderByClauseValueType{
+enum OrderByClauseValueType
+{
 	ORDER_BY_STRING,
 	ORDER_BY_COMPOSITE,
 	ORDER_BY_AGGR_FUNC
@@ -157,7 +159,8 @@ enum WhereConditionNodeType
 	NODE_TYPE_WHERE_BINARY_CONDITION,
 	NODE_TYPE_WHERE_CONDITION,
 	NODE_TYPE_WHERE_NOT_CONDITION,
-	NODE_TYPE_WHERE_IS_CONDITION
+	NODE_TYPE_WHERE_IS_CONDITION,
+	NODE_TYPE_WHERE_IN_CONDITION
 };
 
 enum NotNodeSelected
@@ -208,7 +211,7 @@ struct AttributeRename
 
 struct AggregationFunction
 {
-	char * aggr;
+	char *aggr;
 	char *attribute;
 };
 struct FromClauseValue
@@ -221,28 +224,29 @@ struct FromClauseValue
 	FromClauseValueType fromClauseValueType;
 };
 
-struct CompositeOrderByClause{
-	char* string;
-	char * aggrFunc;
+struct CompositeOrderByClause
+{
+	char *string;
+	char *aggrFunc;
 	OrderByFunctionType orderByFunctionType;
 };
 
-
-struct OrderByClauseValue {
-	union {
-		char * string;
-		CompositeOrderByClause * compositeOrderByClause;
+struct OrderByClauseValue
+{
+	union
+	{
+		char *string;
+		CompositeOrderByClause *compositeOrderByClause;
 	};
 	OrderByClauseValueType orderByClauseValueType;
 };
-	
 
 struct AttributesClauseValue
 {
-	char * name;
-	char * table;
-	char * aggregationFunction;
-	char * rename;	
+	char *name;
+	char *table;
+	char *aggregationFunction;
+	char *rename;
 };
 
 struct ClauseArgsList
@@ -257,9 +261,9 @@ struct ClauseValue
 	{
 		FromClauseValue *fromClauseValue;
 		AttributesClauseValue *attributesClauseValue;
-		GroupByClauseValue * groupByClauseValue;
-		OrderByClauseValue * orderByClauseValue;
-	
+		GroupByClauseValue *groupByClauseValue;
+		OrderByClauseValue *orderByClauseValue;
+
 		WhereCondition *whereClauseValue;
 	};
 	ClauseType clauseType;
@@ -281,8 +285,9 @@ struct ClauseList
 	ClauseList *next;
 };
 
-struct GroupByClauseValue {
-	char * string;
+struct GroupByClauseValue
+{
+	char *string;
 };
 
 struct Json
@@ -323,6 +328,7 @@ struct WhereCondition
 		WhereCondition *whereCondition;
 		WhereNotCondition *whereNotCondition;
 		WhereIsCondition *whereIsCondition;
+		WhereInCondition *whereInCondition;
 	};
 	WhereConditionNodeType nodeType;
 	WhereCondition *next;
@@ -360,8 +366,6 @@ struct WhereInCondition
 	WhereInConditionType type;
 };
 
-
-
 struct WhereConditionValue
 {
 	union
@@ -398,7 +402,7 @@ void releaseClauseValue(ClauseValue *fromArrayValue);
 void releaseClause(Clause *clause);
 void releaseClauseList(ClauseList *clauseList);
 
-void releaseOrderByClauseValue(OrderByClauseValue * orderBy);
+void releaseOrderByClauseValue(OrderByClauseValue *orderBy);
 void releaseTableRename(TableRename *tableRename);
 void releaseAttributeRename(AttributeRename *attrRename);
 void releaseAggregationFunction(AggregationFunction *aggFunc);
