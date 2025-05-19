@@ -1,0 +1,13 @@
+{
+    "from": "table1",
+    "where": [
+        {
+            "operator": "!=",
+            "value1": 1,
+            "value2": {
+                "function": "count",
+                "attribute": "id"
+            }
+        }
+    ]
+}

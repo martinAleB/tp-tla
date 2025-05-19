@@ -219,6 +219,7 @@ void releaseAggregationFunction(AggregationFunction *aggFunc)
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (aggFunc != NULL)
 	{
+		free(aggFunc->aggr);
 		free(aggFunc->attribute);
 		free(aggFunc);
 	}
@@ -262,7 +263,14 @@ void releaseWhereConditionValue(WhereConditionValue *whereConditionValue)
 		case CONDITION_VALUE_NOT_CONDITION:
 			releaseWhereNotCondition(whereConditionValue->notCondition);
 			break;
+		case CONDITION_VALUE_AGGREGATION_FUNCTION:
+			releaseAggregationFunction(whereConditionValue->aggregationFunction);
+			break;
+		case CONDITION_VALUE_ATTRIBUTE:
+			free(whereConditionValue->attribute);
+			break;
 		}
+		
 		free(whereConditionValue);
 	}
 }

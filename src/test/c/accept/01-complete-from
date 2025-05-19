@@ -1,17 +1,29 @@
 {
-    "from":["table1", "table2", {
-        "table": "table3",
-        "as": "a"
-    }],
-    "attributes":[{"name":"attr1"}, {"name": "attr2", "as":"b"}, {
-        "function": "count",
-        "name": "attr3"
-    },
-    {   
-        "function": "sum",
-        "name": "attr4",
-        "as": "c"
-    }
+    "from": [
+        "table1",
+        "table2",
+        {
+            "table": "table3",
+            "as": "a"
+        }
+    ],
+    "attributes": [
+        {
+            "name": "attr1"
+        },
+        {
+            "name": "attr2",
+            "as": "b"
+        },
+        {
+            "function": "count",
+            "name": "attr3"
+        },
+        {
+            "function": "sum",
+            "name": "attr4",
+            "as": "c"
+        }
     ],
     "where": [
         [
@@ -19,63 +31,93 @@
                 "not": {
                     "operator": "!=",
                     "value1": 1,
-                    "value2": 2
-                }
-            },
-            {
-                "and": [
-                    {
-                        "operator": "=",
-                        "value1": true,
-                        "value2": true
-                    },
-                    {
-                        "and": {
-                            "not": {
-                                "not": {
-                                    "operator": ">",
-                                    "value1": 2,
-                                    "value2": 5
-                                }
-                            }
-                        }
+                    "value2": {
+                        "function": "count",
+                        "attribute": "id"
                     }
-                ]
-            }
-        ],
+                }
+            
+        },
         {
-            "or": [
+            "and": [
                 {
-                    "operator": ">",
-                    "value1": 3,
-                    "value2": 4
+                    "operator": "=",
+                    "value1": true,
+                    "value2": true
                 },
                 {
                     "and": {
-                        "operator": "<",
-                        "value1": 10,
-                        "value2": 3
-                    }
-                },
-                {
-                    "or": {
-                        "operator": "=",
-                        "value1": "Martin",
-                        "value2": "Alejandro"
+                        "not": {
+                            "not": {
+                                "operator": ">",
+                                "value1": 2,
+                                "value2": 5
+                            }
+                        }
                     }
                 }
             ]
-        },
-        {
-            "and": {
-                "is": {
+        }
+    ],
+    {
+        "or": [
+            {
+                "operator": ">",
+                "value1": 3,
+                "value2": 4
+            },
+            {
+                "and": {
+                    "operator": "<",
+                    "value1": 10,
+                    "value2": 3
+                }
+            },
+            {
+                "or": {
+                    "operator": "=",
+                    "value1": "Martin",
+                    "value2": "Alejandro"
+                }
+            }
+        ]
+    },
+    {
+        "and": {
+            "is": {
+                "in": {
+                    "from": [
+                        "table3"
+                    ],
+                    "attributes": [
+                        {
+                            "name": "*"
+                        }
+                    ],
+                    "where": [
+                        {
+                            "operator": "=",
+                            "value1": "1",
+                            "value2": "1"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "and": {
+            "is": {
+                "not": {
                     "in": {
                         "from": [
                             "table3"
                         ],
-                        "attributes": [{
-                            "name": "*"
-                        }],
+                        "attributes": [
+                            {
+                                "name": "*"
+                            }
+                        ],
                         "where": [
                             {
                                 "operator": "=",
@@ -86,37 +128,25 @@
                     }
                 }
             }
-        },
-        {
-            "and": {
-                "is": {
-                    "not": {
-                        "in": {
-                            "from": [
-                                "table3"
-                            ],
-                            "attributes": [{
-                                "name": "*"
-                            }],
-                            "where": [
-                                {
-                                    "operator": "=",
-                                    "value1": "1",
-                                    "value2": "1"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
         }
-    ],
-    "order_by":[
-        {"attribute":"attr1", "order":"asc"},
-        {"function":"count", "attribute":"attr2", "order":"desc"},
-        {"attribute":"attr3"}
-    ],
-    "group_by":["attr1", "attr2"]
-    
-
+    }
+],
+"order_by": [
+    {
+        "attribute": "attr1",
+        "order": "asc"
+    },
+    {
+        "function": "count",
+        "attribute": "attr2",
+        "order": "desc"
+    },
+    {
+        "attribute": "attr3"
+    }
+],
+"group_by": [
+    "attr1",
+    "attr2"
+]
 }

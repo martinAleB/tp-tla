@@ -214,6 +214,8 @@ whereConditionValue: STRING											{ $$ = StringWhereConditionValueSemanticAc
 	| NUMBER														{ $$ = NumberWhereConditionValueSemanticAction($1); }
 	| BOOLEAN														{ $$ = BooleanWhereConditionValueSemanticAction($1); }
 	| NULLV															{ $$ = NullWhereConditionValueSemanticAction(); }
+	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = AttributeWhereConditionValueSemanticAction($attr); }
+	| OPEN_CURLY_BRACE FUNCTION COLON aggregationFunction[aggr] COMMA ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionWhereConditionValueSemanticAction($aggr, $attr); }
 	| whereBinaryCondition											{ $$ = WhereBinaryConditionWhereConditionValueSemanticAction($1); }
 	;
 

@@ -59,8 +59,11 @@ WhereConditionValue *IntegerWhereConditionValueSemanticAction(int integer);
 WhereConditionValue *NumberWhereConditionValueSemanticAction(float number);
 WhereConditionValue *BooleanWhereConditionValueSemanticAction(boolean bool);
 WhereConditionValue *NullWhereConditionValueSemanticAction();
+WhereConditionValue *AttributeWhereConditionValueSemanticAction(char *attribute);
+WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(char *aggr, char *attribute);
 WhereConditionValue *WhereBinaryConditionWhereConditionValueSemanticAction(WhereBinaryCondition *whereBinaryCondition);
 WhereBinaryCondition *WhereBinaryConditionSemanticAction(WhereConditionValue *value1, WhereConditionValue *value2, BinaryConditionOperator operator);
+
 
 WhereNotCondition *WhereNotConditionWithBinaryConditionSemanticAction(WhereBinaryCondition *whereBinaryCondition);
 WhereNotCondition *WhereNotConditionWithNotConditionSemanticAction(WhereNotCondition *whereNotCondition);

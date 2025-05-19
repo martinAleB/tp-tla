@@ -208,13 +208,7 @@ AttributesClauseValue *EmptyAttributeOptionSemanticAction() {
 	return calloc(1, sizeof(AttributesClauseValue));
 }
 
-AggregationFunction *AggregationFunctionSemanticAction(AggregationType aggrType)
-{
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	AggregationFunction *aggrFunc = calloc(1, sizeof(AggregationFunction));
-	aggrFunc->token = aggrType;
-	return aggrFunc;
-}
+
 
 CompositeOrderByClause * OrderBySemanticAction(OrderByType orderByType) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
@@ -346,6 +340,22 @@ WhereConditionValue *NullWhereConditionValueSemanticAction()
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereConditionValue *whereConditionValue = calloc(1, sizeof(WhereConditionValue));
 	whereConditionValue->type = CONDITION_VALUE_NULL;
+	return whereConditionValue;
+}
+WhereConditionValue *AttributeWhereConditionValueSemanticAction(char *attribute){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereConditionValue *whereConditionValue = calloc(1, sizeof(WhereConditionValue));
+	whereConditionValue->attribute = attribute;
+	whereConditionValue->type = CONDITION_VALUE_ATTRIBUTE;
+	return whereConditionValue;
+}
+WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(char *aggr, char *attribute){
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereConditionValue *whereConditionValue = calloc(1, sizeof(WhereConditionValue));
+	whereConditionValue->aggregationFunction = calloc(1, sizeof(AggregationFunction));
+	whereConditionValue->aggregationFunction->aggr = aggr;
+	whereConditionValue->aggregationFunction->attribute = attribute;
+	whereConditionValue->type = CONDITION_VALUE_AGGREGATION_FUNCTION;
 	return whereConditionValue;
 }
 

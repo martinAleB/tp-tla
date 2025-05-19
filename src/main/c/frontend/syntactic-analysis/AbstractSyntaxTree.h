@@ -33,6 +33,7 @@ typedef enum NotNodeSelected NotNodeSelected;
 typedef enum WhereInConditionType WhereInConditionType;
 typedef enum WhereIsConditionType WhereIsConditionType;
 
+
 typedef struct Constant Constant;
 typedef struct Expression Expression;
 typedef struct Factor Factor;
@@ -139,7 +140,9 @@ enum ConditionValueType
 	CONDITION_VALUE_BOOLEAN,
 	CONDITION_VALUE_NULL,
 	CONDITION_VALUE_BINARY_CONDITION,
-	CONDITION_VALUE_NOT_CONDITION
+	CONDITION_VALUE_NOT_CONDITION,
+	CONDITION_VALUE_ATTRIBUTE,
+	CONDITION_VALUE_AGGREGATION_FUNCTION
 };
 
 enum WhereConditionPreconditional
@@ -205,7 +208,7 @@ struct AttributeRename
 
 struct AggregationFunction
 {
-	AggregationType token;
+	char * aggr;
 	char *attribute;
 };
 struct FromClauseValue
@@ -357,14 +360,18 @@ struct WhereInCondition
 	WhereInConditionType type;
 };
 
+
+
 struct WhereConditionValue
 {
 	union
 	{
 		char *string;
+		char *attribute;
 		float number;
 		int integer;
 		boolean bool;
+		AggregationFunction *aggregationFunction;
 		WhereBinaryCondition *binaryCondition;
 		WhereNotCondition *notCondition;
 	};
