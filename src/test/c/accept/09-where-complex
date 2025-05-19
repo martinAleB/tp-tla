@@ -1,18 +1,5 @@
 {
-    "from":["table1", "table2", {
-        "table": "table3",
-        "as": "a"
-    }],
-    "attributes":[{"name":"attr1"}, {"name": "attr2", "as":"b"}, {
-        "function": "count",
-        "name": "attr3"
-    },
-    {   
-        "function": "sum",
-        "name": "attr4",
-        "as": "c"
-    }
-    ],
+    "from": "table1",
     "where": [
         [
             {
@@ -110,13 +97,5 @@
                 }
             }
         }
-    ],
-    "order_by":[
-        {"attribute":"attr1", "order":"asc"},
-        {"function":"count", "attribute":"attr2", "order":"desc"},
-        {"attribute":"attr3"}
-    ],
-    "group_by":["attr1", "attr2"]
-    
-
+    ]
 }
