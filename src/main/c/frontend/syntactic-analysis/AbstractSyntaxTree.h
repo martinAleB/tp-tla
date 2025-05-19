@@ -385,9 +385,6 @@ struct WhereBinaryCondition
 /**
  * Node recursive destructors.
  */
-void releaseConstant(Constant *constant);
-void releaseExpression(Expression *expression);
-void releaseFactor(Factor *factor);
 void releaseJson(Json *json);
 void releaseProgram(Program *program);
 void releaseClauseArgsList(ClauseArgsList *fromArray);

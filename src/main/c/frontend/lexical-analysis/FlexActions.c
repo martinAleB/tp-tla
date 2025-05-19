@@ -40,24 +40,6 @@ static void _logLexicalAnalyzerContext(const char *functionName, LexicalAnalyzer
 
 /* PUBLIC FUNCTIONS */
 
-void BeginMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
-{
-	if (_logIgnoredLexemes)
-	{
-		_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	}
-	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
-}
-
-void EndMultilineCommentLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
-{
-	if (_logIgnoredLexemes)
-	{
-		_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	}
-	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
-}
-
 void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 {
 	if (_logIgnoredLexemes)
@@ -67,13 +49,7 @@ void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
-Token ArithmeticOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
-{
-	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
-	return token;
-}
+
 
 Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 {
@@ -83,13 +59,6 @@ Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	return INTEGER;
 }
 
-Token ParenthesisLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
-{
-	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->token = token;
-	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
-	return token;
-}
 
 Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 {
