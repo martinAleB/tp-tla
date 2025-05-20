@@ -145,7 +145,7 @@ Clause *ClauseSemanticAction(ClauseArgsList *newClauseArgsList, Token token)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Clause *clause = calloc(1, sizeof(Clause));
-	clause->type = token; // @TODO: revisar por que no toma de otro struct y toma directo del token (token - FROM creo que lo arregla)
+	clause->type = token;
 	clause->clauseArgsList = newClauseArgsList;
 	return clause;
 }
@@ -154,7 +154,7 @@ Clause *WhereClauseSemanticAction(WhereCondition *whereCondition)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	Clause *clause = calloc(1, sizeof(Clause));
-	clause->type = WHERE_CLAUSE; // @TODO: revisar por que no toma de otro struct y toma directo del token
+	clause->type = WHERE_CLAUSE;
 	clause->whereCondition = whereCondition;
 	return clause;
 }
@@ -536,6 +536,14 @@ WhereInCondition *QueryWhereInConditionSemanticAction(Json *query)
 	return whereInCondition;
 }
 
+WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char * auxQueryName) {
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	WhereInCondition *whereInCondition = calloc(1, sizeof(WhereInCondition));
+	whereInCondition->auxQueryName = auxQueryName;
+	whereInCondition->type = WHERE_IN_CONDITION_AUX_QUERY_NAME;
+	return whereInCondition;
+}
+
 WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondition *whereNotCondition)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
@@ -566,4 +574,27 @@ ClauseValue *GroupByValueSemanticAction(char *string)
 	clauseValue->groupByClauseValue->string = string;
 	clauseValue->clauseType = GROUP_BY_CLAUSE;
 	return clauseValue;
+}
+
+
+//AUXILIARY CLAUSE
+ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char * auxQueryName, Json * auxQuery){
+	ClauseArgsList * auxiliaryArgsList = calloc(1, sizeof(ClauseArgsList));
+	auxiliaryArgsList->clauseValue = calloc(1, sizeof(ClauseValue));
+	auxiliaryArgsList->clauseValue->auxiliaryClauseValue = calloc(1, sizeof(AuxiliaryClauseValue));
+	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQueryName = auxQueryName;
+	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQuery = auxQuery;
+	auxiliaryArgsList->clauseValue->clauseType = AUXILIARY_CLAUSE;
+	return auxiliaryArgsList;
+}
+
+ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char * auxQueryName, Json * auxQuery, ClauseArgsList *auxQueriesList) {
+	ClauseArgsList * auxiliaryArgsList = calloc(1, sizeof(ClauseArgsList));
+	auxiliaryArgsList->clauseValue = calloc(1, sizeof(ClauseValue));
+	auxiliaryArgsList->clauseValue->auxiliaryClauseValue = calloc(1, sizeof(AuxiliaryClauseValue));
+	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQueryName = auxQueryName;
+	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQuery = auxQuery;
+	auxiliaryArgsList->next = auxQueriesList;
+	auxiliaryArgsList->clauseValue->clauseType = AUXILIARY_CLAUSE;
+	return auxiliaryArgsList;
 }

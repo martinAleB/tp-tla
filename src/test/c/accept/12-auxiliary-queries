@@ -1,0 +1,26 @@
+{
+        "from": "table1",
+        "attributes":[{"name":"attr1"}],
+        "auxiliary":[
+            {
+                "auxQuery1": {
+                    "from":"table2",
+                    "attributes": [{
+                        "function":"sum",
+                        "name": "attr3"
+                    }],
+                    "where":[ {
+                        "operator":"=",
+                        "value1":"true",
+                        "value2":"false"
+                    }]
+                }
+            },
+            {
+                "auxQuery2": {
+                    "from":"tabl1",
+                    "group_by":["attr1", "attr2"]
+                }
+            }
+        ]
+}

@@ -27,6 +27,7 @@
 "\"where\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), WHERE); }
 "\"order_by\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), ORDER_BY); }
 "\"group_by\""                      { return KeyWordLexemeAction(createLexicalAnalyzerContext(), GROUP_BY); }
+"\"auxiliary\""                     { return KeyWordLexemeAction(createLexicalAnalyzerContext(), AUXILIARY); }
 
 "\"table\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TABLE); }
 "\"as\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), AS); }

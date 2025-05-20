@@ -127,6 +127,12 @@ void releaseClauseValue(ClauseValue *clauseValue)
 			}
 			free(clauseValue->orderByClauseValue);
 			break;
+			
+		case AUXILIARY_CLAUSE:
+			releaseJson(clauseValue->auxiliaryClauseValue->auxQuery);
+			free(clauseValue->auxiliaryClauseValue->auxQueryName);
+			free(clauseValue->auxiliaryClauseValue);
+			break;	
 		}
 		free(clauseValue);
 	}
@@ -287,9 +293,12 @@ void releaseWhereInCondition(WhereInCondition *whereInCondition)
 	{
 		switch (whereInCondition->type)
 		{
-		case WHERE_IN_CONDITION_QUERY:
-			releaseJson(whereInCondition->query);
-			break;
+			case WHERE_IN_CONDITION_QUERY:
+				releaseJson(whereInCondition->query);
+				break;
+			case WHERE_IN_CONDITION_AUX_QUERY_NAME:
+				free(whereInCondition->auxQueryName);
+				break;
 		}
 		free(whereInCondition);
 	}

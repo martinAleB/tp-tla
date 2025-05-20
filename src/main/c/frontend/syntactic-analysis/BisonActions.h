@@ -38,6 +38,10 @@ Clause *ClauseSemanticAction(ClauseArgsList *newClauseArgsList, Token token);
 ClauseValue *StringFromClauseValueSemanticAction(char *string);
 ClauseValue *TableRenameFromClauseValueSemanticAction(char *trueName, char *alias);
 
+// AUXILIARY CLAUSE VALUES
+ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char * auxQueryName, Json * json);
+ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char * auxQueryName, Json * json, ClauseArgsList *jsonList);
+
 // ATTRIBUTES CLAUSE VALUES
 AttributeRename *AttributeRenameSemanticAction(ClauseValue *clausevalue, char *string);
 ClauseValue *AttributeRenameAttributesClauseValueSemanticAction(AttributeRename *attrRename);
@@ -82,6 +86,7 @@ WhereCondition *FirstIsConditionAndNextWhereConditionSemanticAction(WhereIsCondi
 WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondition *whereInCondition, WhereCondition *next);
 
 WhereInCondition *QueryWhereInConditionSemanticAction(Json *query);
+WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char * auxQueryName);
 WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondition *whereNotCondition);
 WhereIsCondition *WhereInConditionWhereIsConditionSemanticAction(WhereInCondition *whereInCondition);
 

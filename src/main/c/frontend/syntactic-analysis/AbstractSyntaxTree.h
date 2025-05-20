@@ -57,6 +57,7 @@ typedef struct WhereConditionValue WhereConditionValue;
 typedef struct WhereBinaryCondition WhereBinaryCondition;
 typedef struct WhereInCondition WhereInCondition;
 typedef struct WhereIsCondition WhereIsCondition;
+typedef struct AuxiliaryClauseValue AuxiliaryClauseValue;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -108,7 +109,8 @@ enum ClauseType
 	ATTRIBUTES_CLAUSE,
 	GROUP_BY_CLAUSE,
 	ORDER_BY_CLAUSE,
-	WHERE_CLAUSE
+	WHERE_CLAUSE,
+	AUXILIARY_CLAUSE
 };
 
 enum FromClauseValueType
@@ -166,7 +168,8 @@ enum NotNodeSelected
 
 enum WhereInConditionType
 {
-	WHERE_IN_CONDITION_QUERY
+	WHERE_IN_CONDITION_QUERY,
+	WHERE_IN_CONDITION_AUX_QUERY_NAME
 };
 
 enum WhereIsConditionType
@@ -217,6 +220,11 @@ struct FromClauseValue
 	FromClauseValueType fromClauseValueType;
 };
 
+struct AuxiliaryClauseValue {
+	Json * auxQuery;
+	char * auxQueryName;
+};
+
 struct CompositeOrderByClause
 {
 	char *string;
@@ -256,8 +264,8 @@ struct ClauseValue
 		AttributesClauseValue *attributesClauseValue;
 		GroupByClauseValue *groupByClauseValue;
 		OrderByClauseValue *orderByClauseValue;
-
 		WhereCondition *whereClauseValue;
+		AuxiliaryClauseValue *auxiliaryClauseValue;
 	};
 	ClauseType clauseType;
 };
@@ -355,6 +363,7 @@ struct WhereInCondition
 	union
 	{
 		Json *query;
+		char *auxQueryName;
 	};
 	WhereInConditionType type;
 };

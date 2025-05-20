@@ -70,6 +70,7 @@
 %token <token> WHERE
 %token <token> GROUP_BY
 %token <token> ORDER_BY
+%token <token> AUXILIARY
 %token <token> ORDER
 %token <token> TABLE
 %token <token> AS
@@ -132,6 +133,10 @@
 %type <clauseArgsList> attributesClauseArgsList
 %type <clauseArgsList> attributesClauseValues
 %type <clauseValue> attributesClauseValue
+
+%type <clauseArgsList> auxiliaryClauseArgsList
+%type <clauseArgsList> auxiliaryClauseValues
+
 %type <whereConditionValue> whereConditionValue
 %type <whereBinaryCondition> whereBinaryCondition
 %type <whereNotCondition> whereNotCondition
@@ -171,8 +176,17 @@ clause: FROM COLON fromClauseArgsList               				{ $$ = ClauseSemanticAct
 	| WHERE COLON whereCondition									{ $$ = WhereClauseSemanticAction($3); }
 	| GROUP_BY COLON groupByClause									{ $$ = ClauseSemanticAction($3, GROUP_BY_CLAUSE); }
 	| ORDER_BY COLON orderByClauseArgsList							{ $$ = ClauseSemanticAction($3, ORDER_BY_CLAUSE); }
+	| AUXILIARY COLON auxiliaryClauseArgsList						{ $$ = ClauseSemanticAction($3, AUXILIARY_CLAUSE); }
 	;
 
+
+//Auxiliary Clause
+auxiliaryClauseValues: OPEN_CURLY_BRACE STRING COLON json CLOSE_CURLY_BRACE							{ $$ = SingleQueryAuxiliaryClauseArgsListSemanticAction($2, $4); }
+	| OPEN_CURLY_BRACE STRING COLON json CLOSE_CURLY_BRACE COMMA auxiliaryClauseValues					{ $$ = MultipleQueriesAuxiliaryClauseArgsListSemanticAction($2, $4, $7); }
+	;
+
+auxiliaryClauseArgsList: OPEN_BRACKET auxiliaryClauseValues CLOSE_BRACKET	{ $$ = $2; }
+	;
 
 //FROM CLAUSE
 fromClauseValue: STRING												{ $$ = StringFromClauseValueSemanticAction($1); }
@@ -230,6 +244,7 @@ whereCondition: OPEN_BRACKET whereCondition whereConditionWithPrecondAfter CLOSE
 	;
 
 whereInCondition: OPEN_CURLY_BRACE IN COLON json CLOSE_CURLY_BRACE									{ $$ = QueryWhereInConditionSemanticAction($4); }
+	| OPEN_CURLY_BRACE IN COLON STRING CLOSE_CURLY_BRACE											{ $$ = AuxiliaryQueryWhereInConditionSemanticAction($4); }
 	;
 
 // @TODO: remove WhereIsCondition for In
