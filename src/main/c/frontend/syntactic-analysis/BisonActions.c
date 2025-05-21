@@ -552,7 +552,6 @@ WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondit
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereIsCondition *whereIsCondition = calloc(1, sizeof(WhereIsCondition));
 	whereIsCondition->whereNotCondition = whereNotCondition;
-	whereIsCondition->type = WHERE_IS_CONDITION_NOT;
 	return whereIsCondition;
 }
 

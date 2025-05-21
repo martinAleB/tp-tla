@@ -31,7 +31,6 @@ typedef enum WhereConditionPreconditional WhereConditionPreconditional;
 typedef enum WhereConditionNodeType WhereConditionNodeType;
 typedef enum NotNodeSelected NotNodeSelected;
 typedef enum WhereInConditionType WhereInConditionType;
-typedef enum WhereIsConditionType WhereIsConditionType;
 
 typedef struct Constant Constant;
 typedef struct Expression Expression;
@@ -172,12 +171,6 @@ enum WhereInConditionType
 {
 	WHERE_IN_CONDITION_QUERY,
 	WHERE_IN_CONDITION_AUX_QUERY_NAME
-};
-
-enum WhereIsConditionType
-{
-	WHERE_IS_CONDITION_NOT,
-	WHERE_IS_CONDITION_IN
 };
 
 struct Constant
@@ -337,7 +330,6 @@ struct WhereCondition
 {
 	union
 	{
-		// @TODO: ver de agregar el Value tambien para contemplar los booleanos
 		WhereBinaryCondition *binaryCondition;
 		WhereCondition *whereCondition;
 		WhereNotCondition *whereNotCondition;
@@ -363,12 +355,7 @@ struct WhereNotCondition
 
 struct WhereIsCondition
 {
-	union
-	{
-		WhereNotCondition *whereNotCondition;
-		WhereInCondition *whereInCondition;
-	};
-	WhereIsConditionType type;
+	WhereNotCondition *whereNotCondition;
 };
 
 struct WhereInCondition

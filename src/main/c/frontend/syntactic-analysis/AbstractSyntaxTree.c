@@ -312,16 +312,8 @@ void releaseWhereIsCondition(WhereIsCondition *whereIsCondition)
 {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (whereIsCondition != NULL)
-	{
-		switch (whereIsCondition->type)
-		{
-		case WHERE_IS_CONDITION_IN:
-			releaseWhereInCondition(whereIsCondition->whereInCondition);
-			break;
-		case WHERE_IS_CONDITION_NOT:
-			releaseWhereNotCondition(whereIsCondition->whereNotCondition);
-			break;
-		}
+	{			
+		releaseWhereNotCondition(whereIsCondition->whereNotCondition);
 		free(whereIsCondition);
 	}
 }

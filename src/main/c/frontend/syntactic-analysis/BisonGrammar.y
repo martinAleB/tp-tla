@@ -270,7 +270,6 @@ whereInCondition: OPEN_CURLY_BRACE ATTRIBUTE COLON STRING COMMA IN COLON json CL
 	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING COMMA IN COLON STRING CLOSE_CURLY_BRACE											{ $$ = AuxiliaryQueryWhereInConditionSemanticAction($4, $8); }
 	;
 
-// @TODO: remove WhereIsCondition for In
 whereIsCondition: OPEN_CURLY_BRACE IS COLON whereNotCondition CLOSE_CURLY_BRACE						{ $$ = WhereNotConditionWhereIsConditionSemanticAction($4); }
 	;
 
