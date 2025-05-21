@@ -1,0 +1,12 @@
+{
+    "attributes": [{"name": "userid"}],
+    "where": [
+        {
+            "operator": "=",
+            "value1": {
+                "attribute": "userid"
+            },
+            "value2": 5
+        }
+    ]
+}

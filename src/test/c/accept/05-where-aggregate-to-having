@@ -3,6 +3,9 @@
     "attributes": [
         {
             "name": "user_id"
+        },
+        {
+            "name": "role_id"
         }
     ],
     "where": [

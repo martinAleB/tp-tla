@@ -1,0 +1,18 @@
+{
+    "from":"users",
+    "where": [
+        {
+            "in": {
+                "from": "game_creators",
+                "attribute": "userid",
+                "where": [
+                    {
+                        "operator": ">",
+                        "value1": {"attribute": "age"},
+                        "value2": 30
+                    }
+                ]
+            }
+        }
+    ]
+}

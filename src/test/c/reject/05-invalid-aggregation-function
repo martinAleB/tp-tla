@@ -1,0 +1,7 @@
+{
+    "from": "users",
+    "attributes": [{
+        "function": "lowest",
+        "name": "age"
+        }]
+}
