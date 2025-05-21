@@ -1,29 +1,40 @@
 {
-        "from": "table1",
-        "attributes":[{"name":"attr1"}],
-        "auxiliary":[
-            {
-                "auxQuery1": {
-                    "from":"table2",
-                    "attributes": [{
-                        "function":"sum",
+    "from": "t1",
+    "attributes": [
+        {
+            "name": "attr1"
+        }
+    ],
+    "auxiliary": [
+        {
+            "auxQuery1": {
+                "from": "t2",
+                "attributes": [
+                    {
+                        "function": "sum",
                         "name": "attr3"
-                    }],
-                    "where":[ {
-                        "operator":"=",
-                        "value1":"true",
-                        "value2":"false"
-                    }]
-                }
-            },
-            {
-                "auxQuery2": {
-                    "from":"tabl1",
-                    "group_by":["attr1", "attr2"]
-                }
+                    }
+                ],
+                "where": [
+                    {
+                        "operator": "=",
+                        "value1": "true",
+                        "value2": "false"
+                    }
+                ]
             }
-        ],
-        "where": [
+        },
+        {
+            "auxQuery2": {
+                "from": "t1",
+                "group_by": [
+                    "attr1",
+                    "attr2"
+                ]
+            }
+        }
+    ],
+    "where": [
         {
             "attribute": "attr1",
             "in": "auxQuery1"
@@ -31,16 +42,24 @@
         {
             "and": {
                 "not": {
-                    "attribute":"attr2",
+                    "attribute": "attr2",
                     "in": {
-                        "from":["table1", "table2", {
-                            "table": "table3",
-                            "as": "a"
-                        }],
-                        "attributes": [{"name":"attr6"}]
+                        "from": [
+                            "t1",
+                            "t2",
+                            {
+                                "table": "t3",
+                                "as": "a"
+                            }
+                        ],
+                        "attributes": [
+                            {
+                                "name": "attr6"
+                            }
+                        ]
                     }
                 }
             }
         }
-        ]
+    ]
 }

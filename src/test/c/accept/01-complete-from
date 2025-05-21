@@ -1,9 +1,9 @@
 {
     "from": [
-        "table1",
-        "table2",
+        "t1",
+        "t2",
         {
-            "table": "table3",
+            "table": "t3",
             "as": "a"
         }
     ],
@@ -86,7 +86,7 @@
                 "attribute": "attr1",
                 "in": {
                     "from": [
-                        "table3"
+                        "t3"
                     ],
                     "attributes": [
                         {
@@ -109,7 +109,7 @@
                     "attribute": "attr2",
                     "in": {
                         "from": [
-                            "table3"
+                            "t3"
                         ],
                         "attributes": [
                             {

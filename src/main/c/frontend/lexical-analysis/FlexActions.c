@@ -49,8 +49,6 @@ void IgnoredLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 }
 
-
-
 Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
@@ -59,6 +57,15 @@ Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 	return INTEGER;
 }
 
+Token JoinTypeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
+{
+	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
+	lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
+	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
+	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = '\0';
+	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
+	return JOIN_TYPE;
+}
 
 Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 {
@@ -127,16 +134,18 @@ Token PreconditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext,
 	return token;
 }
 
-Token OrderByFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, OrderByFunctionType token) {
+Token OrderByFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, OrderByFunctionType token)
+{
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
 	OrderByFunctionType orderByF;
-	switch(token) {
-		case DESC:
-			orderByF = ORDER_BY_DESC;
-			break;
-		case ASC:
-			orderByF = ORDER_BY_ASC;
-			break;
+	switch (token)
+	{
+	case DESC:
+		orderByF = ORDER_BY_DESC;
+		break;
+	case ASC:
+		orderByF = ORDER_BY_ASC;
+		break;
 	}
 	lexicalAnalyzerContext->semanticValue->orderByType = orderByF;
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);

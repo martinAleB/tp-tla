@@ -1,5 +1,5 @@
 {
-    "from": "table1",
+    "from": "t1",
     "where": [
         [
             {
@@ -58,7 +58,7 @@
                 "attribute": "attr1",
                 "in": {
                     "from": [
-                        "table3"
+                        "t3"
                     ],
                     "attributes": [{
                         "name": "*"
@@ -79,7 +79,7 @@
                     "attribute": "attr2",
                     "in": {
                         "from": [
-                            "table3"
+                            "t3"
                         ],
                         "attributes": [{
                             "name": "*"

@@ -71,6 +71,7 @@
 %token <token> GROUP_BY
 %token <token> ORDER_BY
 %token <token> AUXILIARY
+%token <token> JOIN
 %token <token> ORDER
 %token <token> TABLE
 %token <token> AS
@@ -109,6 +110,15 @@
 %token <token> IN
 %token <token> IS
 %token <token> NAME
+%token <string> JOIN_TYPE
+%token <token> RIGHT
+%token <token> LEFT
+%token <token> INNER
+%token <token> TYPE
+%token <token> OUTER
+%token <token> CONDITION
+%token <token> TABLE1
+%token <token> TABLE2
 
 %token <token> UNKNOWN
 
@@ -120,6 +130,9 @@
 %type <clauseArgsList> fromClauseArgsList
 %type <clauseArgsList> fromClauseValues
 %type <clauseValue> fromClauseValue
+%type <clauseArgsList> joinClauseArgsList
+%type <clauseArgsList> joinClauseValues
+%type <clauseValue> joinClauseValue
 %type <attributeClauseValue> attribute
 %type <attributeClauseValue> attributeOptions
 %type <attributeClauseValue> aggregation
@@ -172,6 +185,7 @@ clauseList: clause													{ $$ = ClauseListSemanticAction($1, NULL); }
 	;
 
 clause: FROM COLON fromClauseArgsList               				{ $$ = ClauseSemanticAction($3, FROM_CLAUSE); }
+	| JOIN COLON joinClauseArgsList									{ $$ = ClauseSemanticAction($3, JOIN_CLAUSE); }
 	| ATTRIBUTES COLON attributesClauseArgsList						{ $$ = ClauseSemanticAction($3, ATTRIBUTES_CLAUSE); }
 	| WHERE COLON whereCondition									{ $$ = WhereClauseSemanticAction($3); }
 	| GROUP_BY COLON groupByClause									{ $$ = ClauseSemanticAction($3, GROUP_BY_CLAUSE); }
@@ -179,8 +193,17 @@ clause: FROM COLON fromClauseArgsList               				{ $$ = ClauseSemanticAct
 	| AUXILIARY COLON auxiliaryClauseArgsList						{ $$ = ClauseSemanticAction($3, AUXILIARY_CLAUSE); }
 	;
 
+//JOIN CLAUSE
+joinClauseArgsList:	OPEN_BRACKET joinClauseValues CLOSE_BRACKET		{ $$ = $2; }
+	;
 
-//Auxiliary Clause
+joinClauseValues: joinClauseValue									{ $$ = ClauseArgsListSemanticAction($1, NULL); }
+	| joinClauseValue COMMA joinClauseValues						{ $$ = ClauseArgsListSemanticAction($1, $3); }
+	;
+
+joinClauseValue: OPEN_CURLY_BRACE TABLE1 COLON STRING[table1] COMMA TABLE2 COLON STRING[table2] COMMA TYPE COLON JOIN_TYPE[joinType] COMMA OUTER COLON BOOLEAN[joinOuter] COMMA CONDITION COLON whereBinaryCondition[joinCondition] CLOSE_CURLY_BRACE		{ $$ = JoinClauseValueSemanticAction($table1, $table2, $joinType, $joinOuter, $joinCondition); }
+
+//AUXILIARY CLAUSE
 auxiliaryClauseValues: OPEN_CURLY_BRACE STRING COLON json CLOSE_CURLY_BRACE							{ $$ = SingleQueryAuxiliaryClauseArgsListSemanticAction($2, $4); }
 	| OPEN_CURLY_BRACE STRING COLON json CLOSE_CURLY_BRACE COMMA auxiliaryClauseValues					{ $$ = MultipleQueriesAuxiliaryClauseArgsListSemanticAction($2, $4, $7); }
 	;
@@ -242,8 +265,6 @@ whereCondition: OPEN_BRACKET whereCondition whereConditionWithPrecondAfter CLOSE
 	| OPEN_BRACKET whereIsCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstIsConditionAndNextWhereConditionSemanticAction($2, $3); }
 	| OPEN_BRACKET whereInCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstInConditionAndNextWhereConditionSemanticAction($2, $3); }
 	;
-
-
 
 whereInCondition: OPEN_CURLY_BRACE ATTRIBUTE COLON STRING COMMA IN COLON json CLOSE_CURLY_BRACE									{ $$ = QueryWhereInConditionSemanticAction($4, $8); }
 	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING COMMA IN COLON STRING CLOSE_CURLY_BRACE											{ $$ = AuxiliaryQueryWhereInConditionSemanticAction($4, $8); }

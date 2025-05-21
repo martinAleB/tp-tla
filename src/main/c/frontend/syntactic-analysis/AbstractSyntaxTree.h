@@ -58,6 +58,7 @@ typedef struct WhereBinaryCondition WhereBinaryCondition;
 typedef struct WhereInCondition WhereInCondition;
 typedef struct WhereIsCondition WhereIsCondition;
 typedef struct AuxiliaryClauseValue AuxiliaryClauseValue;
+typedef struct JoinClauseValue JoinClauseValue;
 
 /**
  * Node types for the Abstract Syntax Tree (AST).
@@ -110,7 +111,8 @@ enum ClauseType
 	GROUP_BY_CLAUSE,
 	ORDER_BY_CLAUSE,
 	WHERE_CLAUSE,
-	AUXILIARY_CLAUSE
+	AUXILIARY_CLAUSE,
+	JOIN_CLAUSE
 };
 
 enum FromClauseValueType
@@ -220,9 +222,19 @@ struct FromClauseValue
 	FromClauseValueType fromClauseValueType;
 };
 
-struct AuxiliaryClauseValue {
-	Json * auxQuery;
-	char * auxQueryName;
+struct JoinClauseValue
+{
+	char *table1;
+	char *table2;
+	char *type;
+	boolean outer;
+	WhereBinaryCondition *condition;
+};
+
+struct AuxiliaryClauseValue
+{
+	Json *auxQuery;
+	char *auxQueryName;
 };
 
 struct CompositeOrderByClause
@@ -266,6 +278,7 @@ struct ClauseValue
 		OrderByClauseValue *orderByClauseValue;
 		WhereCondition *whereClauseValue;
 		AuxiliaryClauseValue *auxiliaryClauseValue;
+		JoinClauseValue *joinClauseValue;
 	};
 	ClauseType clauseType;
 };
@@ -365,7 +378,7 @@ struct WhereInCondition
 		Json *query;
 		char *auxQueryName;
 	};
-	char * attribute;
+	char *attribute;
 	WhereInConditionType type;
 };
 
@@ -412,5 +425,6 @@ void releaseWhereNotCondition(WhereNotCondition *whereNotCondition);
 void releaseWhereCondition(WhereCondition *whereCondition);
 void releaseWhereInCondition(WhereInCondition *whereInCondition);
 void releaseWhereIsCondition(WhereIsCondition *whereIsCondition);
+void releaseJoinClauseValue(JoinClauseValue *joinClauseValue);
 
 #endif

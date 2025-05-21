@@ -1,9 +1,9 @@
 {
     "from": [
-        "table1",
-        "table2",
+        "t1",
+        "t2",
         {
-            "table": "table3",
+            "table": "t3",
             "as": "a"
         }
     ],
@@ -16,11 +16,10 @@
             "function": "count",
             "name": "attr3"
         },
-        {         
+        {
             "function": "sum",
             "name": "blabla",
             "as": "c"
         }
     ]
-    
 }

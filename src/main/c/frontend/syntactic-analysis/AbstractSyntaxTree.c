@@ -127,12 +127,15 @@ void releaseClauseValue(ClauseValue *clauseValue)
 			}
 			free(clauseValue->orderByClauseValue);
 			break;
-			
+
 		case AUXILIARY_CLAUSE:
 			releaseJson(clauseValue->auxiliaryClauseValue->auxQuery);
 			free(clauseValue->auxiliaryClauseValue->auxQueryName);
 			free(clauseValue->auxiliaryClauseValue);
-			break;	
+			break;
+		case JOIN_CLAUSE:
+			releaseJoinClauseValue(clauseValue->joinClauseValue);
+			break;
 		}
 		free(clauseValue);
 	}
@@ -293,12 +296,12 @@ void releaseWhereInCondition(WhereInCondition *whereInCondition)
 	{
 		switch (whereInCondition->type)
 		{
-			case WHERE_IN_CONDITION_QUERY:
-				releaseJson(whereInCondition->query);
-				break;
-			case WHERE_IN_CONDITION_AUX_QUERY_NAME:
-				free(whereInCondition->auxQueryName);
-				break;
+		case WHERE_IN_CONDITION_QUERY:
+			releaseJson(whereInCondition->query);
+			break;
+		case WHERE_IN_CONDITION_AUX_QUERY_NAME:
+			free(whereInCondition->auxQueryName);
+			break;
 		}
 		free(whereInCondition->attribute);
 		free(whereInCondition);
@@ -320,5 +323,18 @@ void releaseWhereIsCondition(WhereIsCondition *whereIsCondition)
 			break;
 		}
 		free(whereIsCondition);
+	}
+}
+
+void releaseJoinClauseValue(JoinClauseValue *joinClauseValue)
+{
+	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
+	if (joinClauseValue != NULL)
+	{
+		releaseWhereBinaryCondition(joinClauseValue->condition);
+		free(joinClauseValue->type);
+		free(joinClauseValue->table1);
+		free(joinClauseValue->table2);
+		free(joinClauseValue);
 	}
 }

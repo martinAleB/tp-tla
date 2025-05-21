@@ -1,6 +1,10 @@
 {
-    "from":["table1", "table2", {
-        "table": "table3",
-        "as": "a"
-    }]
+    "from": [
+        "t1",
+        "t2",
+        {
+            "table": "t3",
+            "as": "a"
+        }
+    ]
 }

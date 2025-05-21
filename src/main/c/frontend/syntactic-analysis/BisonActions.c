@@ -410,7 +410,7 @@ WhereNotCondition *WhereNotConditionWithNotConditionSemanticAction(WhereNotCondi
 	return newWhereNotCondition;
 }
 
-WhereNotCondition *WhereNotConditionWithInConditionSemanticAction( WhereInCondition *whereInCondition)
+WhereNotCondition *WhereNotConditionWithInConditionSemanticAction(WhereInCondition *whereInCondition)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereNotCondition *newWhereNotCondition = calloc(1, sizeof(WhereNotCondition));
@@ -527,7 +527,7 @@ WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondi
 	return whereCondition;
 }
 
-WhereInCondition *QueryWhereInConditionSemanticAction(char * attribute, Json *query)
+WhereInCondition *QueryWhereInConditionSemanticAction(char *attribute, Json *query)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereInCondition *whereInCondition = calloc(1, sizeof(WhereInCondition));
@@ -537,7 +537,8 @@ WhereInCondition *QueryWhereInConditionSemanticAction(char * attribute, Json *qu
 	return whereInCondition;
 }
 
-WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char * attribute, char * auxQueryName) {
+WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char *attribute, char *auxQueryName)
+{
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereInCondition *whereInCondition = calloc(1, sizeof(WhereInCondition));
 	whereInCondition->auxQueryName = auxQueryName;
@@ -578,10 +579,11 @@ ClauseValue *GroupByValueSemanticAction(char *string)
 	return clauseValue;
 }
 
-
-//AUXILIARY CLAUSE
-ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char * auxQueryName, Json * auxQuery){
-	ClauseArgsList * auxiliaryArgsList = calloc(1, sizeof(ClauseArgsList));
+// AUXILIARY CLAUSE
+ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char *auxQueryName, Json *auxQuery)
+{
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseArgsList *auxiliaryArgsList = calloc(1, sizeof(ClauseArgsList));
 	auxiliaryArgsList->clauseValue = calloc(1, sizeof(ClauseValue));
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue = calloc(1, sizeof(AuxiliaryClauseValue));
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQueryName = auxQueryName;
@@ -590,8 +592,10 @@ ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char * auxQuery
 	return auxiliaryArgsList;
 }
 
-ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char * auxQueryName, Json * auxQuery, ClauseArgsList *auxQueriesList) {
-	ClauseArgsList * auxiliaryArgsList = calloc(1, sizeof(ClauseArgsList));
+ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char *auxQueryName, Json *auxQuery, ClauseArgsList *auxQueriesList)
+{
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseArgsList *auxiliaryArgsList = calloc(1, sizeof(ClauseArgsList));
 	auxiliaryArgsList->clauseValue = calloc(1, sizeof(ClauseValue));
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue = calloc(1, sizeof(AuxiliaryClauseValue));
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQueryName = auxQueryName;
@@ -599,4 +603,19 @@ ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char * auxQ
 	auxiliaryArgsList->next = auxQueriesList;
 	auxiliaryArgsList->clauseValue->clauseType = AUXILIARY_CLAUSE;
 	return auxiliaryArgsList;
+}
+
+// JOIN CLAUSE VALUE
+ClauseValue *JoinClauseValueSemanticAction(char *table1, char *table2, char *joinType, boolean outer, WhereBinaryCondition *condition)
+{
+	_logSyntacticAnalyzerAction(__FUNCTION__);
+	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
+	clauseValue->joinClauseValue = calloc(1, sizeof(JoinClauseValue));
+	clauseValue->joinClauseValue->condition = condition;
+	clauseValue->joinClauseValue->outer = outer;
+	clauseValue->joinClauseValue->type = joinType;
+	clauseValue->joinClauseValue->table1 = table1;
+	clauseValue->joinClauseValue->table2 = table2;
+	clauseValue->clauseType = JOIN_CLAUSE;
+	return clauseValue;
 }

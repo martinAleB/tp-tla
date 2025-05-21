@@ -56,6 +56,15 @@
 "\"or\""                            { return PreconditionalLexemeAction(createLexicalAnalyzerContext(), OR); }
 "\"in\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), IN); }
 "\"is\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), IS); }
+"\"join\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), JOIN); }
+"\"type\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TYPE); }
+"\"outer\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), OUTER); }
+"\"right\""                         { return JoinTypeLexemeAction(createLexicalAnalyzerContext(), RIGHT); }
+"\"left\""                          { return JoinTypeLexemeAction(createLexicalAnalyzerContext(), LEFT); }
+"\"inner\""                         { return JoinTypeLexemeAction(createLexicalAnalyzerContext(), INNER); }
+"\"condition\""                     { return KeyWordLexemeAction(createLexicalAnalyzerContext(), CONDITION); }
+"\"table1\""                        { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TABLE1); }
+"\"table2\""                        { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TABLE2); }
 
 "\"<\""                                 { return BinaryConditionOperatorLexemeAction(createLexicalAnalyzerContext(), LOWER); }
 "\">\""                                 { return BinaryConditionOperatorLexemeAction(createLexicalAnalyzerContext(), GREATER); }

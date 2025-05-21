@@ -1,4 +1,7 @@
 {
-    "from":"tabl1",
-    "group_by":["attr1", "attr2"]
+    "from": "t1",
+    "group_by": [
+        "attr1",
+        "attr2"
+    ]
 }

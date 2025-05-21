@@ -28,12 +28,13 @@ Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token UnknownLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 
 Token KeyWordLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
+Token JoinTypeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token StringLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token NumberLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext);
 Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token BooleanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token BinaryConditionOperatorLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
 Token PreconditionalLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token);
-Token OrderByFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, OrderByFunctionType token) ;
+Token OrderByFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, OrderByFunctionType token);
 
 #endif

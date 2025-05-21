@@ -39,8 +39,8 @@ ClauseValue *StringFromClauseValueSemanticAction(char *string);
 ClauseValue *TableRenameFromClauseValueSemanticAction(char *trueName, char *alias);
 
 // AUXILIARY CLAUSE VALUES
-ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char * auxQueryName, Json * json);
-ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char * auxQueryName, Json * json, ClauseArgsList *jsonList);
+ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char *auxQueryName, Json *json);
+ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char *auxQueryName, Json *json, ClauseArgsList *jsonList);
 
 // ATTRIBUTES CLAUSE VALUES
 AttributeRename *AttributeRenameSemanticAction(ClauseValue *clausevalue, char *string);
@@ -85,8 +85,8 @@ WhereCondition *FirstNotConditionAndNextWhereConditionSemanticAction(WhereNotCon
 WhereCondition *FirstIsConditionAndNextWhereConditionSemanticAction(WhereIsCondition *whereIsCondition, WhereCondition *next);
 WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondition *whereInCondition, WhereCondition *next);
 
-WhereInCondition *QueryWhereInConditionSemanticAction(char * attribute, Json *query);
-WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char * attribute, char * auxQueryName);
+WhereInCondition *QueryWhereInConditionSemanticAction(char *attribute, Json *query);
+WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char *attribute, char *auxQueryName);
 WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondition *whereNotCondition);
 WhereIsCondition *WhereInConditionWhereIsConditionSemanticAction(WhereInCondition *whereInCondition);
 
@@ -98,5 +98,8 @@ ClauseValue *StringOrderByClauseValueSemanticAction(char *string);
 ClauseValue *AggregationFunctionOrderByClauseValueSemanticAction(char *aggrFunc, char *string, CompositeOrderByClause *compositeOrderByClause);
 ClauseValue *CompositeOrderByClauseValueSemanticAction(char *string, CompositeOrderByClause *compositeOrderByClause);
 CompositeOrderByClause *OrderBySemanticAction(OrderByType orderByType);
+
+// JOIN CLAUSE VALUES
+ClauseValue *JoinClauseValueSemanticAction(char *table1, char *table2, char *joinType, boolean outer, WhereBinaryCondition *condition);
 
 #endif
