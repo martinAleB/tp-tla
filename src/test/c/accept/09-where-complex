@@ -1,0 +1,101 @@
+{
+    "from": "t1",
+    "where": [
+        [
+            {
+                "not": {
+                    "operator": "!=",
+                    "value1": 1,
+                    "value2": 2
+                }
+            },
+            {
+                "and": [
+                    {
+                        "operator": "=",
+                        "value1": true,
+                        "value2": true
+                    },
+                    {
+                        "and": {
+                            "not": {
+                                "not": {
+                                    "operator": ">",
+                                    "value1": 2,
+                                    "value2": 5
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        {
+            "or": [
+                {
+                    "operator": ">",
+                    "value1": 3,
+                    "value2": 4
+                },
+                {
+                    "and": {
+                        "operator": "<",
+                        "value1": 10,
+                        "value2": 3
+                    }
+                },
+                {
+                    "or": {
+                        "operator": "=",
+                        "value1": "Martin",
+                        "value2": "Alejandro"
+                    }
+                }
+            ]
+        },
+        {
+        "and": {
+                "attribute": "attr1",
+                "in": {
+                    "from": [
+                        "t3"
+                    ],
+                    "attributes": [{
+                        "name": "*"
+                    }],
+                    "where": [
+                        {
+                            "operator": "=",
+                            "value1": "1",
+                            "value2": "1"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "and": {
+                "not": {
+                    "attribute": "attr2",
+                    "in": {
+                        "from": [
+                            "t3"
+                        ],
+                        "attributes": [{
+                            "name": "*"
+                        }],
+                        "where": [
+                            {
+                                "operator": "=",
+                                "value1": {
+                                    "attribute": "NAME"
+                                },
+                                "value2": "Martin"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

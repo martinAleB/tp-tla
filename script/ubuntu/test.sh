@@ -10,6 +10,7 @@ RED='\033[0;31m'
 OFF='\033[0m'
 STATUS=0
 
+
 echo "Compiler should accept..."
 echo ""
 

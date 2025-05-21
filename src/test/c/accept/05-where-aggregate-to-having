@@ -1,0 +1,24 @@
+{
+    "from": "user_roles",
+    "attributes": [
+        {
+            "name": "user_id"
+        },
+        {
+            "name": "role_id"
+        }
+    ],
+    "where": [
+        {
+            "operator": ">",
+            "value1": 5,
+            "value2": {
+                "function": "count",
+                "attribute": "role_id"
+            }
+        }
+    ],
+    "group_by": [
+        "user_id"
+    ]
+}

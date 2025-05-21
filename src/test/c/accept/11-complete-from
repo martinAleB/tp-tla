@@ -1,0 +1,28 @@
+{
+    "from": [
+        "t1",
+        "t2",
+        {
+            "table": "t3",
+            "as": "a"
+        }
+    ],
+    "attributes": [
+        {
+            "name": "attr1"
+        },
+        {
+            "name": "attr2",
+            "as": "b"
+        },
+        {
+            "function": "count",
+            "name": "attr3"
+        },
+        {
+            "function": "sum",
+            "name": "attr4",
+            "as": "c"
+        }
+    ]
+}

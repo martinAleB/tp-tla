@@ -1,0 +1,16 @@
+{
+    "from": "products",
+    "attributes": [
+      { "name": "product_id" },
+      { "name": "price" },
+      { "name": "category_id" }
+    ],
+    "where": [
+      {
+        "operator": ">",
+        "value1": "price",
+        "value2": 100
+      }
+    ]
+  }
+  

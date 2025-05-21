@@ -1,0 +1,20 @@
+{
+    "from": "t1",
+    "join": [
+        {
+            "table1": "t1",
+            "table2": "t2",
+            "type": "inner",
+            "outer": true,
+            "condition": {
+                "operator": "=",
+                "value1": {
+                    "attribute": "attr1"
+                },
+                "value2": {
+                    "attribute": "attr2"
+                }
+            }
+        }
+    ]
+}
