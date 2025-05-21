@@ -9,10 +9,10 @@
             "condition": {
                 "operator": "=",
                 "value1": {
-                    "attribute": "patata"
+                    "attribute": "attr1"
                 },
                 "value2": {
-                    "attribute": "frita"
+                    "attribute": "attr2"
                 }
             }
         }

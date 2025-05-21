@@ -1,0 +1,11 @@
+{
+    "from": [
+        "t1"
+    ],
+    "where": [
+        {
+            "attribute": "id",
+            "in": "nonExistingAuxVariable"
+        }
+    ]
+}

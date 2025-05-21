@@ -87,8 +87,10 @@
                         "where": [
                             {
                                 "operator": "=",
-                                "value1": "1",
-                                "value2": "1"
+                                "value1": {
+                                    "attribute": "NAME"
+                                },
+                                "value2": "Martin"
                             }
                         ]
                     }
