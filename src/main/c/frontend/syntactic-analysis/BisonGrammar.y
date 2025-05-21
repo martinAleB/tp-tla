@@ -111,6 +111,7 @@
 %token <token> IS
 %token <token> NAME
 %token <string> JOIN_TYPE
+%token <string> AGGREGATION_FUNCTION
 %token <token> RIGHT
 %token <token> LEFT
 %token <token> INNER
@@ -137,7 +138,6 @@
 %type <attributeClauseValue> attributeOptions
 %type <attributeClauseValue> aggregation
 
-%type <string> aggregationFunction
 %type <clauseArgsList> orderByClauseArgsList
 %type <clauseArgsList> orderByClauseValues
 %type <clauseValue> orderByClauseValue
@@ -231,7 +231,7 @@ whereConditionValue: STRING											{ $$ = StringWhereConditionValueSemanticAc
 	| BOOLEAN														{ $$ = BooleanWhereConditionValueSemanticAction($1); }
 	| NULLV															{ $$ = NullWhereConditionValueSemanticAction(); }
 	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = AttributeWhereConditionValueSemanticAction($attr); }
-	| OPEN_CURLY_BRACE FUNCTION COLON aggregationFunction[aggr] COMMA ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionWhereConditionValueSemanticAction($aggr, $attr); }
+	| OPEN_CURLY_BRACE FUNCTION COLON AGGREGATION_FUNCTION[aggr] COMMA ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionWhereConditionValueSemanticAction($aggr, $attr); }
 	| whereBinaryCondition											{ $$ = WhereBinaryConditionWhereConditionValueSemanticAction($1); }
 	;
 
@@ -286,7 +286,7 @@ orderByClauseValues: orderByClauseValue								{ $$ = ClauseArgsListSemanticActi
 
 orderByClauseValue: STRING											{ $$ = StringOrderByClauseValueSemanticAction($1); }
 	//Funcion de agregacion
-	| OPEN_CURLY_BRACE FUNCTION COLON aggregationFunction[aggr] COMMA ATTRIBUTE COLON STRING[attr] COMMA ORDER COLON orderByExplicit[order] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionOrderByClauseValueSemanticAction($aggr, $attr, $order); }
+	| OPEN_CURLY_BRACE FUNCTION COLON AGGREGATION_FUNCTION[aggr] COMMA ATTRIBUTE COLON STRING[attr] COMMA ORDER COLON orderByExplicit[order] CLOSE_CURLY_BRACE	{ $$ = AggregationFunctionOrderByClauseValueSemanticAction($aggr, $attr, $order); }
 	//Solo atributo, como en sql y que defaultee a ASC (el motor de BD)
 	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING[attr] CLOSE_CURLY_BRACE	{ $$ = StringOrderByClauseValueSemanticAction($attr); }
 	//Atributo con order ASC o DESC
@@ -298,14 +298,7 @@ orderByExplicit: ASC												{ $$ = OrderBySemanticAction($1); }
 ;
 
 //ATTRIBUTES CLAUSE
-aggregationFunction: COUNT											{ $$ = $1; }
-	| SUM 															{ $$ = $1; }
-	| AVERAGE														{ $$ = $1; }
-	| MIN 															{ $$ = $1; }
-	| MAX 															{ $$ = $1; }
-	;
-
-aggregation: FUNCTION COLON aggregationFunction COMMA attribute		{ $$ = AggregationSemanticAction($3, $5); }
+aggregation: FUNCTION COLON AGGREGATION_FUNCTION COMMA attribute		{ $$ = AggregationSemanticAction($3, $5); }
 
 attributeOptions: COMMA TABLE COLON STRING							{ $$ = OnlyTableAttributeOptionSemanticAction($4); }
 	| COMMA AS COLON STRING											{ $$ = OnlyAsAttributeOptionSemanticAction($4); }

@@ -4,7 +4,7 @@
         {
             "table1": "t1",
             "table2": "t2",
-            "type": "right",
+            "type": "inner",
             "outer": true,
             "condition": {
                 "operator": "=",

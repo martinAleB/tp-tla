@@ -107,7 +107,7 @@ Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerCon
 	lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
 	strcpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme);
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
-	return token;
+	return AGGREGATION_FUNCTION;
 }
 
 Token BooleanLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
