@@ -300,6 +300,7 @@ void releaseWhereInCondition(WhereInCondition *whereInCondition)
 				free(whereInCondition->auxQueryName);
 				break;
 		}
+		free(whereInCondition->attribute);
 		free(whereInCondition);
 	}
 }

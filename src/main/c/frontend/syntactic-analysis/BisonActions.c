@@ -410,7 +410,7 @@ WhereNotCondition *WhereNotConditionWithNotConditionSemanticAction(WhereNotCondi
 	return newWhereNotCondition;
 }
 
-WhereNotCondition *WhereNotConditionWithInConditionSemanticAction(WhereInCondition *whereInCondition)
+WhereNotCondition *WhereNotConditionWithInConditionSemanticAction( WhereInCondition *whereInCondition)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereNotCondition *newWhereNotCondition = calloc(1, sizeof(WhereNotCondition));
@@ -527,19 +527,21 @@ WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondi
 	return whereCondition;
 }
 
-WhereInCondition *QueryWhereInConditionSemanticAction(Json *query)
+WhereInCondition *QueryWhereInConditionSemanticAction(char * attribute, Json *query)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereInCondition *whereInCondition = calloc(1, sizeof(WhereInCondition));
 	whereInCondition->query = query;
+	whereInCondition->attribute = attribute;
 	whereInCondition->type = WHERE_IN_CONDITION_QUERY;
 	return whereInCondition;
 }
 
-WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char * auxQueryName) {
+WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char * attribute, char * auxQueryName) {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereInCondition *whereInCondition = calloc(1, sizeof(WhereInCondition));
 	whereInCondition->auxQueryName = auxQueryName;
+	whereInCondition->attribute = attribute;
 	whereInCondition->type = WHERE_IN_CONDITION_AUX_QUERY_NAME;
 	return whereInCondition;
 }

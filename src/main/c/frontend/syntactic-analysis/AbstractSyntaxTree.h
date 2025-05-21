@@ -365,6 +365,7 @@ struct WhereInCondition
 		Json *query;
 		char *auxQueryName;
 	};
+	char * attribute;
 	WhereInConditionType type;
 };
 

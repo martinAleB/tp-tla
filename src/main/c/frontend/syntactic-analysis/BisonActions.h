@@ -85,8 +85,8 @@ WhereCondition *FirstNotConditionAndNextWhereConditionSemanticAction(WhereNotCon
 WhereCondition *FirstIsConditionAndNextWhereConditionSemanticAction(WhereIsCondition *whereIsCondition, WhereCondition *next);
 WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondition *whereInCondition, WhereCondition *next);
 
-WhereInCondition *QueryWhereInConditionSemanticAction(Json *query);
-WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char * auxQueryName);
+WhereInCondition *QueryWhereInConditionSemanticAction(char * attribute, Json *query);
+WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char * attribute, char * auxQueryName);
 WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondition *whereNotCondition);
 WhereIsCondition *WhereInConditionWhereIsConditionSemanticAction(WhereInCondition *whereInCondition);
 

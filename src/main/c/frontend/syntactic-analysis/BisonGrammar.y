@@ -243,13 +243,17 @@ whereCondition: OPEN_BRACKET whereCondition whereConditionWithPrecondAfter CLOSE
 	| OPEN_BRACKET whereInCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstInConditionAndNextWhereConditionSemanticAction($2, $3); }
 	;
 
-whereInCondition: OPEN_CURLY_BRACE IN COLON json CLOSE_CURLY_BRACE									{ $$ = QueryWhereInConditionSemanticAction($4); }
-	| OPEN_CURLY_BRACE IN COLON STRING CLOSE_CURLY_BRACE											{ $$ = AuxiliaryQueryWhereInConditionSemanticAction($4); }
+
+
+whereInCondition: OPEN_CURLY_BRACE ATTRIBUTE COLON STRING COMMA IN COLON json CLOSE_CURLY_BRACE									{ $$ = QueryWhereInConditionSemanticAction($4, $8); }
+	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING COMMA IN COLON STRING CLOSE_CURLY_BRACE											{ $$ = AuxiliaryQueryWhereInConditionSemanticAction($4, $8); }
 	;
 
 // @TODO: remove WhereIsCondition for In
 whereIsCondition: OPEN_CURLY_BRACE IS COLON whereNotCondition CLOSE_CURLY_BRACE						{ $$ = WhereNotConditionWhereIsConditionSemanticAction($4); }
 	;
+
+
 //ORDER BY CLAUSE
 orderByClauseArgsList: orderByClauseValue							{ $$ = ClauseArgsListSemanticAction($1, NULL); }
 	| OPEN_BRACKET orderByClauseValues CLOSE_BRACKET				{ $$ = $2; }

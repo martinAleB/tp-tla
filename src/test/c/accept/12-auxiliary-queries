@@ -22,5 +22,25 @@
                     "group_by":["attr1", "attr2"]
                 }
             }
+        ],
+        "where": [
+        {
+            "attribute": "attr1",
+            "in": "auxQuery1"
+        },
+        {
+            "and": {
+                "not": {
+                    "attribute":"attr2",
+                    "in": {
+                        "from":["table1", "table2", {
+                            "table": "table3",
+                            "as": "a"
+                        }],
+                        "attributes": [{"name":"attr6"}]
+                    }
+                }
+            }
+        }
         ]
 }

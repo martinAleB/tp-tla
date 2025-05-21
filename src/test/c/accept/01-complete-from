@@ -83,6 +83,7 @@
         },
         {
             "and": {
+                "attribute": "attr1",
                 "in": {
                     "from": [
                         "table3"
@@ -105,6 +106,7 @@
         {
             "and": {
                 "not": {
+                    "attribute": "attr2",
                     "in": {
                         "from": [
                             "table3"
