@@ -1,5 +1,5 @@
 #include "backend/code-generation/Generator.h"
-#include "backend/domain-specific/Calculator.h"
+#include "backend/domain-specific/Sql.h"
 #include "frontend/lexical-analysis/FlexActions.h"
 #include "frontend/syntactic-analysis/AbstractSyntaxTree.h"
 #include "frontend/syntactic-analysis/BisonActions.h"
@@ -22,7 +22,7 @@ const int main(const int count, const char **arguments)
 	initializeBisonActionsModule();
 	initializeSyntacticAnalyzerModule();
 	initializeAbstractSyntaxTreeModule();
-	initializeCalculatorModule();
+	initializeSqlModule();
 	initializeGeneratorModule();
 
 	// Logs the arguments of the application.
@@ -54,9 +54,10 @@ const int main(const int count, const char **arguments)
 			logError(logger, "Undefined reference to auxiliary query");
 			compilationStatus = FAILED;
 		}
-		else
+		else if (!computeSql(program))
 		{
-			// KUKARDO
+			logError(logger, "Query computation failed");
+			compilationStatus = FAILED;
 		}
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
@@ -87,7 +88,7 @@ const int main(const int count, const char **arguments)
 	logDebugging(logger, "Releasing modules resources...");
 	freeSymbolTable(compilerState.symbolTable);
 	shutdownGeneratorModule();
-	shutdownCalculatorModule();
+	shutdownSqlModule();
 	shutdownAbstractSyntaxTreeModule();
 	shutdownSyntacticAnalyzerModule();
 	shutdownBisonActionsModule();

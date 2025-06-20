@@ -111,7 +111,8 @@ enum ClauseType
 	ORDER_BY_CLAUSE,
 	WHERE_CLAUSE,
 	AUXILIARY_CLAUSE,
-	JOIN_CLAUSE
+	JOIN_CLAUSE,
+	CLAUSE_TYPE_COUNT // Count of ClauseType
 };
 
 enum FromClauseValueType
