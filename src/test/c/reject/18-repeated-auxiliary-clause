@@ -1,0 +1,35 @@
+{
+    "from": "auxQuery",
+    "auxiliary": [
+        {
+            "auxQuery": {
+                "from": "game",
+                "where": [
+                    {
+                        "operator": "<",
+                        "value1": {
+                            "attribute": "minPlayers"
+                        },
+                        "value2": 4
+                    }
+                ]
+            }
+        }
+    ],
+    "auxiliary": [
+        {
+            "auxQuery2": {
+                "from": "game",
+                "where": [
+                    {
+                        "operator": "<",
+                        "value1": {
+                            "attribute": "minPlayers"
+                        },
+                        "value2": 4
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "from": "t1",
+    "where": [
+        {
+            "not": {
+                "operator": "!=",
+                "value1": 1,
+                "value2": 2
+            }
+        }
+    ],
+    "where": [
+        {
+            "not": {
+                "operator": "!=",
+                "value1": 1,
+                "value2": 2
+            }
+        }
+    ]
+}

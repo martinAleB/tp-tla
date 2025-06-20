@@ -33,7 +33,7 @@ boolean computeClauseList(ClauseList *clauseList)
     {
         Clause *clause = current->clause;
         clauseCounter[clause->type]++;
-        if (clauseCounter[clause->type] > 1 || !computeClause(clause))
+        if ((clause->type != JOIN_CLAUSE && clauseCounter[clause->type] > 1) || !computeClause(clause))
         {
             logError(_logger, "Repeated statements detected");
             return false;
@@ -42,7 +42,7 @@ boolean computeClauseList(ClauseList *clauseList)
     }
     if (clauseCounter[FROM_CLAUSE] == 0)
     {
-        logError(_logger, "Missing 'FROM' statement");
+        logError(_logger, "Missing 'from' statement");
     }
     return clauseCounter[FROM_CLAUSE] == 1;
 }

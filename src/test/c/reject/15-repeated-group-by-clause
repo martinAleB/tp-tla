@@ -1,0 +1,11 @@
+{
+    "from": "t1",
+    "group_by": [
+        "attr1",
+        "attr2"
+    ],
+    "group_by": [
+        "attr1",
+        "attr2"
+    ]
+}

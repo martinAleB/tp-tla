@@ -1,0 +1,19 @@
+{
+    "from": "t1",
+    "attributes": [
+        {
+            "name": "attr1"
+        },
+        {
+            "name": "attr2"
+        }
+    ],
+    "attributes": [
+        {
+            "name": "attr3"
+        },
+        {
+            "name": "attr4"
+        }
+    ]
+}
