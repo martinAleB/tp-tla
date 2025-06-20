@@ -43,6 +43,8 @@ const int main(const int count, const char **arguments)
 	Program *program = compilerState.abstractSyntaxtTree;
 	if (syntacticAnalysisStatus == ACCEPT)
 	{
+		// ----------------------------------------------------------------------------------------
+		// Beginning of the Backend... ------------------------------------------------------------
 		logDebugging(logger, "Checking expression through the SymbolTable...");
 		if (hasSubqueryRedefinition(compilerState.symbolTable))
 		{
@@ -59,8 +61,6 @@ const int main(const int count, const char **arguments)
 			logError(logger, "Query computation failed");
 			compilationStatus = FAILED;
 		}
-		// ----------------------------------------------------------------------------------------
-		// Beginning of the Backend... ------------------------------------------------------------
 
 		/* logDebugging(logger, "Computing expression value...");
 		ComputationResult computationResult = computeExpression(program->expression);

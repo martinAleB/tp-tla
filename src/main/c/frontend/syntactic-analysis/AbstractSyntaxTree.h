@@ -348,7 +348,7 @@ struct WhereNotCondition
 	{
 		WhereInCondition *in;
 		WhereNotCondition * not;
-		WhereCondition *condition; // admite NOT <ALGO_NO_BOOLEANO>, pero luego se valida en backend
+		WhereCondition *condition; // @TODO: admite NOT <ALGO_NO_BOOLEANO>, pero luego se valida en backend
 		WhereBinaryCondition *whereBinaryCondition;
 	};
 	NotNodeSelected nodeSelected;
