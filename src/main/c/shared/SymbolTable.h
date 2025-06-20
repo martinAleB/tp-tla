@@ -4,8 +4,11 @@
 typedef struct SymbolTableCDT *SymbolTable;
 
 SymbolTable initializeSymbolTable();
-int addSubquery(SymbolTable symbolTable, char *name);
-int existsSubquery(SymbolTable symbolTable, char *name);
+int addSubqueryDefinition(SymbolTable symbolTable, char *name);
+int existsSubqueryDefinition(SymbolTable symbolTable, char *name);
+int addSubqueryUsage(SymbolTable symbolTable, char *name);
+int allUsedSubqueriesDefined(SymbolTable symbolTable);
+int hasSubqueryRedefinition(SymbolTable symbolTable);
 void freeSymbolTable(SymbolTable symbolTable);
 
 #endif

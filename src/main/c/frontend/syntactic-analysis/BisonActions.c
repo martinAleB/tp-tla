@@ -1,4 +1,5 @@
 #include "BisonActions.h"
+#include "../../shared/SymbolTable.h"
 
 /* MODULE INTERNAL STATE */
 
@@ -544,6 +545,7 @@ WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char *attribute, 
 	whereInCondition->auxQueryName = auxQueryName;
 	whereInCondition->attribute = attribute;
 	whereInCondition->type = WHERE_IN_CONDITION_AUX_QUERY_NAME;
+	addSubqueryUsage(currentCompilerState()->symbolTable, auxQueryName);
 	return whereInCondition;
 }
 
@@ -588,6 +590,7 @@ ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char *auxQueryN
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQueryName = auxQueryName;
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQuery = auxQuery;
 	auxiliaryArgsList->clauseValue->clauseType = AUXILIARY_CLAUSE;
+	addSubqueryDefinition(currentCompilerState()->symbolTable, auxQueryName);
 	return auxiliaryArgsList;
 }
 
@@ -601,6 +604,7 @@ ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char *auxQu
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQuery = auxQuery;
 	auxiliaryArgsList->next = auxQueriesList;
 	auxiliaryArgsList->clauseValue->clauseType = AUXILIARY_CLAUSE;
+	addSubqueryDefinition(currentCompilerState()->symbolTable, auxQueryName);
 	return auxiliaryArgsList;
 }
 

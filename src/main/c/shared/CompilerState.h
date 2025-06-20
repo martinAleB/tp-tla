@@ -24,8 +24,8 @@ typedef struct
 
 	// A flag that indicates the current state of the compilation so far.
 	boolean succeed;
-	SymbolTable SymbolTable;
-	char *result;
+	SymbolTable symbolTable;
+	char *value;
 } CompilerState;
 
 #endif

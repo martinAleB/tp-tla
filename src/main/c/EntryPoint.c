@@ -6,6 +6,7 @@
 #include "frontend/syntactic-analysis/SyntacticAnalyzer.h"
 #include "shared/CompilerState.h"
 #include "shared/Environment.h"
+#include "shared/SymbolTable.h"
 #include "shared/Logger.h"
 #include "shared/String.h"
 
@@ -14,8 +15,9 @@
  * parse anything inside this project instead of using Flex and Bison, I will
  * find you, and I will kill you (Bryan Mills; "Taken", 2008).
  */
-const int main(const int count, const char ** arguments) {
-	Logger * logger = createLogger("EntryPoint");
+const int main(const int count, const char **arguments)
+{
+	Logger *logger = createLogger("EntryPoint");
 	initializeFlexActionsModule();
 	initializeBisonActionsModule();
 	initializeSyntacticAnalyzerModule();
@@ -24,44 +26,66 @@ const int main(const int count, const char ** arguments) {
 	initializeGeneratorModule();
 
 	// Logs the arguments of the application.
-	for (int k = 0; k < count; ++k) {
+	for (int k = 0; k < count; ++k)
+	{
 		logDebugging(logger, "Argument %d: \"%s\"", k, arguments[k]);
 	}
 
 	// Begin compilation process.
 	CompilerState compilerState = {
+		.symbolTable = initializeSymbolTable(),
 		.abstractSyntaxtTree = NULL,
 		.succeed = false,
-		.value = 0
-	};
+		.value = NULL};
+
 	const SyntacticAnalysisStatus syntacticAnalysisStatus = parse(&compilerState);
 	CompilationStatus compilationStatus = SUCCEED;
-	Program * program = compilerState.abstractSyntaxtTree;
-	if (syntacticAnalysisStatus == ACCEPT) {
+	Program *program = compilerState.abstractSyntaxtTree;
+	if (syntacticAnalysisStatus == ACCEPT)
+	{
+		logDebugging(logger, "Checking expression through the SymbolTable...");
+		if (hasSubqueryRedefinition(compilerState.symbolTable))
+		{
+			logError(logger, "Auxiliary query redefinition");
+			compilationStatus = FAILED;
+		}
+		if (!allUsedSubqueriesDefined(compilerState.symbolTable))
+		{
+			logError(logger, "Undefined reference to auxiliary query");
+			compilationStatus = FAILED;
+		}
+		else
+		{
+			// KUKARDO
+		}
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
-		/*
-			logDebugging(logger, "Computing expression value...");
-			ComputationResult computationResult = computeExpression(program->expression);
-			if (computationResult.succeed) {
-				compilerState.value = computationResult.value;
-				generate(&compilerState);
-			}
-			else {
-				logError(logger, "The computation phase rejects the input program.");
-				compilationStatus = FAILED;
-			}
-		*/
+
+		/* logDebugging(logger, "Computing expression value...");
+		ComputationResult computationResult = computeExpression(program->expression);
+		if (computationResult.succeed)
+		{
+			compilerState.value = computationResult.value;
+			generate(&compilerState);
+		}
+		else
+		{
+			logError(logger, "The computation phase rejects the input program.");
+			compilationStatus = FAILED;
+		} */
+
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
 	}
-	else {
+	else
+	{
 		logError(logger, "The syntactic-analysis phase rejects the input program.");
 		compilationStatus = FAILED;
 	}
 	logDebugging(logger, "Releasing AST resources...");
 	releaseProgram(program);
 	logDebugging(logger, "Releasing modules resources...");
+	freeSymbolTable(compilerState.symbolTable);
 	shutdownGeneratorModule();
 	shutdownCalculatorModule();
 	shutdownAbstractSyntaxTreeModule();
