@@ -549,7 +549,7 @@ WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char *attribute, 
 	return whereInCondition;
 }
 
-WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(char * attribute, WhereNotCondition *whereNotCondition)
+WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(char *attribute, WhereNotCondition *whereNotCondition)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereIsCondition *whereIsCondition = calloc(1, sizeof(WhereIsCondition));
@@ -591,7 +591,7 @@ ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char *auxQueryN
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQueryName = auxQueryName;
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQuery = auxQuery;
 	auxiliaryArgsList->clauseValue->clauseType = AUXILIARY_CLAUSE;
-	addSubqueryDefinition(currentCompilerState()->symbolTable, auxQueryName);
+	addSubqueryDefinition(currentCompilerState()->symbolTable, auxQueryName, auxQuery);
 	return auxiliaryArgsList;
 }
 
@@ -605,7 +605,7 @@ ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char *auxQu
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQuery = auxQuery;
 	auxiliaryArgsList->next = auxQueriesList;
 	auxiliaryArgsList->clauseValue->clauseType = AUXILIARY_CLAUSE;
-	addSubqueryDefinition(currentCompilerState()->symbolTable, auxQueryName);
+	addSubqueryDefinition(currentCompilerState()->symbolTable, auxQueryName, (void *)auxQuery);
 	return auxiliaryArgsList;
 }
 
