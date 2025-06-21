@@ -3,14 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct TNode *TList;
-
-typedef struct TNode
-{
-    void *elem;
-    TList tail;
-} TNode;
+#include "../utils/List.h"
 
 typedef struct SymbolTableCDT
 {
@@ -98,15 +91,6 @@ int existsSubqueryDefinition(SymbolTable symbolTable, char *name)
 int hasSubqueryRedefinition(SymbolTable symbolTable)
 {
     return symbolTable->subqueryRedefinition;
-}
-
-static void freeList(TList list)
-{
-    if (list != NULL)
-    {
-        freeList(list->tail);
-        free(list);
-    }
 }
 
 void freeSymbolTable(SymbolTable symbolTable)

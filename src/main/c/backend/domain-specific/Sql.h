@@ -16,17 +16,18 @@ typedef enum ConditionType
 void initializeSqlModule();
 void shutdownSqlModule();
 
-boolean computeSql(Program *program);
-boolean computeJson(Json *json);
-boolean computeClauseList(ClauseList *clauseList);
-boolean computeClause(Clause *clause);
-boolean computeWhereCondition(WhereCondition *whereCondition, ConditionType *type);
-boolean computeWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition, ConditionType *type);
-boolean computeWhereNotCondition(WhereNotCondition *whereNotCondition, ConditionType *type);
-boolean computeWhereIsCondition(WhereIsCondition *whereIsCondition, ConditionType *type);
-boolean computeWhereInCondition(WhereInCondition *whereInCondition, ConditionType *type);
-boolean computeClauseArgsList(ClauseArgsList *clauseArgsList);
-boolean computeClauseValue(ClauseValue *clauseValue);
-boolean computeAuxiliaryClauseValue(AuxiliaryClauseValue *auxiliaryClauseValue);
+boolean validateSql(Program *program);
+boolean validateJson(Json *json);
+boolean validateClauseList(ClauseList *clauseList);
+boolean validateClause(Clause *clause);
+boolean validateWhereCondition(WhereCondition *whereCondition, ConditionType *type);
+boolean validateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition, ConditionType *type);
+boolean validateWhereNotCondition(WhereNotCondition *whereNotCondition, ConditionType *type);
+boolean validateWhereIsCondition(WhereIsCondition *whereIsCondition, ConditionType *type);
+boolean validateWhereInCondition(WhereInCondition *whereInCondition, ConditionType *type);
+boolean validateClauseArgsList(ClauseArgsList *clauseArgsList);
+boolean validateClauseValue(ClauseValue *clauseValue);
+boolean validateAuxiliaryClauseValue(AuxiliaryClauseValue *auxiliaryClauseValue);
+boolean validateGroupByClauseValue(GroupByClauseValue *GroupByClauseValue);
 
 #endif

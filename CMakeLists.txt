@@ -69,6 +69,8 @@ add_executable(Compiler
 	src/main/c/shared/Logger.c
 	src/main/c/shared/String.c
 	src/main/c/shared/SymbolTable.c
+	src/main/c/shared/ScopeManager.c
+	src/main/c/utils/List.c
 	# Add more *.c files if needed (otherwise, they won't be compiled).
 	# ...
 )

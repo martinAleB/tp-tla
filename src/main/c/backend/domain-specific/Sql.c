@@ -1,4 +1,5 @@
 #include "Sql.h"
+#include "../../shared/ScopeManager.h"
 
 static Logger *_logger = NULL;
 
@@ -15,17 +16,28 @@ void shutdownSqlModule()
     }
 }
 
-boolean computeSql(Program *program)
+boolean validateSql(Program *program)
 {
-    return computeJson(program->json);
+    return validateJson(program->json);
 }
 
-boolean computeJson(Json *json)
+boolean validateJson(Json *json)
 {
-    return computeClauseList(json->clauseList);
+    pushScope();
+    boolean res = validateClauseList(json->clauseList);
+    if (res)
+    {
+        if (!scopeGroupByValidation())
+        {
+            logError(_logger, "HAVING statement without GROUP BY");
+            res = 0;
+        }
+    }
+    popScope();
+    return res;
 }
 
-boolean computeClauseList(ClauseList *clauseList)
+boolean validateClauseList(ClauseList *clauseList)
 {
     int clauseCounter[CLAUSE_TYPE_COUNT] = {0};
     ClauseList *current = clauseList;
@@ -33,7 +45,7 @@ boolean computeClauseList(ClauseList *clauseList)
     {
         Clause *clause = current->clause;
         clauseCounter[clause->type]++;
-        if ((clause->type != JOIN_CLAUSE && clauseCounter[clause->type] > 1) || !computeClause(clause))
+        if ((clause->type != JOIN_CLAUSE && clauseCounter[clause->type] > 1) || !validateClause(clause))
         {
             logError(_logger, "Repeated statements detected");
             return false;
@@ -47,17 +59,17 @@ boolean computeClauseList(ClauseList *clauseList)
     return clauseCounter[FROM_CLAUSE] == 1;
 }
 
-boolean computeClause(Clause *clause)
+boolean validateClause(Clause *clause)
 {
     if (clause->type == WHERE_CLAUSE)
     {
         ConditionType type = FIRST_WHERE_CONDITION_TYPE;
-        return computeWhereCondition(clause->whereCondition, &type);
+        return validateWhereCondition(clause->whereCondition, &type);
     }
-    return computeClauseArgsList(clause->clauseArgsList);
+    return validateClauseArgsList(clause->clauseArgsList);
 }
 
-boolean computeWhereCondition(WhereCondition *whereCondition, ConditionType *type)
+boolean validateWhereCondition(WhereCondition *whereCondition, ConditionType *type)
 {
     WhereCondition *current = whereCondition;
     while (current != NULL)
@@ -74,31 +86,31 @@ boolean computeWhereCondition(WhereCondition *whereCondition, ConditionType *typ
         switch (current->nodeType)
         {
         case NODE_TYPE_WHERE_IN_CONDITION:
-            if (!computeWhereInCondition(current->whereInCondition, &defType))
+            if (!validateWhereInCondition(current->whereInCondition, &defType))
             {
                 return false;
             }
             break;
         case NODE_TYPE_WHERE_IS_CONDITION:
-            if (!computeWhereIsCondition(current->whereIsCondition, &defType))
+            if (!validateWhereIsCondition(current->whereIsCondition, &defType))
             {
                 return false;
             }
             break;
         case NODE_TYPE_WHERE_NOT_CONDITION:
-            if (!computeWhereNotCondition(current->whereNotCondition, &defType))
+            if (!validateWhereNotCondition(current->whereNotCondition, &defType))
             {
                 return false;
             }
             break;
         case NODE_TYPE_WHERE_BINARY_CONDITION:
-            if (!computeWhereBinaryCondition(current->binaryCondition, &defType))
+            if (!validateWhereBinaryCondition(current->binaryCondition, &defType))
             {
                 return false;
             }
             break;
         case NODE_TYPE_WHERE_CONDITION:
-            if (!computeWhereCondition(current->whereCondition, &defType))
+            if (!validateWhereCondition(current->whereCondition, &defType))
             {
                 return false;
             }
@@ -113,11 +125,15 @@ boolean computeWhereCondition(WhereCondition *whereCondition, ConditionType *typ
     return true;
 }
 
-boolean computeWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition, ConditionType *type)
+boolean validateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition, ConditionType *type)
 {
     if (*type == UNDEFINED_CONDITION_TYPE)
     {
         *type = (whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION || whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION) ? HAVING_CONDITION_TYPE : WHERE_CONDITION_TYPE;
+        if (*type == HAVING_CONDITION_TYPE)
+        {
+            setScopeHavingClause();
+        }
     }
     if (*type == WHERE_CONDITION_TYPE && (whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION || whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION))
     {
@@ -132,42 +148,42 @@ boolean computeWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition, 
     return true;
 }
 
-boolean computeWhereNotCondition(WhereNotCondition *whereNotCondition, ConditionType *type)
+boolean validateWhereNotCondition(WhereNotCondition *whereNotCondition, ConditionType *type)
 {
     switch (whereNotCondition->nodeSelected)
     {
     case NOT_NODE:
-        return computeWhereNotCondition(whereNotCondition->not, type);
+        return validateWhereNotCondition(whereNotCondition->not, type);
     case IN_NODE:
-        return computeWhereInCondition(whereNotCondition->in, type);
+        return validateWhereInCondition(whereNotCondition->in, type);
     case CONDITION_NODE:
-        return computeWhereCondition(whereNotCondition->condition, type);
+        return validateWhereCondition(whereNotCondition->condition, type);
     case BINARY_CONDITION_NODE:
-        return computeWhereBinaryCondition(whereNotCondition->whereBinaryCondition, type);
+        return validateWhereBinaryCondition(whereNotCondition->whereBinaryCondition, type);
     }
     return true;
 }
 
-boolean computeWhereIsCondition(WhereIsCondition *whereIsCondition, ConditionType *type)
+boolean validateWhereIsCondition(WhereIsCondition *whereIsCondition, ConditionType *type)
 {
-    return computeWhereNotCondition(whereIsCondition->whereNotCondition, type);
+    return validateWhereNotCondition(whereIsCondition->whereNotCondition, type);
 }
 
-boolean computeWhereInCondition(WhereInCondition *whereInCondition, ConditionType *type)
+boolean validateWhereInCondition(WhereInCondition *whereInCondition, ConditionType *type)
 {
     if (whereInCondition->type == WHERE_IN_CONDITION_QUERY)
     {
-        return computeJson(whereInCondition->query);
+        return validateJson(whereInCondition->query);
     }
     return true;
 }
 
-boolean computeClauseArgsList(ClauseArgsList *clauseArgsList)
+boolean validateClauseArgsList(ClauseArgsList *clauseArgsList)
 {
     ClauseArgsList *current = clauseArgsList;
     while (current != NULL)
     {
-        if (!computeClauseValue(clauseArgsList->clauseValue))
+        if (!validateClauseValue(clauseArgsList->clauseValue))
         {
             return false;
         }
@@ -176,17 +192,25 @@ boolean computeClauseArgsList(ClauseArgsList *clauseArgsList)
     return true;
 }
 
-boolean computeClauseValue(ClauseValue *clauseValue)
+boolean validateClauseValue(ClauseValue *clauseValue)
 {
     switch (clauseValue->clauseType)
     {
     case AUXILIARY_CLAUSE:
-        return computeAuxiliaryClauseValue(clauseValue->auxiliaryClauseValue);
+        return validateAuxiliaryClauseValue(clauseValue->auxiliaryClauseValue);
+    case GROUP_BY_CLAUSE:
+        return validateGroupByClauseValue(clauseValue->groupByClauseValue);
     }
     return true;
 }
 
-boolean computeAuxiliaryClauseValue(AuxiliaryClauseValue *auxiliaryClauseValue)
+boolean validateAuxiliaryClauseValue(AuxiliaryClauseValue *auxiliaryClauseValue)
 {
-    return computeJson(auxiliaryClauseValue->auxQuery);
+    return validateJson(auxiliaryClauseValue->auxQuery);
+}
+
+boolean validateGroupByClauseValue(GroupByClauseValue *GroupByClauseValue)
+{
+    setScopeGroupByClause();
+    return true;
 }

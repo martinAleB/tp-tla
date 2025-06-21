@@ -5,6 +5,7 @@
 #include "frontend/syntactic-analysis/BisonActions.h"
 #include "frontend/syntactic-analysis/SyntacticAnalyzer.h"
 #include "shared/CompilerState.h"
+#include "shared/ScopeManager.h"
 #include "shared/Environment.h"
 #include "shared/SymbolTable.h"
 #include "shared/Logger.h"
@@ -45,6 +46,8 @@ const int main(const int count, const char **arguments)
 	{
 		// ----------------------------------------------------------------------------------------
 		// Beginning of the Backend... ------------------------------------------------------------
+
+		initializeScopeManager();
 		logDebugging(logger, "Checking expression through the SymbolTable...");
 		if (hasSubqueryRedefinition(compilerState.symbolTable))
 		{
@@ -56,13 +59,17 @@ const int main(const int count, const char **arguments)
 			logError(logger, "Undefined reference to auxiliary query");
 			compilationStatus = FAILED;
 		}
-		else if (!computeSql(program))
+		else if (!validateSql(program))
 		{
-			logError(logger, "Query computation failed");
+			logError(logger, "Query validation failed");
 			compilationStatus = FAILED;
 		}
+		freeScopeManager();
 
-		/* logDebugging(logger, "Computing expression value...");
+		// ...end of the Backend. -----------------------------------------------------------------
+		// ----------------------------------------------------------------------------------------
+
+		/* @TODO borrar esto. logDebugging(logger, "Computing expression value...");
 		ComputationResult computationResult = computeExpression(program->expression);
 		if (computationResult.succeed)
 		{
@@ -74,9 +81,6 @@ const int main(const int count, const char **arguments)
 			logError(logger, "The computation phase rejects the input program.");
 			compilationStatus = FAILED;
 		} */
-
-		// ...end of the Backend. -----------------------------------------------------------------
-		// ----------------------------------------------------------------------------------------
 	}
 	else
 	{
