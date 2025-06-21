@@ -1,0 +1,51 @@
+{
+    "from": [
+        "t1"
+    ],
+    "where": [
+        {
+            "attribute": "id",
+            "in": "auxiliaryQuery"
+        }
+    ],
+    "auxiliary": [
+        {
+            "auxiliaryQuery": {
+                "from": "t1",
+                "attributes": [
+                    {
+                        "function": "sum",
+                        "name": "attr3"
+                    }
+                ],
+                "where": [
+                    {
+                        "operator": "=",
+                        "value1": "true",
+                        "value2": "false"
+                    }
+                ],
+                "auxiliary": [
+                    {
+                        "auxiliaryQuery2": {
+                            "from": "t1",
+                            "attributes": [
+                                {
+                                    "function": "sum",
+                                    "name": "attr3"
+                                }
+                            ],
+                            "where": [
+                                {
+                                    "operator": "=",
+                                    "value1": "true",
+                                    "value2": "false"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

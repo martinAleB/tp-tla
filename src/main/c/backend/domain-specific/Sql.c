@@ -30,7 +30,7 @@ boolean validateJson(Json *json)
         if (!scopeGroupByValidation())
         {
             logError(_logger, "HAVING statement without GROUP BY");
-            res = 0;
+            res = false;
         }
     }
     popScope();
@@ -206,6 +206,11 @@ boolean validateClauseValue(ClauseValue *clauseValue)
 
 boolean validateAuxiliaryClauseValue(AuxiliaryClauseValue *auxiliaryClauseValue)
 {
+    if (!isMainScope())
+    {
+        logError(_logger, "Cannot declare AUXILIARY statement in an auxiliary query");
+        return false;
+    }
     return validateJson(auxiliaryClauseValue->auxQuery);
 }
 

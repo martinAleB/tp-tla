@@ -11,6 +11,7 @@ typedef struct Scope
 typedef struct ScopeManagerCDT
 {
     TList top;
+    size_t size;
 } ScopeManagerCDT;
 
 static ScopeManager scopeManager;
@@ -46,6 +47,12 @@ void pushScope()
 {
     Scope *scope = calloc(1, sizeof(Scope));
     scopeManager->top = addToStack(scopeManager->top, (void *)scope);
+    scopeManager->size++;
+}
+
+int isMainScope()
+{
+    return scopeManager->size == 1;
 }
 
 int scopeGroupByValidation()
@@ -70,6 +77,7 @@ void popScope()
 {
     Scope *scope = popFromStack(&scopeManager->top);
     free(scope);
+    scopeManager->size--;
 }
 
 void freeScopeManager()

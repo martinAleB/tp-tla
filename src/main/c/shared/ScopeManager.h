@@ -6,6 +6,7 @@ typedef struct ScopeManagerCDT *ScopeManager;
 void initializeScopeManager();
 ScopeManager currentScopeManager();
 void pushScope();
+int isMainScope();
 int scopeGroupByValidation();
 void setScopeGroupByClause();
 void setScopeHavingClause();
