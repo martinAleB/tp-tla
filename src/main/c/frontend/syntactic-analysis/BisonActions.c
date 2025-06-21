@@ -549,10 +549,11 @@ WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char *attribute, 
 	return whereInCondition;
 }
 
-WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondition *whereNotCondition)
+WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(char * attribute, WhereNotCondition *whereNotCondition)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereIsCondition *whereIsCondition = calloc(1, sizeof(WhereIsCondition));
+	whereIsCondition->attribute = attribute;
 	whereIsCondition->whereNotCondition = whereNotCondition;
 	return whereIsCondition;
 }

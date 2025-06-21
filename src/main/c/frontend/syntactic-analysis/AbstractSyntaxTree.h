@@ -356,6 +356,7 @@ struct WhereNotCondition
 
 struct WhereIsCondition
 {
+	char *attribute;
 	WhereNotCondition *whereNotCondition;
 };
 

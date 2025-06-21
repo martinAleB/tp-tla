@@ -314,6 +314,7 @@ void releaseWhereIsCondition(WhereIsCondition *whereIsCondition)
 	if (whereIsCondition != NULL)
 	{			
 		releaseWhereNotCondition(whereIsCondition->whereNotCondition);
+		free(whereIsCondition->attribute);
 		free(whereIsCondition);
 	}
 }

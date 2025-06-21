@@ -87,7 +87,7 @@ WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondi
 
 WhereInCondition *QueryWhereInConditionSemanticAction(char *attribute, Json *query);
 WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char *attribute, char *auxQueryName);
-WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondition *whereNotCondition);
+WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(char * attribute, WhereNotCondition *whereNotCondition);
 WhereIsCondition *WhereInConditionWhereIsConditionSemanticAction(WhereInCondition *whereInCondition);
 
 // GROUP BY CLAUSE VALUES
