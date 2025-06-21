@@ -166,7 +166,16 @@ boolean validateWhereNotCondition(WhereNotCondition *whereNotCondition, Conditio
 
 boolean validateWhereIsCondition(WhereIsCondition *whereIsCondition, ConditionType *type)
 {
-    return validateWhereNotCondition(whereIsCondition->whereNotCondition, type);
+    boolean res = validateWhereNotCondition(whereIsCondition->whereNotCondition, type);
+    if (res)
+    {
+        if (whereIsCondition->whereNotCondition->nodeSelected == IN_NODE)
+        {
+            logError(_logger, "Invalid IS statement");
+            res = false;
+        }
+    }
+    return res;
 }
 
 boolean validateWhereInCondition(WhereInCondition *whereInCondition, ConditionType *type)
