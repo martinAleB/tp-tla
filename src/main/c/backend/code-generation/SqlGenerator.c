@@ -39,7 +39,12 @@ static void _generateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondi
 static void _generateWhereIsCondition(WhereIsCondition *whereIsCondition);
 static void _generateWhereInCondition(WhereInCondition *whereInCondition);
 static void _generateWhereNotCondition(WhereNotCondition *whereNotCondition);
-static boolean _whereConditionHasAggregationFunction(WhereCondition * whereCondition);
+static void _generateWhereConditionValue(WhereConditionValue *whereConditionValue);
+static void _generateBinaryConditionOperator(BinaryConditionOperator *binaryConditionOperator);
+static void _generateAuxQueryByName(char *auxQueryName);
+static boolean _whereConditionHasAggregationFunction(WhereCondition *whereCondition);
+static boolean _whereBinaryConditionHasAggregationFunction(WhereBinaryCondition *whereBinaryCondition);
+static boolean _notConditionHasAggregateFunction(WhereNotCondition *whereNotCondition);
 
 static void _generateQuery(Json *json)
 {
@@ -302,65 +307,64 @@ static void _generateOrderByClauseValueAggrFunc(OrderByClauseValue *orderByClaus
 	}
 }
 
-static boolean _notConditionHasAggregateFunction(WhereNotCondition *whereNotCondition){
-	return 
-	whereNotCondition->nodeSelected == BINARY_CONDITION_NODE && 
-		_whereBinaryConditionHasAggregationFunction(whereNotCondition->whereBinaryCondition) ||
-	whereNotCondition->nodeSelected == NOT_NODE &&
-		_notConditionHasAggregateFunction(whereNotCondition->not) ||
-	whereNotCondition->nodeSelected == CONDITION_NODE &&
-		_whereConditionHasAggregationFunction(whereNotCondition->condition) ;
+static boolean _notConditionHasAggregateFunction(WhereNotCondition *whereNotCondition)
+{
+	return whereNotCondition->nodeSelected == BINARY_CONDITION_NODE &&
+			   _whereBinaryConditionHasAggregationFunction(whereNotCondition->whereBinaryCondition) ||
+		   whereNotCondition->nodeSelected == NOT_NODE &&
+			   _notConditionHasAggregateFunction(whereNotCondition->not) ||
+		   whereNotCondition->nodeSelected == CONDITION_NODE &&
+			   _whereConditionHasAggregationFunction(whereNotCondition->condition);
 }
 
-static boolean _whereBinaryConditionHasAggregationFunction(WhereBinaryCondition * whereBinaryCondition){
+static boolean _whereBinaryConditionHasAggregationFunction(WhereBinaryCondition *whereBinaryCondition)
+{
 
-	return 
-	whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION ||
-	whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION ||
-	whereBinaryCondition->value1->type == CONDITION_VALUE_BINARY_CONDITION && 
-		_whereBinaryConditionHasAggregationFunction(whereBinaryCondition->value1->binaryCondition) ||
-	whereBinaryCondition->value2->type == CONDITION_VALUE_BINARY_CONDITION &&
-		_whereBinaryConditionHasAggregationFunction(whereBinaryCondition->value2->binaryCondition) ||
-	whereBinaryCondition->value1->type == CONDITION_VALUE_NOT_CONDITION &&
-		_notConditionHasAggregationFunction(whereBinaryCondition->value1->notCondition) ||
-	whereBinaryCondition->value2->type == CONDITION_VALUE_NOT_CONDITION &&
-		_notConditionHasAggregationFunction(whereBinaryCondition->value2->notCondition);
-	//Si es in es atributo y no tiene funcion de agregacion
-
+	return whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION ||
+		   whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION ||
+		   whereBinaryCondition->value1->type == CONDITION_VALUE_BINARY_CONDITION &&
+			   _whereBinaryConditionHasAggregationFunction(whereBinaryCondition->value1->binaryCondition) ||
+		   whereBinaryCondition->value2->type == CONDITION_VALUE_BINARY_CONDITION &&
+			   _whereBinaryConditionHasAggregationFunction(whereBinaryCondition->value2->binaryCondition) ||
+		   whereBinaryCondition->value1->type == CONDITION_VALUE_NOT_CONDITION &&
+			   _notConditionHasAggregationFunction(whereBinaryCondition->value1->notCondition) ||
+		   whereBinaryCondition->value2->type == CONDITION_VALUE_NOT_CONDITION &&
+			   _notConditionHasAggregationFunction(whereBinaryCondition->value2->notCondition);
+	// Si es in es atributo y no tiene funcion de agregacion
 }
 
-static boolean _whereConditionHasAggregationFunction(WhereCondition * whereCondition){
-	switch (whereCondition->nodeType){
-		case NODE_TYPE_WHERE_BINARY_CONDITION:
+static boolean _whereConditionHasAggregationFunction(WhereCondition *whereCondition)
+{
+	boolean hasAggregationFunction = false;
+	switch (whereCondition->nodeType)
+	{
+	case NODE_TYPE_WHERE_BINARY_CONDITION:
 		return _whereBinaryConditionHasAggregationFunction(whereCondition->binaryCondition);
 		break;
-		case NODE_TYPE_WHERE_IN_CONDITION:
-		return false; //Solo tiene atributos aca
+	case NODE_TYPE_WHERE_IN_CONDITION:
+		return false; // Solo tiene atributos aca
 		break;
-		case NODE_TYPE_WHERE_IS_CONDITION:
+	case NODE_TYPE_WHERE_IS_CONDITION:
 		return _notConditionHasAggregateFunction(whereCondition->whereIsCondition->whereNotCondition);
 		break;
-		case NODE_TYPE_WHERE_NOT_CONDITION:
+	case NODE_TYPE_WHERE_NOT_CONDITION:
 		return _notConditionHasAggregateFunction(whereCondition->whereNotCondition);
 		break;
-		case NODE_TYPE_WHERE_CONDITION:
+	case NODE_TYPE_WHERE_CONDITION:
 		return _whereConditionHasAggregationFunction(whereCondition->whereCondition);
 	}
-}
 
-static boolean _baseWhereHasAggregationFunction(WhereCondition *baseWhereCondition){
-	while (baseWhereCondition->next)
-		if (_whereConditionHasAggregationFunction(baseWhereCondition))
-			return true;
-	return false;
+	if (whereCondition->next)
+		return (hasAggregationFunction || _whereConditionHasAggregationFunction(whereCondition->next));
+	else
+		return hasAggregationFunction;
 }
-
 
 static void _generateWhereClause(WhereCondition *whereCondition)
 {
-	if (_baseWhereHasAggregationFunction(whereCondition))
+	if (_whereConditionHasAggregationFunction(whereCondition))
 		printf("HAVING ");
-	else 
+	else
 		printf("WHERE ");
 	_generateWhereCondition(whereCondition);
 }
@@ -396,22 +400,110 @@ static void _generateWhereCondition(WhereCondition *whereCondition)
 		break;
 	}
 	printf(")");
+	if (whereCondition->next)
+		_generateWhereCondition(whereCondition->next);
 }
 
-
-static void _generateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition){
-
+static void _generateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition)
+{
+	_generateWhereConditionValue(whereBinaryCondition->value1);
+	_generateBinaryConditionOperator(whereBinaryCondition->operator);
+	_generateWhereConditionValue(whereBinaryCondition->value1);
 }
-static void _generateWhereIsCondition(WhereIsCondition *whereIsCondition){
-
+static void _generateWhereIsCondition(WhereIsCondition *whereIsCondition)
+{
+	printf("%s ", whereIsCondition->attribute);
+	_generateWhereNotCondition(whereIsCondition->whereNotCondition);
 }
-static void _generateWhereInCondition(WhereInCondition *whereInCondition){
+static void _generateWhereInCondition(WhereInCondition *whereInCondition)
+{
+	printf("%s IN (", whereInCondition->attribute);
 
+	switch (whereInCondition->type)
+	{
+	case WHERE_IN_CONDITION_QUERY:
+		_generateQuery(whereInCondition->query);
+		break;
+	case WHERE_IN_CONDITION_AUX_QUERY_NAME:
+		_generateAuxQueryByName(whereInCondition->auxQueryName);
+		break;
+	}
+	printf(")");
 }
-static void _generateWhereNotCondition(WhereNotCondition *whereNotCondition){
-
+static void _generateWhereNotCondition(WhereNotCondition *whereNotCondition)
+{
+	printf("NOT ");
+	switch (whereNotCondition->nodeSelected)
+	{
+	case IN_NODE:
+		_generateWhereInCondition(whereNotCondition->in);
+		break;
+	case NOT_NODE:
+		_generateWhereNotCondition(whereNotCondition->not);
+		break;
+	case CONDITION_NODE:
+		_generateWhereCondition(whereNotCondition->condition);
+		break;
+	case BINARY_CONDITION_NODE:
+		_generateWhereBinaryCondition(whereNotCondition->whereBinaryCondition);
+		break;
+	}
 }
 
+static void _generateWhereConditionValue(WhereConditionValue *whereConditionValue)
+{
+	switch (whereConditionValue->type)
+	{
+	case CONDITION_VALUE_STRING:
+		printf("'%s'", whereConditionValue->string);
+		break;
+	case CONDITION_VALUE_ATTRIBUTE:
+		printf("%s", whereConditionValue->attribute);
+		break;
+	case CONDITION_VALUE_NUMBER:
+		printf("%f", whereConditionValue->number);
+		break;
+	case CONDITION_VALUE_INTEGER:
+		printf("%d", whereConditionValue->integer);
+		break;
+	case CONDITION_VALUE_BOOLEAN:
+		printf(whereConditionValue->bool ? "TRUE" : "FALSE");
+		break;
+	case CONDITION_VALUE_AGGREGATION_FUNCTION:
+		printf("%s(%s)", whereConditionValue->aggregationFunction->aggr, whereConditionValue->aggregationFunction->attribute);
+		break;
+	case CONDITION_VALUE_BINARY_CONDITION:
+		_generateWhereBinaryCondition(whereConditionValue->binaryCondition);
+		break;
+	case CONDITION_VALUE_NOT_CONDITION:
+		_generateWhereNotCondition(whereConditionValue->notCondition);
+		break;
+	}
+}
+static void _generateBinaryConditionOperator(BinaryConditionOperator *binaryConditionOperator)
+{
+	switch (*binaryConditionOperator)
+	{
+	case BINARY_CONDITION_OPERATOR_LOWER:
+		printf(" < ");
+		break;
+	case BINARY_CONDITION_OPERATOR_GREATER:
+		printf(" > ");
+		break;
+	case BINARY_CONDITION_OPERATOR_LOWER_OR_EQUAL:
+		printf(" <= ");
+		break;
+	case BINARY_CONDITION_OPERATOR_GREATER_OR_EQUAL:
+		printf(" >= ");
+		break;
+	case BINARY_CONDITION_OPERATOR_EQUAL:
+		printf(" = ");
+		break;
+	case BINARY_CONDITION_OPERATOR_NOT_EQUAL:
+		printf(" != ");
+		break;
+	}
+}
 
 /** PUBLIC FUNCTIONS */
 
