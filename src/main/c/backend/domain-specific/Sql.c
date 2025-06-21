@@ -63,110 +63,82 @@ boolean validateClause(Clause *clause)
 {
     if (clause->type == WHERE_CLAUSE)
     {
-        ConditionType type = FIRST_WHERE_CONDITION_TYPE;
-        return validateWhereCondition(clause->whereCondition, &type);
+        return validateWhereCondition(clause->whereCondition);
     }
     return validateClauseArgsList(clause->clauseArgsList);
 }
 
-boolean validateWhereCondition(WhereCondition *whereCondition, ConditionType *type)
+boolean validateWhereCondition(WhereCondition *whereCondition)
 {
     WhereCondition *current = whereCondition;
     while (current != NULL)
     {
-        ConditionType defType;
-        if (*type == FIRST_WHERE_CONDITION_TYPE)
-        {
-            defType = UNDEFINED_CONDITION_TYPE;
-        }
-        else
-        {
-            defType = *type;
-        }
         switch (current->nodeType)
         {
         case NODE_TYPE_WHERE_IN_CONDITION:
-            if (!validateWhereInCondition(current->whereInCondition, &defType))
+            if (!validateWhereInCondition(current->whereInCondition))
             {
                 return false;
             }
             break;
         case NODE_TYPE_WHERE_IS_CONDITION:
-            if (!validateWhereIsCondition(current->whereIsCondition, &defType))
+            if (!validateWhereIsCondition(current->whereIsCondition))
             {
                 return false;
             }
             break;
         case NODE_TYPE_WHERE_NOT_CONDITION:
-            if (!validateWhereNotCondition(current->whereNotCondition, &defType))
+            if (!validateWhereNotCondition(current->whereNotCondition))
             {
                 return false;
             }
             break;
         case NODE_TYPE_WHERE_BINARY_CONDITION:
-            if (!validateWhereBinaryCondition(current->binaryCondition, &defType))
+            if (!validateWhereBinaryCondition(current->binaryCondition))
             {
                 return false;
             }
             break;
         case NODE_TYPE_WHERE_CONDITION:
-            if (!validateWhereCondition(current->whereCondition, &defType))
+            if (!validateWhereCondition(current->whereCondition))
             {
                 return false;
             }
             break;
         }
         current = current->next;
-        if (*type != FIRST_WHERE_CONDITION_TYPE)
-        {
-            *type = defType;
-        }
     }
     return true;
 }
 
-boolean validateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition, ConditionType *type)
+boolean validateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition)
 {
-    if (*type == UNDEFINED_CONDITION_TYPE)
+    if (whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION || whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION)
     {
-        *type = (whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION || whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION) ? HAVING_CONDITION_TYPE : WHERE_CONDITION_TYPE;
-        if (*type == HAVING_CONDITION_TYPE)
-        {
-            setScopeHavingClause();
-        }
-    }
-    if (*type == WHERE_CONDITION_TYPE && (whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION || whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION))
-    {
-        logError(_logger, "Detected where and having conditions mixed");
-        return false;
-    }
-    if (*type == HAVING_CONDITION_TYPE && (whereBinaryCondition->value1->type != CONDITION_VALUE_AGGREGATION_FUNCTION && whereBinaryCondition->value2->type != CONDITION_VALUE_AGGREGATION_FUNCTION))
-    {
-        logError(_logger, "Detected where and having conditions mixed");
-        return false;
+        setScopeHavingClause();
     }
     return true;
 }
 
-boolean validateWhereNotCondition(WhereNotCondition *whereNotCondition, ConditionType *type)
+boolean validateWhereNotCondition(WhereNotCondition *whereNotCondition)
 {
     switch (whereNotCondition->nodeSelected)
     {
     case NOT_NODE:
-        return validateWhereNotCondition(whereNotCondition->not, type);
+        return validateWhereNotCondition(whereNotCondition->not);
     case IN_NODE:
-        return validateWhereInCondition(whereNotCondition->in, type);
+        return validateWhereInCondition(whereNotCondition->in);
     case CONDITION_NODE:
-        return validateWhereCondition(whereNotCondition->condition, type);
+        return validateWhereCondition(whereNotCondition->condition);
     case BINARY_CONDITION_NODE:
-        return validateWhereBinaryCondition(whereNotCondition->whereBinaryCondition, type);
+        return validateWhereBinaryCondition(whereNotCondition->whereBinaryCondition);
     }
     return true;
 }
 
-boolean validateWhereIsCondition(WhereIsCondition *whereIsCondition, ConditionType *type)
+boolean validateWhereIsCondition(WhereIsCondition *whereIsCondition)
 {
-    boolean res = validateWhereNotCondition(whereIsCondition->whereNotCondition, type);
+    boolean res = validateWhereNotCondition(whereIsCondition->whereNotCondition);
     if (res)
     {
         if (whereIsCondition->whereNotCondition->nodeSelected == IN_NODE)
@@ -178,7 +150,7 @@ boolean validateWhereIsCondition(WhereIsCondition *whereIsCondition, ConditionTy
     return res;
 }
 
-boolean validateWhereInCondition(WhereInCondition *whereInCondition, ConditionType *type)
+boolean validateWhereInCondition(WhereInCondition *whereInCondition)
 {
     if (whereInCondition->type == WHERE_IN_CONDITION_QUERY)
     {
