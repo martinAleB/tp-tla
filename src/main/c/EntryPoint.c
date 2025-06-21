@@ -68,19 +68,6 @@ const int main(const int count, const char **arguments)
 
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
-
-		/* @TODO borrar esto. logDebugging(logger, "Computing expression value...");
-		ComputationResult computationResult = computeExpression(program->expression);
-		if (computationResult.succeed)
-		{
-			compilerState.value = computationResult.value;
-			generate(&compilerState);
-		}
-		else
-		{
-			logError(logger, "The computation phase rejects the input program.");
-			compilationStatus = FAILED;
-		} */
 	}
 	else
 	{

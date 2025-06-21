@@ -34,15 +34,6 @@ static TList addToStack(TList stack, void *elem)
     return aux;
 }
 
-static void *popFromStack(TList *stack)
-{
-    void *elem = (*stack)->elem;
-    TList aux = *stack;
-    *stack = (*stack)->tail;
-    free(aux);
-    return elem;
-}
-
 void pushScope()
 {
     Scope *scope = calloc(1, sizeof(Scope));
@@ -71,6 +62,15 @@ void setScopeHavingClause()
 {
     Scope *scope = (Scope *)scopeManager->top->elem;
     scope->hasHavingClause = 1;
+}
+
+static void *popFromStack(TList *stack)
+{
+    void *elem = (*stack)->elem;
+    TList aux = *stack;
+    *stack = (*stack)->tail;
+    free(aux);
+    return elem;
 }
 
 void popScope()
