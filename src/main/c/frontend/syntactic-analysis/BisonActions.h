@@ -100,6 +100,6 @@ ClauseValue *CompositeOrderByClauseValueSemanticAction(char *string, CompositeOr
 CompositeOrderByClause *OrderBySemanticAction(OrderByType orderByType);
 
 // JOIN CLAUSE VALUES
-ClauseValue *JoinClauseValueSemanticAction(char *table1, char *table2, char *joinType, boolean outer, WhereBinaryCondition *condition);
+ClauseValue *JoinClauseValueSemanticAction(char *table, char *joinType, boolean outer, WhereBinaryCondition *condition);
 
 #endif

@@ -24,6 +24,8 @@ static void _generateClauseList(ClauseList *clauseList);
 static void _generateClause(Clause* clause);
 static void _generateFromClause(ClauseArgsList *clauseArgsList);
 static void _generateFromClauseValue(ClauseValue *clauseValue);
+static void _generateJoinClause(ClauseArgsList *clauseArgsList);
+static void _generateJoinClauseValue(ClauseValue *clauseValue);
 static void _generateAttributesClause(ClauseArgsList *clauseArgsList);
 static void _generateAttributesClauseValue(ClauseValue *clauseValue);
 static void _generateGroupByClause(ClauseArgsList *clauseArgsList);
@@ -74,6 +76,7 @@ static void _generateClause(Clause* clause) {
 		case AUXILIARY_CLAUSE:
 			break;
 		case JOIN_CLAUSE:
+			_generateJoinClause(clause->clauseArgsList);
 			break;
 		default:
 			logError(_logger, "Unsupported clause type: %d", clause->type);
@@ -94,6 +97,30 @@ static void _generateFromClause(ClauseArgsList *clauseArgsList) {
 		}
 		clauseArgsList = clauseArgsList->next;
 	}
+}
+
+static void _generateJoinClause(ClauseArgsList *clauseArgsList) {
+	while (clauseArgsList != NULL) {
+		if (clauseArgsList->clauseValue != NULL) {
+			_generateJoinClauseValue(clauseArgsList->clauseValue);
+			if (clauseArgsList->next != NULL) {
+				printf("\n");
+			}
+		} else {
+			logError(_logger, "Null clause argument in JOIN clause.");
+		}
+		clauseArgsList = clauseArgsList->next;
+	}
+}
+
+static void _generateJoinClauseValue(ClauseValue *clauseValue) {
+	if (clauseValue->clauseType != JOIN_CLAUSE) {
+		logError(_logger, "Incorrect clause type in JOIN clause: %d", clauseValue->clauseType);
+	}
+
+	printf("%s %s JOIN %s ON ", clauseValue->joinClauseValue->type, clauseValue->joinClauseValue->outer? "OUTER" : "", clauseValue->joinClauseValue->table);
+	//@todo: agregar despues de pullear
+	//_generateWhereBinaryCondition()
 }
 
 static void _generateFromClauseValue(ClauseValue *clauseValue) {

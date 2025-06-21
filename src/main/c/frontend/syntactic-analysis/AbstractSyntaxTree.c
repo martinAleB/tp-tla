@@ -326,8 +326,7 @@ void releaseJoinClauseValue(JoinClauseValue *joinClauseValue)
 	{
 		releaseWhereBinaryCondition(joinClauseValue->condition);
 		free(joinClauseValue->type);
-		free(joinClauseValue->table1);
-		free(joinClauseValue->table2);
+		free(joinClauseValue->table);
 		free(joinClauseValue);
 	}
 }

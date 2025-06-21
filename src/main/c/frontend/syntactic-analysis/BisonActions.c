@@ -610,7 +610,7 @@ ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char *auxQu
 }
 
 // JOIN CLAUSE VALUE
-ClauseValue *JoinClauseValueSemanticAction(char *table1, char *table2, char *joinType, boolean outer, WhereBinaryCondition *condition)
+ClauseValue *JoinClauseValueSemanticAction(char *table, char *joinType, boolean outer, WhereBinaryCondition *condition)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
@@ -618,8 +618,7 @@ ClauseValue *JoinClauseValueSemanticAction(char *table1, char *table2, char *joi
 	clauseValue->joinClauseValue->condition = condition;
 	clauseValue->joinClauseValue->outer = outer;
 	clauseValue->joinClauseValue->type = joinType;
-	clauseValue->joinClauseValue->table1 = table1;
-	clauseValue->joinClauseValue->table2 = table2;
+	clauseValue->joinClauseValue->table = table;
 	clauseValue->clauseType = JOIN_CLAUSE;
 	return clauseValue;
 }

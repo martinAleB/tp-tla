@@ -5,8 +5,7 @@
   ],
   "join": [
     {
-      "table1": "t1",
-      "table2": "t2",
+      "table": "t2",
       "type": "inner",
       "outer": true,
       "condition": {

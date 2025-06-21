@@ -218,8 +218,7 @@ struct FromClauseValue
 
 struct JoinClauseValue
 {
-	char *table1;
-	char *table2;
+	char *table;
 	char *type;
 	boolean outer;
 	WhereBinaryCondition *condition;

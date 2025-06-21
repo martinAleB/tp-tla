@@ -201,7 +201,7 @@ joinClauseValues: joinClauseValue									{ $$ = ClauseArgsListSemanticAction($1
 	| joinClauseValue COMMA joinClauseValues						{ $$ = ClauseArgsListSemanticAction($1, $3); }
 	;
 
-joinClauseValue: OPEN_CURLY_BRACE TABLE1 COLON STRING[table1] COMMA TABLE2 COLON STRING[table2] COMMA TYPE COLON JOIN_TYPE[joinType] COMMA OUTER COLON BOOLEAN[joinOuter] COMMA CONDITION COLON whereBinaryCondition[joinCondition] CLOSE_CURLY_BRACE		{ $$ = JoinClauseValueSemanticAction($table1, $table2, $joinType, $joinOuter, $joinCondition); }
+joinClauseValue: OPEN_CURLY_BRACE TABLE COLON STRING[table] COMMA TYPE COLON JOIN_TYPE[joinType] COMMA OUTER COLON BOOLEAN[joinOuter] COMMA CONDITION COLON whereBinaryCondition[joinCondition] CLOSE_CURLY_BRACE		{ $$ = JoinClauseValueSemanticAction($table, $joinType, $joinOuter, $joinCondition); }
 
 //AUXILIARY CLAUSE
 auxiliaryClauseValues: OPEN_CURLY_BRACE STRING COLON json CLOSE_CURLY_BRACE							{ $$ = SingleQueryAuxiliaryClauseArgsListSemanticAction($2, $4); }
