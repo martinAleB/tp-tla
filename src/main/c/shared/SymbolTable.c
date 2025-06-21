@@ -12,6 +12,12 @@ typedef struct SymbolTableCDT
     int subqueryRedefinition;
 } SymbolTableCDT;
 
+typedef struct SubqueryDefinition
+{
+    char *name;
+    void *query;
+} SubqueryDefinition;
+
 SymbolTable initializeSymbolTable()
 {
     return calloc(1, sizeof(SymbolTableCDT));
@@ -37,20 +43,41 @@ static TList addToList(TList list, void *elem, int (*cmp)(void *, void *), int *
     return list;
 }
 
+static int subqueryDefinitionCmp(void *def1, void *def2)
+{
+    return strcmp(((SubqueryDefinition *)def1)->name, ((SubqueryDefinition *)def2)->name);
+}
+
 static int strcmpWrapper(void *e1, void *e2)
 {
     return strcmp((char *)e1, (char *)e2);
 }
 
-int addSubqueryDefinition(SymbolTable symbolTable, char *name)
+int addSubqueryDefinition(SymbolTable symbolTable, char *name, void *query)
 {
     int added;
-    symbolTable->subqueriesDefinition = addToList(symbolTable->subqueriesDefinition, (void *)name, strcmpWrapper, &added);
+    SubqueryDefinition *definition = malloc(sizeof(SubqueryDefinition));
+    definition->name = name;
+    definition->query = query;
+    symbolTable->subqueriesDefinition = addToList(symbolTable->subqueriesDefinition, (void *)definition, subqueryDefinitionCmp, &added);
     if (!added)
     {
         symbolTable->subqueryRedefinition = 1;
     }
     return added;
+}
+
+void *getSubqueryByName(SymbolTable symbolTable, char *name)
+{
+    for (TList current = symbolTable->subqueriesDefinition; current != NULL; current = current->tail)
+    {
+        SubqueryDefinition *definition = current->elem;
+        if (!strcmp(definition->name, name))
+        {
+            return definition->query;
+        }
+    }
+    return NULL;
 }
 
 int addSubqueryUsage(SymbolTable symbolTable, char *name)
@@ -85,7 +112,11 @@ static int existsInList(TList list, void *elem, int (*cmp)(void *, void *))
 
 int existsSubqueryDefinition(SymbolTable symbolTable, char *name)
 {
-    return existsInList(symbolTable->subqueriesDefinition, (void *)name, strcmpWrapper);
+    SubqueryDefinition *def = malloc(sizeof(SubqueryDefinition));
+    def->name = name;
+    boolean res = existsInList(symbolTable->subqueriesDefinition, (void *)def, subqueryDefinitionCmp);
+    free(def);
+    return res;
 }
 
 int hasSubqueryRedefinition(SymbolTable symbolTable)
@@ -95,7 +126,7 @@ int hasSubqueryRedefinition(SymbolTable symbolTable)
 
 void freeSymbolTable(SymbolTable symbolTable)
 {
-    freeList(symbolTable->subqueriesDefinition);
-    freeList(symbolTable->subqueriesUsages);
+    freeList(symbolTable->subqueriesDefinition, free);
+    freeList(symbolTable->subqueriesUsages, NULL);
     free(symbolTable);
 }

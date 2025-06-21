@@ -2,6 +2,7 @@
 #define __LIST__
 
 typedef struct TNode *TList;
+typedef void (*FreeFn)(void *);
 
 typedef struct TNode
 {
@@ -9,6 +10,6 @@ typedef struct TNode
     TList tail;
 } TNode;
 
-void freeList(TList list);
+void freeList(TList list, FreeFn freeFn);
 
 #endif

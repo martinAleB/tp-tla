@@ -82,6 +82,6 @@ void popScope()
 
 void freeScopeManager()
 {
-    freeList(scopeManager->top);
+    freeList(scopeManager->top, free);
     free(scopeManager);
 }
