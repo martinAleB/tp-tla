@@ -1,8 +1,8 @@
 #include "Generator.h"
-
 /* MODULE INTERNAL STATE */
 
 static Logger *_logger = NULL;
+static SymbolTable _symbolTable = NULL;
 
 void initializeGeneratorModule()
 {
@@ -528,6 +528,11 @@ static void _generateBinaryConditionOperator(BinaryConditionOperator *binaryCond
 	}
 }
 
+
+static void _generateAuxQueryByName(char *auxQueryName){
+	_generateQuery((Json *)getSubqueryByName(_symbolTable, auxQueryName));
+}
+
 /** PUBLIC FUNCTIONS */
 
 void generate(CompilerState *compilerState)
@@ -541,7 +546,12 @@ void generate(CompilerState *compilerState)
 		logError(_logger, "Expected a JSON AST in program node.");
 		return;
 	}
-
+	_symbolTable = compilerState->symbolTable;
+	if (_symbolTable == NULL)
+	{
+		logError(_logger, "Symbol table is NULL.");
+		return;
+	}
 	_generateQuery(program->json);
 	logDebugging(_logger, "Generation is done.");
 }
