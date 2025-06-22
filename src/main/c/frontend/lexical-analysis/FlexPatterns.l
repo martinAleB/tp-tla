@@ -55,7 +55,6 @@
 "\"and\""                           { return PreconditionalLexemeAction(createLexicalAnalyzerContext(), AND); }
 "\"or\""                            { return PreconditionalLexemeAction(createLexicalAnalyzerContext(), OR); }
 "\"in\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), IN); }
-"\"is\""                            { return KeyWordLexemeAction(createLexicalAnalyzerContext(), IS); }
 "\"join\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), JOIN); }
 "\"type\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TYPE); }
 "\"outer\""                         { return KeyWordLexemeAction(createLexicalAnalyzerContext(), OUTER); }

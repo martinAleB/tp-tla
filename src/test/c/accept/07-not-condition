@@ -1,0 +1,20 @@
+{
+    "from": "users",
+    "attributes": [
+        {
+            "name": "username"
+        },
+        {
+            "name": "email"
+        }
+    ],
+    "where": [
+        {
+            "not": {
+                "operator": "!=",
+                "value1": 1,
+                "value2": 2
+            }
+        }
+    ]
+}
