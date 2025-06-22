@@ -20,6 +20,7 @@ typedef enum ProgramType ProgramType;
 
 typedef enum ClauseType ClauseType;
 typedef enum FromClauseValueType FromClauseValueType;
+typedef enum JoinTypes JoinTypes;
 typedef enum AggregationType AggregationType;
 typedef enum OrderByType OrderByType;
 typedef enum OrderByFunctionType OrderByFunctionType;
@@ -55,7 +56,6 @@ typedef struct WhereNotCondition WhereNotCondition;
 typedef struct WhereConditionValue WhereConditionValue;
 typedef struct WhereBinaryCondition WhereBinaryCondition;
 typedef struct WhereInCondition WhereInCondition;
-typedef struct WhereIsCondition WhereIsCondition;
 typedef struct AuxiliaryClauseValue AuxiliaryClauseValue;
 typedef struct JoinClauseValue JoinClauseValue;
 
@@ -105,13 +105,14 @@ enum ProgramType
 
 enum ClauseType
 {
-	FROM_CLAUSE,
 	ATTRIBUTES_CLAUSE,
+	FROM_CLAUSE,
+	JOIN_CLAUSE,
+	WHERE_CLAUSE,
 	GROUP_BY_CLAUSE,
 	ORDER_BY_CLAUSE,
-	WHERE_CLAUSE,
 	AUXILIARY_CLAUSE,
-	JOIN_CLAUSE
+	CLAUSE_TYPE_COUNT // Count of ClauseType
 };
 
 enum FromClauseValueType
@@ -120,12 +121,28 @@ enum FromClauseValueType
 	TABLE_RENAME
 };
 
+enum JoinTypes
+{
+	INNER_JOIN,
+	LEFT_JOIN,
+	RIGHT_JOIN
+};
+
+enum AggregationType
+{
+	COUNT_FUNC,
+	SUM_FUNC,
+	AVERAGE_FUNC,
+	MIN_FUNC,
+	MAX_FUNC
+};
+
 enum BinaryConditionOperator
 {
 	BINARY_CONDITION_OPERATOR_LOWER,
 	BINARY_CONDITION_OPERATOR_GREATER,
 	BINARY_CONDITION_OPERATOR_LOWER_OR_EQUAL,
-	BINARY_CONDITION_OPERATOR_GREATHER_OR_EQUAL,
+	BINARY_CONDITION_OPERATOR_GREATER_OR_EQUAL,
 	BINARY_CONDITION_OPERATOR_EQUAL,
 	BINARY_CONDITION_OPERATOR_NOT_EQUAL
 };
@@ -155,7 +172,6 @@ enum WhereConditionNodeType
 	NODE_TYPE_WHERE_BINARY_CONDITION,
 	NODE_TYPE_WHERE_CONDITION,
 	NODE_TYPE_WHERE_NOT_CONDITION,
-	NODE_TYPE_WHERE_IS_CONDITION,
 	NODE_TYPE_WHERE_IN_CONDITION
 };
 
@@ -202,7 +218,7 @@ struct AttributeRename
 
 struct AggregationFunction
 {
-	char *aggr;
+	AggregationType aggr;
 	char *attribute;
 };
 struct FromClauseValue
@@ -217,9 +233,8 @@ struct FromClauseValue
 
 struct JoinClauseValue
 {
-	char *table1;
-	char *table2;
-	char *type;
+	char *table;
+	JoinTypes joinType;
 	boolean outer;
 	WhereBinaryCondition *condition;
 };
@@ -233,7 +248,7 @@ struct AuxiliaryClauseValue
 struct CompositeOrderByClause
 {
 	char *string;
-	char *aggrFunc;
+	AggregationType aggrFunc;
 	OrderByFunctionType orderByFunctionType;
 };
 
@@ -251,7 +266,8 @@ struct AttributesClauseValue
 {
 	char *name;
 	char *table;
-	char *aggregationFunction;
+	AggregationType aggregationFunction;
+	boolean hasAggregationFunction;
 	char *rename;
 };
 
@@ -333,7 +349,6 @@ struct WhereCondition
 		WhereBinaryCondition *binaryCondition;
 		WhereCondition *whereCondition;
 		WhereNotCondition *whereNotCondition;
-		WhereIsCondition *whereIsCondition;
 		WhereInCondition *whereInCondition;
 	};
 	WhereConditionNodeType nodeType;
@@ -347,15 +362,10 @@ struct WhereNotCondition
 	{
 		WhereInCondition *in;
 		WhereNotCondition * not;
-		WhereCondition *condition; // admite NOT <ALGO_NO_BOOLEANO>, pero luego se valida en backend
+		WhereCondition *condition; // @TODO: admite NOT <ALGO_NO_BOOLEANO>, pero luego se valida en backend
 		WhereBinaryCondition *whereBinaryCondition;
 	};
 	NotNodeSelected nodeSelected;
-};
-
-struct WhereIsCondition
-{
-	WhereNotCondition *whereNotCondition;
 };
 
 struct WhereInCondition
@@ -411,7 +421,6 @@ void releaseWhereConditionValue(WhereConditionValue *whereConditionValue);
 void releaseWhereNotCondition(WhereNotCondition *whereNotCondition);
 void releaseWhereCondition(WhereCondition *whereCondition);
 void releaseWhereInCondition(WhereInCondition *whereInCondition);
-void releaseWhereIsCondition(WhereIsCondition *whereIsCondition);
 void releaseJoinClauseValue(JoinClauseValue *joinClauseValue);
 
 #endif

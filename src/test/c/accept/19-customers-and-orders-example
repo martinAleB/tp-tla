@@ -1,0 +1,93 @@
+{
+    "auxiliary": [
+        {
+            "aux1": {
+                "from": {
+                    "table": "orders",
+                    "as": "o"
+                },
+                "where": [
+                    {
+                        "operator": "=",
+                        "value1": {
+                            "attribute": "o.status"
+                        },
+                        "value2": "delivered"
+                    }
+                ]
+            }
+        }
+    ],
+    "from": [
+        {
+            "table": "customers",
+            "as": "c"
+        }
+    ],
+    "join": [
+        {
+            "table": "orders",
+            "type": "left",
+            "outer": true,
+            "condition": {
+                "operator": "=",
+                "value1": {
+                    "attribute": "c.id"
+                },
+                "value2": {
+                    "attribute": "orders.customer_id"
+                }
+            }
+        }
+    ],
+    "attributes": [
+        {
+            "name": "last_name",
+            "table": "c",
+            "as": "customer_name"
+        },
+        {
+            "function": "count",
+            "name": "id",
+            "table": "orders",
+            "as": "order_count"
+        }
+    ],
+    "where": [
+        {
+            "operator": "!=",
+            "value1": {
+                "attribute": "c.region"
+            },
+            "value2": null
+        },
+        {
+            "and": {
+                "operator": "=",
+                "value1": {
+                    "attribute": "c.active"
+                },
+                "value2": true
+            }
+        },
+        {
+            "and": {
+                "operator": ">",
+                "value1": {
+                    "function": "count",
+                    "attribute": "orders.id"
+                },
+                "value2": 5
+            }
+        }
+    ],
+    "group_by": [
+        "c.last_name"
+    ],
+    "order_by": [
+        {
+            "attribute": "order_count",
+            "order": "desc"
+        }
+    ]
+}

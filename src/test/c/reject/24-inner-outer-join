@@ -3,7 +3,7 @@
     "join": [
         {
             "table": "t2",
-            "type": "right",
+            "type": "inner",
             "outer": true,
             "condition": {
                 "operator": "=",

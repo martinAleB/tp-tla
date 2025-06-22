@@ -1,0 +1,12 @@
+{
+    "from": "t1",
+    "from": "t2",
+    "attributes": [
+        {
+            "name": "attr1"
+        },
+        {
+            "name": "attr2"
+        }
+    ]
+}

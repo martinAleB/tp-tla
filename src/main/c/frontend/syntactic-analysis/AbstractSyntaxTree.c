@@ -92,10 +92,6 @@ void releaseClauseValue(ClauseValue *clauseValue)
 			{
 				free(clauseValue->attributesClauseValue->table);
 			}
-			if (clauseValue->attributesClauseValue->aggregationFunction != NULL)
-			{
-				free(clauseValue->attributesClauseValue->aggregationFunction);
-			}
 			free(clauseValue->attributesClauseValue);
 			break;
 		case GROUP_BY_CLAUSE:
@@ -112,7 +108,6 @@ void releaseClauseValue(ClauseValue *clauseValue)
 				if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL)
 				{
 					free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
-					free(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
 					free(clauseValue->orderByClauseValue->compositeOrderByClause);
 				}
 				break;
@@ -120,7 +115,6 @@ void releaseClauseValue(ClauseValue *clauseValue)
 				if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL)
 				{
 					free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
-					free(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
 					free(clauseValue->orderByClauseValue->compositeOrderByClause);
 				}
 				break;
@@ -179,7 +173,6 @@ void releaseAggregationFunction(AggregationFunction *aggFunc)
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (aggFunc != NULL)
 	{
-		free(aggFunc->aggr);
 		free(aggFunc->attribute);
 		free(aggFunc);
 	}
@@ -277,9 +270,6 @@ void releaseWhereCondition(WhereCondition *whereCondition)
 		case NODE_TYPE_WHERE_NOT_CONDITION:
 			releaseWhereNotCondition(whereCondition->whereNotCondition);
 			break;
-		case NODE_TYPE_WHERE_IS_CONDITION:
-			releaseWhereIsCondition(whereCondition->whereIsCondition);
-			break;
 		case NODE_TYPE_WHERE_IN_CONDITION:
 			releaseWhereInCondition(whereCondition->whereInCondition);
 			break;
@@ -308,25 +298,13 @@ void releaseWhereInCondition(WhereInCondition *whereInCondition)
 	}
 }
 
-void releaseWhereIsCondition(WhereIsCondition *whereIsCondition)
-{
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (whereIsCondition != NULL)
-	{			
-		releaseWhereNotCondition(whereIsCondition->whereNotCondition);
-		free(whereIsCondition);
-	}
-}
-
 void releaseJoinClauseValue(JoinClauseValue *joinClauseValue)
 {
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (joinClauseValue != NULL)
 	{
 		releaseWhereBinaryCondition(joinClauseValue->condition);
-		free(joinClauseValue->type);
-		free(joinClauseValue->table1);
-		free(joinClauseValue->table2);
+		free(joinClauseValue->table);
 		free(joinClauseValue);
 	}
 }

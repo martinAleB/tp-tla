@@ -1,0 +1,25 @@
+{
+    "from": [
+        "t1"
+    ],
+    "where": [
+        {
+            "attribute": "id",
+            "in": {
+                "attributes": [
+                    {
+                        "function": "sum",
+                        "name": "attr3"
+                    }
+                ],
+                "where": [
+                    {
+                        "operator": "=",
+                        "value1": "true",
+                        "value2": "false"
+                    }
+                ]
+            }
+        }
+    ]
+}

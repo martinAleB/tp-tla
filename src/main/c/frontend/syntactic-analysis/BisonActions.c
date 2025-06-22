@@ -1,4 +1,5 @@
 #include "BisonActions.h"
+#include "../../shared/SymbolTable.h"
 
 /* MODULE INTERNAL STATE */
 
@@ -253,7 +254,7 @@ ClauseValue *CompositeOrderByClauseValueSemanticAction(char *string, CompositeOr
 	return clauseValue;
 }
 
-ClauseValue *AggregationFunctionOrderByClauseValueSemanticAction(char *aggrFunc, char *string, CompositeOrderByClause *compositeOrderByClause)
+ClauseValue *AggregationFunctionOrderByClauseValueSemanticAction(AggregationType aggrFunc, char *string, CompositeOrderByClause *compositeOrderByClause)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
@@ -306,9 +307,10 @@ AttributesClauseValue *AttributeSemanticAction(char *name, AttributesClauseValue
 	return clauseValue;
 }
 
-AttributesClauseValue *AggregationSemanticAction(char *function, AttributesClauseValue *clauseValue)
+AttributesClauseValue *AggregationSemanticAction(AggregationType function, AttributesClauseValue *clauseValue)
 {
 	clauseValue->aggregationFunction = function;
+	clauseValue->hasAggregationFunction = true;
 	return clauseValue;
 }
 
@@ -362,7 +364,7 @@ WhereConditionValue *AttributeWhereConditionValueSemanticAction(char *attribute)
 	whereConditionValue->type = CONDITION_VALUE_ATTRIBUTE;
 	return whereConditionValue;
 }
-WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(char *aggr, char *attribute)
+WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(AggregationType aggr, char *attribute)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereConditionValue *whereConditionValue = calloc(1, sizeof(WhereConditionValue));
@@ -466,16 +468,6 @@ WhereCondition *NotConditionAndNextWhereConditionSemanticAction(WhereNotConditio
 	return whereCondition;
 }
 
-WhereCondition *IsConditionAndNextWhereConditionSemanticAction(WhereIsCondition *condition, WhereCondition *next)
-{
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	WhereCondition *whereCondition = calloc(1, sizeof(WhereCondition));
-	whereCondition->whereIsCondition = condition;
-	whereCondition->nodeType = NODE_TYPE_WHERE_IS_CONDITION;
-	whereCondition->next = next;
-	return whereCondition;
-}
-
 WhereCondition *InConditionAndNextWhereConditionSemanticAction(WhereInCondition *condition, WhereCondition *next)
 {
 
@@ -510,14 +502,6 @@ WhereCondition *FirstBinaryConditionAndNextWhereConditionSemanticAction(WhereBin
 	return whereCondition;
 }
 
-WhereCondition *FirstIsConditionAndNextWhereConditionSemanticAction(WhereIsCondition *whereIsCondition, WhereCondition *next)
-{
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	WhereCondition *whereCondition = IsConditionAndNextWhereConditionSemanticAction(whereIsCondition, next);
-	whereCondition->preconditional = PRECONDITIONAL_FIRST;
-	return whereCondition;
-}
-
 WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondition *whereInCondition, WhereCondition *next)
 {
 
@@ -544,15 +528,8 @@ WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char *attribute, 
 	whereInCondition->auxQueryName = auxQueryName;
 	whereInCondition->attribute = attribute;
 	whereInCondition->type = WHERE_IN_CONDITION_AUX_QUERY_NAME;
+	addSubqueryUsage(currentCompilerState()->symbolTable, auxQueryName);
 	return whereInCondition;
-}
-
-WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(WhereNotCondition *whereNotCondition)
-{
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	WhereIsCondition *whereIsCondition = calloc(1, sizeof(WhereIsCondition));
-	whereIsCondition->whereNotCondition = whereNotCondition;
-	return whereIsCondition;
 }
 
 // GROUP BY CLAUSE VALUES
@@ -588,6 +565,7 @@ ClauseArgsList *SingleQueryAuxiliaryClauseArgsListSemanticAction(char *auxQueryN
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQueryName = auxQueryName;
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQuery = auxQuery;
 	auxiliaryArgsList->clauseValue->clauseType = AUXILIARY_CLAUSE;
+	addSubqueryDefinition(currentCompilerState()->symbolTable, auxQueryName, auxQuery);
 	return auxiliaryArgsList;
 }
 
@@ -601,20 +579,21 @@ ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char *auxQu
 	auxiliaryArgsList->clauseValue->auxiliaryClauseValue->auxQuery = auxQuery;
 	auxiliaryArgsList->next = auxQueriesList;
 	auxiliaryArgsList->clauseValue->clauseType = AUXILIARY_CLAUSE;
+	addSubqueryDefinition(currentCompilerState()->symbolTable, auxQueryName, (void *)auxQuery);
 	return auxiliaryArgsList;
 }
 
 // JOIN CLAUSE VALUE
-ClauseValue *JoinClauseValueSemanticAction(char *table1, char *table2, char *joinType, boolean outer, WhereBinaryCondition *condition)
+ClauseValue *JoinClauseValueSemanticAction(char *table, JoinTypes joinType, boolean outer, WhereBinaryCondition *condition)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
 	clauseValue->joinClauseValue = calloc(1, sizeof(JoinClauseValue));
 	clauseValue->joinClauseValue->condition = condition;
 	clauseValue->joinClauseValue->outer = outer;
-	clauseValue->joinClauseValue->type = joinType;
-	clauseValue->joinClauseValue->table1 = table1;
-	clauseValue->joinClauseValue->table2 = table2;
+	// clauseValue->joinClauseValue->type = joinType;
+	clauseValue->joinClauseValue->joinType = joinType;
+	clauseValue->joinClauseValue->table = table;
 	clauseValue->clauseType = JOIN_CLAUSE;
 	return clauseValue;
 }

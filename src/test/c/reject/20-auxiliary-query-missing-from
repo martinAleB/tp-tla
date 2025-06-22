@@ -1,0 +1,30 @@
+{
+    "from": [
+        "t1"
+    ],
+    "where": [
+        {
+            "attribute": "id",
+            "in": "auxiliaryQuery"
+        }
+    ],
+    "auxiliary": [
+        {
+            "auxiliaryQuery": {
+                "attributes": [
+                    {
+                        "function": "sum",
+                        "name": "attr3"
+                    }
+                ],
+                "where": [
+                    {
+                        "operator": "=",
+                        "value1": "true",
+                        "value2": "false"
+                    }
+                ]
+            }
+        }
+    ]
+}

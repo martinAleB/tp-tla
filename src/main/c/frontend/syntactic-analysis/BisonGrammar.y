@@ -17,6 +17,8 @@
 	OrderByClauseValueType orderByType;
 	Token token;
 	BinaryConditionOperator binaryConditionOperator;
+	JoinTypes joinType;
+	AggregationType aggType;
 	WhereConditionPreconditional whereConditionPreconditional;
 
 	/** Non-terminals. */
@@ -36,7 +38,6 @@
 	WhereNotCondition * whereNotCondition;
 	WhereCondition * whereCondition;
 	WhereInCondition * whereInCondition;
-	WhereIsCondition * whereIsCondition;
 	AttributesClauseValue * attributeClauseValue;
 	CompositeOrderByClause * orderByExplicit;
 }
@@ -59,7 +60,6 @@
 %destructor { releaseWhereConditionValue($$); } <whereConditionValue>
 %destructor { releaseWhereCondition($$); } <whereCondition>
 %destructor { releaseWhereInCondition($$); } <whereInCondition>
-%destructor { releaseWhereIsCondition($$); } <whereIsCondition>
 
 /** Terminals. */
 %token <integer> INTEGER
@@ -110,16 +110,14 @@
 %token <token> IN
 %token <token> IS
 %token <token> NAME
-%token <string> JOIN_TYPE
-%token <string> AGGREGATION_FUNCTION
+%token <joinType> JOIN_TYPE
+%token <aggType> AGGREGATION_FUNCTION
 %token <token> RIGHT
 %token <token> LEFT
 %token <token> INNER
 %token <token> TYPE
 %token <token> OUTER
 %token <token> CONDITION
-%token <token> TABLE1
-%token <token> TABLE2
 
 %token <token> UNKNOWN
 
@@ -158,7 +156,6 @@
 %type <whereCondition> whereConditionWithPrecond
 %type <whereCondition> whereConditionWithPrecondAfter
 %type <whereInCondition> whereInCondition
-%type <whereIsCondition> whereIsCondition
 
 %type <clauseArgsList> groupByClause
 %type <clauseArgsList> groupByValues
@@ -201,7 +198,7 @@ joinClauseValues: joinClauseValue									{ $$ = ClauseArgsListSemanticAction($1
 	| joinClauseValue COMMA joinClauseValues						{ $$ = ClauseArgsListSemanticAction($1, $3); }
 	;
 
-joinClauseValue: OPEN_CURLY_BRACE TABLE1 COLON STRING[table1] COMMA TABLE2 COLON STRING[table2] COMMA TYPE COLON JOIN_TYPE[joinType] COMMA OUTER COLON BOOLEAN[joinOuter] COMMA CONDITION COLON whereBinaryCondition[joinCondition] CLOSE_CURLY_BRACE		{ $$ = JoinClauseValueSemanticAction($table1, $table2, $joinType, $joinOuter, $joinCondition); }
+joinClauseValue: OPEN_CURLY_BRACE TABLE COLON STRING[table] COMMA TYPE COLON JOIN_TYPE[joinType] COMMA OUTER COLON BOOLEAN[joinOuter] COMMA CONDITION COLON whereBinaryCondition[joinCondition] CLOSE_CURLY_BRACE		{ $$ = JoinClauseValueSemanticAction($table, $joinType, $joinOuter, $joinCondition); }
 
 //AUXILIARY CLAUSE
 auxiliaryClauseValues: OPEN_CURLY_BRACE STRING COLON json CLOSE_CURLY_BRACE							{ $$ = SingleQueryAuxiliaryClauseArgsListSemanticAction($2, $4); }
@@ -235,7 +232,7 @@ whereConditionValue: STRING											{ $$ = StringWhereConditionValueSemanticAc
 	| whereBinaryCondition											{ $$ = WhereBinaryConditionWhereConditionValueSemanticAction($1); }
 	;
 
-whereBinaryCondition: OPEN_CURLY_BRACE OPERATOR[op] COLON BINARY_OPERATOR COMMA FIRST_VALUE COLON whereConditionValue[value1] COMMA SECOND_VALUE COLON whereConditionValue[value2] CLOSE_CURLY_BRACE	{ $$ = WhereBinaryConditionSemanticAction($value1, $value2, $op); }
+whereBinaryCondition: OPEN_CURLY_BRACE OPERATOR COLON BINARY_OPERATOR[op] COMMA FIRST_VALUE COLON whereConditionValue[value1] COMMA SECOND_VALUE COLON whereConditionValue[value2] CLOSE_CURLY_BRACE	{ $$ = WhereBinaryConditionSemanticAction($value1, $value2, $op); }
 	;
 
 whereNotCondition: OPEN_CURLY_BRACE NOT COLON whereBinaryCondition CLOSE_CURLY_BRACE				{ $$ = WhereNotConditionWithBinaryConditionSemanticAction($4); }
@@ -247,7 +244,6 @@ whereNotCondition: OPEN_CURLY_BRACE NOT COLON whereBinaryCondition CLOSE_CURLY_B
 colonWhere:	COLON whereCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter			{ $$ = CurrentAndNextWhereConditionsSemanticAction($2, $4); }
 	| COLON whereBinaryCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter			{ $$ = BinaryConditionAndNextWhereConditionSemanticAction($2, $4); }
 	| COLON whereNotCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter				{ $$ = NotConditionAndNextWhereConditionSemanticAction($2, $4); }
-	| COLON whereIsCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter				{ $$ = IsConditionAndNextWhereConditionSemanticAction($2, $4); }
 	| COLON whereInCondition CLOSE_CURLY_BRACE whereConditionWithPrecondAfter				{ $$ = InConditionAndNextWhereConditionSemanticAction($2, $4); }
 	;
 
@@ -262,17 +258,12 @@ whereConditionWithPrecondAfter: COMMA whereConditionWithPrecond													{ $$
 whereCondition: OPEN_BRACKET whereCondition whereConditionWithPrecondAfter CLOSE_BRACKET			{ $$ = FirstCurrentAndNextWhereConditionsSemanticAction($2, $3); }						
 	| OPEN_BRACKET whereBinaryCondition whereConditionWithPrecondAfter CLOSE_BRACKET				{ $$ = FirstBinaryConditionAndNextWhereConditionSemanticAction($2, $3); }
 	| OPEN_BRACKET whereNotCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstNotConditionAndNextWhereConditionSemanticAction($2, $3); }
-	| OPEN_BRACKET whereIsCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstIsConditionAndNextWhereConditionSemanticAction($2, $3); }
 	| OPEN_BRACKET whereInCondition whereConditionWithPrecondAfter CLOSE_BRACKET					{ $$ = FirstInConditionAndNextWhereConditionSemanticAction($2, $3); }
 	;
 
 whereInCondition: OPEN_CURLY_BRACE ATTRIBUTE COLON STRING COMMA IN COLON json CLOSE_CURLY_BRACE									{ $$ = QueryWhereInConditionSemanticAction($4, $8); }
 	| OPEN_CURLY_BRACE ATTRIBUTE COLON STRING COMMA IN COLON STRING CLOSE_CURLY_BRACE											{ $$ = AuxiliaryQueryWhereInConditionSemanticAction($4, $8); }
 	;
-
-whereIsCondition: OPEN_CURLY_BRACE IS COLON whereNotCondition CLOSE_CURLY_BRACE						{ $$ = WhereNotConditionWhereIsConditionSemanticAction($4); }
-	;
-
 
 //ORDER BY CLAUSE
 orderByClauseArgsList: orderByClauseValue							{ $$ = ClauseArgsListSemanticAction($1, NULL); }

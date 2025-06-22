@@ -18,8 +18,8 @@
                 "where": [
                     {
                         "operator": "=",
-                        "value1": "true",
-                        "value2": "false"
+                        "value1": true,
+                        "value2": false
                     }
                 ]
             }

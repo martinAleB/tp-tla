@@ -1,0 +1,40 @@
+{
+    "from": [
+        "t1"
+    ],
+    "where": [
+        {
+            "attribute": "id",
+            "in": "redefinedAuxVariable"
+        }
+    ],
+    "auxiliary": [
+        {
+            "redefinedAuxVariable": {
+                "from": "t2",
+                "attributes": [
+                    {
+                        "function": "sum",
+                        "name": "attr3"
+                    }
+                ],
+                "where": [
+                    {
+                        "operator": "=",
+                        "value1": "true",
+                        "value2": "false"
+                    }
+                ]
+            }
+        },
+        {
+            "redefinedAuxVariable": {
+                "from": "t1",
+                "group_by": [
+                    "attr1",
+                    "attr2"
+                ]
+            }
+        }
+    ]
+}
