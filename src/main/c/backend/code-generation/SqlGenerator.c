@@ -1,4 +1,4 @@
-#include "Generator.h"
+#include "SqlGenerator.h"
 /* MODULE INTERNAL STATE */
 
 static Logger *_logger = NULL;
