@@ -92,10 +92,6 @@ void releaseClauseValue(ClauseValue *clauseValue)
 			{
 				free(clauseValue->attributesClauseValue->table);
 			}
-			if (clauseValue->attributesClauseValue->aggregationFunction != NULL)
-			{
-				free(clauseValue->attributesClauseValue->aggregationFunction);
-			}
 			free(clauseValue->attributesClauseValue);
 			break;
 		case GROUP_BY_CLAUSE:
@@ -112,7 +108,6 @@ void releaseClauseValue(ClauseValue *clauseValue)
 				if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL)
 				{
 					free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
-					free(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
 					free(clauseValue->orderByClauseValue->compositeOrderByClause);
 				}
 				break;
@@ -120,7 +115,6 @@ void releaseClauseValue(ClauseValue *clauseValue)
 				if (clauseValue->orderByClauseValue->compositeOrderByClause != NULL)
 				{
 					free(clauseValue->orderByClauseValue->compositeOrderByClause->string);
-					free(clauseValue->orderByClauseValue->compositeOrderByClause->aggrFunc);
 					free(clauseValue->orderByClauseValue->compositeOrderByClause);
 				}
 				break;
@@ -179,7 +173,6 @@ void releaseAggregationFunction(AggregationFunction *aggFunc)
 	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
 	if (aggFunc != NULL)
 	{
-		free(aggFunc->aggr);
 		free(aggFunc->attribute);
 		free(aggFunc);
 	}
@@ -325,7 +318,6 @@ void releaseJoinClauseValue(JoinClauseValue *joinClauseValue)
 	if (joinClauseValue != NULL)
 	{
 		releaseWhereBinaryCondition(joinClauseValue->condition);
-		free(joinClauseValue->type);
 		free(joinClauseValue->table);
 		free(joinClauseValue);
 	}

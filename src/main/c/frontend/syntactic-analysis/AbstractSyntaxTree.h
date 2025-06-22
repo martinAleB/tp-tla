@@ -20,6 +20,7 @@ typedef enum ProgramType ProgramType;
 
 typedef enum ClauseType ClauseType;
 typedef enum FromClauseValueType FromClauseValueType;
+typedef enum JoinTypes JoinTypes;
 typedef enum AggregationType AggregationType;
 typedef enum OrderByType OrderByType;
 typedef enum OrderByFunctionType OrderByFunctionType;
@@ -121,6 +122,22 @@ enum FromClauseValueType
 	TABLE_RENAME
 };
 
+enum JoinTypes
+{
+	INNER_JOIN,
+	LEFT_JOIN,
+	RIGHT_JOIN
+};
+
+enum AggregationType
+{
+	COUNT_FUNC,
+	SUM_FUNC,
+	AVERAGE_FUNC,
+	MIN_FUNC,
+	MAX_FUNC
+};
+
 enum BinaryConditionOperator
 {
 	BINARY_CONDITION_OPERATOR_LOWER,
@@ -203,7 +220,7 @@ struct AttributeRename
 
 struct AggregationFunction
 {
-	char *aggr;
+	AggregationType aggr;
 	char *attribute;
 };
 struct FromClauseValue
@@ -219,7 +236,7 @@ struct FromClauseValue
 struct JoinClauseValue
 {
 	char *table;
-	char *type;
+	JoinTypes joinType;
 	boolean outer;
 	WhereBinaryCondition *condition;
 };
@@ -233,7 +250,7 @@ struct AuxiliaryClauseValue
 struct CompositeOrderByClause
 {
 	char *string;
-	char *aggrFunc;
+	AggregationType aggrFunc;
 	OrderByFunctionType orderByFunctionType;
 };
 
@@ -251,7 +268,8 @@ struct AttributesClauseValue
 {
 	char *name;
 	char *table;
-	char *aggregationFunction;
+	AggregationType aggregationFunction;
+	boolean hasAggregationFunction;
 	char *rename;
 };
 

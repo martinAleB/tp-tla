@@ -17,6 +17,8 @@
 	OrderByClauseValueType orderByType;
 	Token token;
 	BinaryConditionOperator binaryConditionOperator;
+	JoinTypes joinType;
+	AggregationType aggType;
 	WhereConditionPreconditional whereConditionPreconditional;
 
 	/** Non-terminals. */
@@ -110,16 +112,14 @@
 %token <token> IN
 %token <token> IS
 %token <token> NAME
-%token <string> JOIN_TYPE
-%token <string> AGGREGATION_FUNCTION
+%token <joinType> JOIN_TYPE
+%token <aggType> AGGREGATION_FUNCTION
 %token <token> RIGHT
 %token <token> LEFT
 %token <token> INNER
 %token <token> TYPE
 %token <token> OUTER
 %token <token> CONDITION
-%token <token> TABLE1
-%token <token> TABLE2
 
 %token <token> UNKNOWN
 

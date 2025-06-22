@@ -45,7 +45,7 @@
 "\"asc\""                               { return OrderByFunctionLexemeAction(createLexicalAnalyzerContext(), ASC); }
 "\"desc\""                              { return OrderByFunctionLexemeAction(createLexicalAnalyzerContext(), DESC); }
 
-"\"null\""                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), NULLV); }
+"null"                          { return KeyWordLexemeAction(createLexicalAnalyzerContext(), NULLV); }
 "true"                          { return BooleanLexemeAction(createLexicalAnalyzerContext(), TRUE); }
 "false"                         { return BooleanLexemeAction(createLexicalAnalyzerContext(), FALSE); }
 "\"value1\""                        { return KeyWordLexemeAction(createLexicalAnalyzerContext(), FIRST_VALUE); }
@@ -63,8 +63,6 @@
 "\"left\""                          { return JoinTypeLexemeAction(createLexicalAnalyzerContext(), LEFT); }
 "\"inner\""                         { return JoinTypeLexemeAction(createLexicalAnalyzerContext(), INNER); }
 "\"condition\""                     { return KeyWordLexemeAction(createLexicalAnalyzerContext(), CONDITION); }
-"\"table1\""                        { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TABLE1); }
-"\"table2\""                        { return KeyWordLexemeAction(createLexicalAnalyzerContext(), TABLE2); }
 
 "\"<\""                                 { return BinaryConditionOperatorLexemeAction(createLexicalAnalyzerContext(), LOWER); }
 "\">\""                                 { return BinaryConditionOperatorLexemeAction(createLexicalAnalyzerContext(), GREATER); }

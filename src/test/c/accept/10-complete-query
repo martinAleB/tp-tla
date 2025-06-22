@@ -6,7 +6,7 @@
   "join": [
     {
       "table": "t2",
-      "type": "inner",
+      "type": "left",
       "outer": true,
       "condition": {
         "operator": "=",

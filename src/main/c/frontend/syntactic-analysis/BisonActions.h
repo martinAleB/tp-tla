@@ -51,7 +51,7 @@ AttributesClauseValue *OnlyTableAttributeOptionSemanticAction(char *table);
 AttributesClauseValue *OnlyAsAttributeOptionSemanticAction(char *rename);
 AttributesClauseValue *TableAndAsAttributeOptionSemanticAction(char *table, char *rename);
 AttributesClauseValue *AttributeSemanticAction(char *name, AttributesClauseValue *clauseValue);
-AttributesClauseValue *AggregationSemanticAction(char *function, AttributesClauseValue *clauseValue);
+AttributesClauseValue *AggregationSemanticAction(AggregationType function, AttributesClauseValue *clauseValue);
 ClauseValue *AttributeClauseValueSemanticAction(AttributesClauseValue *attributeClauseValue);
 AttributesClauseValue *EmptyAttributeOptionSemanticAction();
 
@@ -63,7 +63,7 @@ WhereConditionValue *NumberWhereConditionValueSemanticAction(float number);
 WhereConditionValue *BooleanWhereConditionValueSemanticAction(boolean bool);
 WhereConditionValue *NullWhereConditionValueSemanticAction();
 WhereConditionValue *AttributeWhereConditionValueSemanticAction(char *attribute);
-WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(char *aggr, char *attribute);
+WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(AggregationType aggr, char *attribute);
 WhereConditionValue *WhereBinaryConditionWhereConditionValueSemanticAction(WhereBinaryCondition *whereBinaryCondition);
 WhereBinaryCondition *WhereBinaryConditionSemanticAction(WhereConditionValue *value1, WhereConditionValue *value2, BinaryConditionOperator operator);
 
@@ -95,11 +95,11 @@ ClauseArgsList *StringGroupByClauseSemanticAction(char *string);
 ClauseValue *GroupByValueSemanticAction(char *string);
 
 ClauseValue *StringOrderByClauseValueSemanticAction(char *string);
-ClauseValue *AggregationFunctionOrderByClauseValueSemanticAction(char *aggrFunc, char *string, CompositeOrderByClause *compositeOrderByClause);
+ClauseValue *AggregationFunctionOrderByClauseValueSemanticAction(AggregationType aggrFunc, char *string, CompositeOrderByClause *compositeOrderByClause);
 ClauseValue *CompositeOrderByClauseValueSemanticAction(char *string, CompositeOrderByClause *compositeOrderByClause);
 CompositeOrderByClause *OrderBySemanticAction(OrderByType orderByType);
 
 // JOIN CLAUSE VALUES
-ClauseValue *JoinClauseValueSemanticAction(char *table, char *joinType, boolean outer, WhereBinaryCondition *condition);
+ClauseValue *JoinClauseValueSemanticAction(char *table, JoinTypes joinType, boolean outer, WhereBinaryCondition *condition);
 
 #endif

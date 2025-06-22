@@ -60,9 +60,19 @@ Token IntegerLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 Token JoinTypeLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
-	strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
-	lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = '\0';
+	//lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
+	//strncpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme, lexicalAnalyzerContext->length);
+	//lexicalAnalyzerContext->semanticValue->string[lexicalAnalyzerContext->length] = '\0';
+	switch(token) {
+		case INNER:
+			lexicalAnalyzerContext->semanticValue->joinType = INNER_JOIN;
+			break;
+		case RIGHT:
+			lexicalAnalyzerContext->semanticValue->joinType = RIGHT_JOIN;
+			break;
+		case LEFT:
+			lexicalAnalyzerContext->semanticValue->joinType = LEFT_JOIN;
+	}
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return JOIN_TYPE;
 }
@@ -104,8 +114,26 @@ Token NumberLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext)
 Token AggregationFunctionLexemeAction(LexicalAnalyzerContext *lexicalAnalyzerContext, Token token)
 {
 	_logLexicalAnalyzerContext(__FUNCTION__, lexicalAnalyzerContext);
-	lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
-	strcpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme);
+	//lexicalAnalyzerContext->semanticValue->string = malloc(sizeof(char) * (lexicalAnalyzerContext->length + 1));
+	//strcpy(lexicalAnalyzerContext->semanticValue->string, lexicalAnalyzerContext->lexeme);
+	switch (token)
+	{
+	case MIN:
+		lexicalAnalyzerContext->semanticValue->aggType = MIN_FUNC;
+		break;
+	case MAX:
+		lexicalAnalyzerContext->semanticValue->aggType = MAX_FUNC;
+		break;
+	case AVERAGE:
+		lexicalAnalyzerContext->semanticValue->aggType = AVERAGE_FUNC;
+		break;
+	case SUM:
+		lexicalAnalyzerContext->semanticValue->aggType = SUM_FUNC;
+		break;
+	case COUNT:
+		lexicalAnalyzerContext->semanticValue->aggType = COUNT_FUNC;
+		break;
+	}
 	destroyLexicalAnalyzerContext(lexicalAnalyzerContext);
 	return AGGREGATION_FUNCTION;
 }

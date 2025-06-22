@@ -1,0 +1,23 @@
+{
+    "from": "user_roles",
+    "attributes": [
+        {
+            "name": "user_id"
+        },
+        {
+            "name": "role_id"
+        }
+    ],
+    "where": [
+        {
+            "operator": "!=",
+            "value1": null,
+            "value2": {
+                "attribute": "username"
+            }
+        }
+    ],
+    "group_by": [
+        "user_id"
+    ]
+}

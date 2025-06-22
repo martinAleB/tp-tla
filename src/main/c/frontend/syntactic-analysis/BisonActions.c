@@ -254,7 +254,7 @@ ClauseValue *CompositeOrderByClauseValueSemanticAction(char *string, CompositeOr
 	return clauseValue;
 }
 
-ClauseValue *AggregationFunctionOrderByClauseValueSemanticAction(char *aggrFunc, char *string, CompositeOrderByClause *compositeOrderByClause)
+ClauseValue *AggregationFunctionOrderByClauseValueSemanticAction(AggregationType aggrFunc, char *string, CompositeOrderByClause *compositeOrderByClause)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
@@ -307,9 +307,10 @@ AttributesClauseValue *AttributeSemanticAction(char *name, AttributesClauseValue
 	return clauseValue;
 }
 
-AttributesClauseValue *AggregationSemanticAction(char *function, AttributesClauseValue *clauseValue)
+AttributesClauseValue *AggregationSemanticAction(AggregationType function, AttributesClauseValue *clauseValue)
 {
 	clauseValue->aggregationFunction = function;
+	clauseValue->hasAggregationFunction = true;
 	return clauseValue;
 }
 
@@ -363,7 +364,7 @@ WhereConditionValue *AttributeWhereConditionValueSemanticAction(char *attribute)
 	whereConditionValue->type = CONDITION_VALUE_ATTRIBUTE;
 	return whereConditionValue;
 }
-WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(char *aggr, char *attribute)
+WhereConditionValue *AggregationFunctionWhereConditionValueSemanticAction(AggregationType aggr, char *attribute)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	WhereConditionValue *whereConditionValue = calloc(1, sizeof(WhereConditionValue));
@@ -610,14 +611,15 @@ ClauseArgsList *MultipleQueriesAuxiliaryClauseArgsListSemanticAction(char *auxQu
 }
 
 // JOIN CLAUSE VALUE
-ClauseValue *JoinClauseValueSemanticAction(char *table, char *joinType, boolean outer, WhereBinaryCondition *condition)
+ClauseValue *JoinClauseValueSemanticAction(char *table, JoinTypes joinType, boolean outer, WhereBinaryCondition *condition)
 {
 	_logSyntacticAnalyzerAction(__FUNCTION__);
 	ClauseValue *clauseValue = calloc(1, sizeof(ClauseValue));
 	clauseValue->joinClauseValue = calloc(1, sizeof(JoinClauseValue));
 	clauseValue->joinClauseValue->condition = condition;
 	clauseValue->joinClauseValue->outer = outer;
-	clauseValue->joinClauseValue->type = joinType;
+	//clauseValue->joinClauseValue->type = joinType;
+	clauseValue->joinClauseValue->joinType = joinType;
 	clauseValue->joinClauseValue->table = table;
 	clauseValue->clauseType = JOIN_CLAUSE;
 	return clauseValue;
