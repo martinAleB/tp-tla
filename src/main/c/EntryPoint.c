@@ -54,7 +54,7 @@ const int main(const int count, const char **arguments)
 			logError(logger, "Auxiliary query redefinition");
 			compilationStatus = FAILED;
 		}
-		if (!allUsedSubqueriesDefined(compilerState.symbolTable))
+		else if (!allUsedSubqueriesDefined(compilerState.symbolTable))
 		{
 			logError(logger, "Undefined reference to auxiliary query");
 			compilationStatus = FAILED;

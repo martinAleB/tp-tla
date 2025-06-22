@@ -58,7 +58,7 @@ boolean validateClauseList(ClauseList *clauseList)
     }
     if (clauseCounter[FROM_CLAUSE] == 0)
     {
-        logError(_logger, "Missing 'from' statement");
+        logError(_logger, "Missing 'FROM' statement");
     }
     return clauseCounter[FROM_CLAUSE] == 1;
 }

@@ -63,6 +63,7 @@ int addSubqueryDefinition(SymbolTable symbolTable, char *name, void *query)
     if (!added)
     {
         symbolTable->subqueryRedefinition = 1;
+        free(definition);
     }
     return added;
 }
