@@ -48,7 +48,7 @@ const int main(const int count, const char **arguments)
 		// Beginning of the Backend... ------------------------------------------------------------
 
 		initializeScopeManager();
-		logDebugging(logger, "Checking expression through the SymbolTable...");
+		logDebugging(logger, "Checking expression through the SymbolTable and scopes...");
 		if (hasSubqueryRedefinition(compilerState.symbolTable))
 		{
 			logError(logger, "Auxiliary query redefinition");
