@@ -22,6 +22,10 @@ Se realizaron ciertas modificaciones sobre las construcciones originales.
 * El caso de rechazo "Un programa que tenga 2 atributos duplicados en una misma consulta" fue descartado ya que se descubrió que dicho caso es aceptado en PostgreSQL. En consecuencia fue reemplazado por  siguiente caso: "Un programa que contenga cláusula 'where' con una condición de tipo 'IN' sin ningún atributo". Este último se debe chequear en el backend, razón por la que todavía es aceptado aunque debería rechazarse.
 * El caso de rechazo "Un programa que no contenga las cláusulas obligatorias (attributes y from)" fue reemplazado por: "Un programa que no contenga la cláusula obligatoria 'from'" ya que "attributes" no es más obligatoria. Además dicha ausencia del from se chequea en el backend, por lo que el test es aceptado aunque debería rechazarse.
 
+## Informe
+
+El informe requerido para la última etapa del trabajo se encuentra en la carpeta docs.
+
 # Flex-Bison-Compiler
 
 A base compiler example, developed with Flex and Bison.
