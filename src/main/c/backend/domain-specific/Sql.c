@@ -119,6 +119,19 @@ boolean validateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition)
             return false;
         }
     }
+    if ((whereBinaryCondition->value1->type == CONDITION_VALUE_BINARY_CONDITION && whereBinaryCondition->value2->type != CONDITION_VALUE_BOOLEAN) ||
+        (whereBinaryCondition->value2->type == CONDITION_VALUE_BINARY_CONDITION && whereBinaryCondition->value1->type != CONDITION_VALUE_BOOLEAN) ||
+        (whereBinaryCondition->value1->type == CONDITION_VALUE_NOT_CONDITION && whereBinaryCondition->value2->type != CONDITION_VALUE_BOOLEAN) ||
+        (whereBinaryCondition->value2->type == CONDITION_VALUE_NOT_CONDITION && whereBinaryCondition->value1->type != CONDITION_VALUE_BOOLEAN))
+    {
+        logError(_logger, "Cannot compare a boolean value with a non boolean one");
+        return false;
+    }
+    if (whereBinaryCondition->value1->type != whereBinaryCondition->value2->type && whereBinaryCondition->value1->type != CONDITION_VALUE_ATTRIBUTE && whereBinaryCondition->value2->type != CONDITION_VALUE_ATTRIBUTE && whereBinaryCondition->value1->type != CONDITION_VALUE_AGGREGATION_FUNCTION && whereBinaryCondition->value2->type != CONDITION_VALUE_AGGREGATION_FUNCTION)
+    {
+        logError(_logger, "Cannot compare different data types");
+        return false;
+    }
     if (whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION || whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION)
     {
         setScopeHavingClause();

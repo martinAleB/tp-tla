@@ -423,14 +423,14 @@ static boolean _whereBinaryConditionHasAggregationFunction(WhereBinaryCondition 
 
 	return whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION ||
 		   whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION ||
-		   whereBinaryCondition->value1->type == CONDITION_VALUE_BINARY_CONDITION &&
-			   _whereBinaryConditionHasAggregationFunction(whereBinaryCondition->value1->binaryCondition) ||
-		   whereBinaryCondition->value2->type == CONDITION_VALUE_BINARY_CONDITION &&
-			   _whereBinaryConditionHasAggregationFunction(whereBinaryCondition->value2->binaryCondition) ||
-		   whereBinaryCondition->value1->type == CONDITION_VALUE_NOT_CONDITION &&
-			   _notConditionHasAggregateFunction(whereBinaryCondition->value1->notCondition) ||
-		   whereBinaryCondition->value2->type == CONDITION_VALUE_NOT_CONDITION &&
-			   _notConditionHasAggregateFunction(whereBinaryCondition->value2->notCondition);
+		   (whereBinaryCondition->value1->type == CONDITION_VALUE_BINARY_CONDITION &&
+			_whereBinaryConditionHasAggregationFunction(whereBinaryCondition->value1->binaryCondition)) ||
+		   (whereBinaryCondition->value2->type == CONDITION_VALUE_BINARY_CONDITION &&
+			_whereBinaryConditionHasAggregationFunction(whereBinaryCondition->value2->binaryCondition)) ||
+		   (whereBinaryCondition->value1->type == CONDITION_VALUE_NOT_CONDITION &&
+			_notConditionHasAggregateFunction(whereBinaryCondition->value1->notCondition)) ||
+		   (whereBinaryCondition->value2->type == CONDITION_VALUE_NOT_CONDITION &&
+			_notConditionHasAggregateFunction(whereBinaryCondition->value2->notCondition));
 	// Si es in es atributo y no tiene funcion de agregacion
 }
 
@@ -440,22 +440,20 @@ static boolean _whereConditionHasAggregationFunction(WhereCondition *whereCondit
 	switch (whereCondition->nodeType)
 	{
 	case NODE_TYPE_WHERE_BINARY_CONDITION:
-		return _whereBinaryConditionHasAggregationFunction(whereCondition->binaryCondition);
+		hasAggregationFunction = _whereBinaryConditionHasAggregationFunction(whereCondition->binaryCondition);
 		break;
 	case NODE_TYPE_WHERE_IN_CONDITION:
-		return false; // Solo tiene atributos aca
+		hasAggregationFunction = false; // Solo tiene atributos aca
 		break;
 	case NODE_TYPE_WHERE_NOT_CONDITION:
-		return _notConditionHasAggregateFunction(whereCondition->whereNotCondition);
+		hasAggregationFunction = _notConditionHasAggregateFunction(whereCondition->whereNotCondition);
 		break;
 	case NODE_TYPE_WHERE_CONDITION:
-		return _whereConditionHasAggregationFunction(whereCondition->whereCondition);
+		hasAggregationFunction = _whereConditionHasAggregationFunction(whereCondition->whereCondition);
+		break;
 	}
 
-	if (whereCondition->next)
-		return (hasAggregationFunction || _whereConditionHasAggregationFunction(whereCondition->next));
-	else
-		return hasAggregationFunction;
+	return hasAggregationFunction || (whereCondition->next != NULL && _whereConditionHasAggregationFunction(whereCondition->next));
 }
 
 static void _generateWhereClause(WhereCondition *whereCondition, int *havingFlag)
