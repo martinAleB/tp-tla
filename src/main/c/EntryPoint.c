@@ -64,8 +64,11 @@ const int main(const int count, const char **arguments)
 			logError(logger, "Query validation failed");
 			compilationStatus = FAILED;
 		}
+		else
+		{
+			generate(&compilerState);
+		}
 		freeScopeManager();
-		generate(&compilerState);
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
 	}

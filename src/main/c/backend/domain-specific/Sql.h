@@ -23,11 +23,11 @@ boolean validateClause(Clause *clause);
 boolean validateWhereCondition(WhereCondition *whereCondition);
 boolean validateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition);
 boolean validateWhereNotCondition(WhereNotCondition *whereNotCondition);
-boolean validateWhereIsCondition(WhereIsCondition *whereIsCondition);
 boolean validateWhereInCondition(WhereInCondition *whereInCondition);
 boolean validateClauseArgsList(ClauseArgsList *clauseArgsList);
 boolean validateClauseValue(ClauseValue *clauseValue);
 boolean validateAuxiliaryClauseValue(AuxiliaryClauseValue *auxiliaryClauseValue);
 boolean validateGroupByClauseValue(GroupByClauseValue *GroupByClauseValue);
+boolean validateJoinClauseValue(JoinClauseValue *joinClauseValue);
 
 #endif

@@ -45,9 +45,13 @@ boolean validateClauseList(ClauseList *clauseList)
     {
         Clause *clause = current->clause;
         clauseCounter[clause->type]++;
-        if ((clause->type != JOIN_CLAUSE && clauseCounter[clause->type] > 1) || !validateClause(clause))
+        if ((clause->type != JOIN_CLAUSE && clauseCounter[clause->type] > 1))
         {
             logError(_logger, "Repeated statements detected");
+            return false;
+        }
+        if (!validateClause(clause))
+        {
             return false;
         }
         current = current->next;
@@ -81,12 +85,6 @@ boolean validateWhereCondition(WhereCondition *whereCondition)
                 return false;
             }
             break;
-        case NODE_TYPE_WHERE_IS_CONDITION:
-            if (!validateWhereIsCondition(current->whereIsCondition))
-            {
-                return false;
-            }
-            break;
         case NODE_TYPE_WHERE_NOT_CONDITION:
             if (!validateWhereNotCondition(current->whereNotCondition))
             {
@@ -113,6 +111,14 @@ boolean validateWhereCondition(WhereCondition *whereCondition)
 
 boolean validateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition)
 {
+    if (whereBinaryCondition->value1->type == CONDITION_VALUE_NULL || whereBinaryCondition->value2->type == CONDITION_VALUE_NULL)
+    {
+        if (whereBinaryCondition->operator != BINARY_CONDITION_OPERATOR_EQUAL && whereBinaryCondition->operator != BINARY_CONDITION_OPERATOR_NOT_EQUAL)
+        {
+            logError(_logger, "Cannot compare NULL value with >, <, >= or <=");
+            return false;
+        }
+    }
     if (whereBinaryCondition->value1->type == CONDITION_VALUE_AGGREGATION_FUNCTION || whereBinaryCondition->value2->type == CONDITION_VALUE_AGGREGATION_FUNCTION)
     {
         setScopeHavingClause();
@@ -134,20 +140,6 @@ boolean validateWhereNotCondition(WhereNotCondition *whereNotCondition)
         return validateWhereBinaryCondition(whereNotCondition->whereBinaryCondition);
     }
     return true;
-}
-
-boolean validateWhereIsCondition(WhereIsCondition *whereIsCondition)
-{
-    boolean res = validateWhereNotCondition(whereIsCondition->whereNotCondition);
-    if (res)
-    {
-        if (whereIsCondition->whereNotCondition->nodeSelected == IN_NODE)
-        {
-            logError(_logger, "Invalid IS statement");
-            res = false;
-        }
-    }
-    return res;
 }
 
 boolean validateWhereInCondition(WhereInCondition *whereInCondition)
@@ -181,6 +173,8 @@ boolean validateClauseValue(ClauseValue *clauseValue)
         return validateAuxiliaryClauseValue(clauseValue->auxiliaryClauseValue);
     case GROUP_BY_CLAUSE:
         return validateGroupByClauseValue(clauseValue->groupByClauseValue);
+    case JOIN_CLAUSE:
+        return validateJoinClauseValue(clauseValue->joinClauseValue);
     }
     return true;
 }
@@ -199,4 +193,14 @@ boolean validateGroupByClauseValue(GroupByClauseValue *GroupByClauseValue)
 {
     setScopeGroupByClause();
     return true;
+}
+
+boolean validateJoinClauseValue(JoinClauseValue *joinClauseValue)
+{
+    boolean res = !joinClauseValue->outer || joinClauseValue->joinType != INNER_JOIN;
+    if (!res)
+    {
+        logError(_logger, "Cannot use OUTER in an INNER JOIN clause");
+    }
+    return res;
 }

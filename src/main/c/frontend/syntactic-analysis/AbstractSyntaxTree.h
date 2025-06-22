@@ -56,7 +56,6 @@ typedef struct WhereNotCondition WhereNotCondition;
 typedef struct WhereConditionValue WhereConditionValue;
 typedef struct WhereBinaryCondition WhereBinaryCondition;
 typedef struct WhereInCondition WhereInCondition;
-typedef struct WhereIsCondition WhereIsCondition;
 typedef struct AuxiliaryClauseValue AuxiliaryClauseValue;
 typedef struct JoinClauseValue JoinClauseValue;
 
@@ -173,7 +172,6 @@ enum WhereConditionNodeType
 	NODE_TYPE_WHERE_BINARY_CONDITION,
 	NODE_TYPE_WHERE_CONDITION,
 	NODE_TYPE_WHERE_NOT_CONDITION,
-	NODE_TYPE_WHERE_IS_CONDITION,
 	NODE_TYPE_WHERE_IN_CONDITION
 };
 
@@ -351,7 +349,6 @@ struct WhereCondition
 		WhereBinaryCondition *binaryCondition;
 		WhereCondition *whereCondition;
 		WhereNotCondition *whereNotCondition;
-		WhereIsCondition *whereIsCondition;
 		WhereInCondition *whereInCondition;
 	};
 	WhereConditionNodeType nodeType;
@@ -369,12 +366,6 @@ struct WhereNotCondition
 		WhereBinaryCondition *whereBinaryCondition;
 	};
 	NotNodeSelected nodeSelected;
-};
-
-struct WhereIsCondition
-{
-	char *attribute;
-	WhereNotCondition *whereNotCondition;
 };
 
 struct WhereInCondition
@@ -430,7 +421,6 @@ void releaseWhereConditionValue(WhereConditionValue *whereConditionValue);
 void releaseWhereNotCondition(WhereNotCondition *whereNotCondition);
 void releaseWhereCondition(WhereCondition *whereCondition);
 void releaseWhereInCondition(WhereInCondition *whereInCondition);
-void releaseWhereIsCondition(WhereIsCondition *whereIsCondition);
 void releaseJoinClauseValue(JoinClauseValue *joinClauseValue);
 
 #endif

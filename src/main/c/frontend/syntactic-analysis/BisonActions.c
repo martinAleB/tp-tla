@@ -467,16 +467,6 @@ WhereCondition *NotConditionAndNextWhereConditionSemanticAction(WhereNotConditio
 	whereCondition->next = next;
 	return whereCondition;
 }
-/* 
-WhereCondition *IsConditionAndNextWhereConditionSemanticAction(WhereIsCondition *condition, WhereCondition *next)
-{
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	WhereCondition *whereCondition = calloc(1, sizeof(WhereCondition));
-	whereCondition->whereIsCondition = condition;
-	whereCondition->nodeType = NODE_TYPE_WHERE_IS_CONDITION;
-	whereCondition->next = next;
-	return whereCondition;
-} */
 
 WhereCondition *InConditionAndNextWhereConditionSemanticAction(WhereInCondition *condition, WhereCondition *next)
 {
@@ -512,14 +502,6 @@ WhereCondition *FirstBinaryConditionAndNextWhereConditionSemanticAction(WhereBin
 	return whereCondition;
 }
 
-/* WhereCondition *FirstIsConditionAndNextWhereConditionSemanticAction(WhereIsCondition *whereIsCondition, WhereCondition *next)
-{
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	WhereCondition *whereCondition = IsConditionAndNextWhereConditionSemanticAction(whereIsCondition, next);
-	whereCondition->preconditional = PRECONDITIONAL_FIRST;
-	return whereCondition;
-} */
-
 WhereCondition *FirstInConditionAndNextWhereConditionSemanticAction(WhereInCondition *whereInCondition, WhereCondition *next)
 {
 
@@ -549,15 +531,6 @@ WhereInCondition *AuxiliaryQueryWhereInConditionSemanticAction(char *attribute, 
 	addSubqueryUsage(currentCompilerState()->symbolTable, auxQueryName);
 	return whereInCondition;
 }
-
-/* WhereIsCondition *WhereNotConditionWhereIsConditionSemanticAction(char *attribute, WhereNotCondition *whereNotCondition)
-{
-	_logSyntacticAnalyzerAction(__FUNCTION__);
-	WhereIsCondition *whereIsCondition = calloc(1, sizeof(WhereIsCondition));
-	whereIsCondition->attribute = attribute;
-	whereIsCondition->whereNotCondition = whereNotCondition;
-	return whereIsCondition;
-} */
 
 // GROUP BY CLAUSE VALUES
 
@@ -618,7 +591,7 @@ ClauseValue *JoinClauseValueSemanticAction(char *table, JoinTypes joinType, bool
 	clauseValue->joinClauseValue = calloc(1, sizeof(JoinClauseValue));
 	clauseValue->joinClauseValue->condition = condition;
 	clauseValue->joinClauseValue->outer = outer;
-	//clauseValue->joinClauseValue->type = joinType;
+	// clauseValue->joinClauseValue->type = joinType;
 	clauseValue->joinClauseValue->joinType = joinType;
 	clauseValue->joinClauseValue->table = table;
 	clauseValue->clauseType = JOIN_CLAUSE;

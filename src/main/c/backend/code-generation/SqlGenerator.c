@@ -38,11 +38,10 @@ static void _generateOrderByClauseValueAggrFunc(OrderByClauseValue *orderByClaus
 static void _generateWhereClause(WhereCondition *whereCondition, int *havingFlag);
 static void _generateWhereCondition(WhereCondition *whereCondition);
 static void _generateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition);
-static void _generateWhereIsCondition(WhereIsCondition *whereIsCondition);
 static void _generateWhereInCondition(WhereInCondition *whereInCondition, int isNotCondition);
 static void _generateWhereNotCondition(WhereNotCondition *whereNotCondition);
 static void _generateWhereConditionValue(WhereConditionValue *whereConditionValue);
-static void _generateNullValuedWhereCondition(WhereBinaryCondition* whereBinaryCondition);
+static void _generateNullValuedWhereCondition(WhereBinaryCondition *whereBinaryCondition);
 static void _generateBinaryConditionOperator(BinaryConditionOperator binaryConditionOperator);
 static void _generateBinaryConditionOperatorForNullValues(BinaryConditionOperator binaryConditionOperator);
 static void _generateAuxQueryByName(char *auxQueryName);
@@ -75,18 +74,22 @@ static void _generateQuery(Json *json, int isMainQuery)
 static void _generateClauseList(ClauseList *clauseList)
 {
 	Clause *clauses[CLAUSE_TYPE_COUNT] = {0};
-	while(clauseList != NULL) {
+	while (clauseList != NULL)
+	{
 		clauses[clauseList->clause->type] = clauseList->clause;
 		clauseList = clauseList->next;
 	}
-	
+
 	_generateAttributesClause(clauses[ATTRIBUTES_CLAUSE] != NULL ? clauses[ATTRIBUTES_CLAUSE]->clauseArgsList : NULL);
 
 	int havingFlag = 0;
-	for (int i=1; i<CLAUSE_TYPE_COUNT; i++) {
-		if (clauses[i]) {
+	for (int i = 1; i < CLAUSE_TYPE_COUNT; i++)
+	{
+		if (clauses[i])
+		{
 			_generateClause(clauses[i], &havingFlag);
-			if (i == GROUP_BY_CLAUSE && havingFlag) {
+			if (i == GROUP_BY_CLAUSE && havingFlag)
+			{
 				_generateClause(clauses[WHERE_CLAUSE], &havingFlag);
 			}
 		}
@@ -135,7 +138,8 @@ static void _generateFromClause(ClauseArgsList *clauseArgsList)
 			{
 				_outputSql(", ");
 			}
-			else {
+			else
+			{
 				_outputSql(" ");
 			}
 		}
@@ -147,40 +151,50 @@ static void _generateFromClause(ClauseArgsList *clauseArgsList)
 	}
 }
 
-static void _generateJoinClause(ClauseArgsList *clauseArgsList) {
-	while (clauseArgsList != NULL) {
-		if (clauseArgsList->clauseValue != NULL) {
+static void _generateJoinClause(ClauseArgsList *clauseArgsList)
+{
+	while (clauseArgsList != NULL)
+	{
+		if (clauseArgsList->clauseValue != NULL)
+		{
 			_generateJoinClauseValue(clauseArgsList->clauseValue);
 			_outputSql(" ");
-		} else {
+		}
+		else
+		{
 			logError(_logger, "Null clause argument in JOIN clause.");
 		}
 		clauseArgsList = clauseArgsList->next;
 	}
 }
 
-static void _generateJoinClauseValue(ClauseValue *clauseValue) {
-	if (clauseValue->clauseType != JOIN_CLAUSE) {
+static void _generateJoinClauseValue(ClauseValue *clauseValue)
+{
+	if (clauseValue->clauseType != JOIN_CLAUSE)
+	{
 		logError(_logger, "Incorrect clause type in JOIN clause: %d", clauseValue->clauseType);
 	}
 
-	switch(clauseValue->joinClauseValue->joinType) {
-		case INNER_JOIN:
-			_outputSql("INNER ");
-			break;
-		case LEFT_JOIN:
-			_outputSql("LEFT ");
-			break;
-		case RIGHT_JOIN:
-			_outputSql("RIGHT ");
-			break;
+	switch (clauseValue->joinClauseValue->joinType)
+	{
+	case INNER_JOIN:
+		_outputSql("INNER ");
+		break;
+	case LEFT_JOIN:
+		_outputSql("LEFT ");
+		break;
+	case RIGHT_JOIN:
+		_outputSql("RIGHT ");
+		break;
 	}
-	_outputSql("%s JOIN %s ON ", clauseValue->joinClauseValue->outer? "OUTER" : "", clauseValue->joinClauseValue->table);
+	_outputSql("%s JOIN %s ON ", clauseValue->joinClauseValue->outer ? "OUTER" : "", clauseValue->joinClauseValue->table);
 	_generateWhereBinaryCondition(clauseValue->joinClauseValue->condition);
 }
 
-static void _generateFromClauseValue(ClauseValue *clauseValue) {
-	if (clauseValue->clauseType != FROM_CLAUSE) {
+static void _generateFromClauseValue(ClauseValue *clauseValue)
+{
+	if (clauseValue->clauseType != FROM_CLAUSE)
+	{
 		logError(_logger, "Incorrect clause type in FROM clause: %d", clauseValue->clauseType);
 	}
 
@@ -192,8 +206,8 @@ static void _generateFromClauseValue(ClauseValue *clauseValue) {
 	else if (clauseValue->fromClauseValue->fromClauseValueType == TABLE_RENAME)
 	{
 		_outputSql("%s AS %s",
-			   clauseValue->fromClauseValue->tableRename->name,
-			   clauseValue->fromClauseValue->tableRename->rename);
+				   clauseValue->fromClauseValue->tableRename->name,
+				   clauseValue->fromClauseValue->tableRename->rename);
 	}
 }
 
@@ -215,7 +229,8 @@ static void _generateAttributesClause(ClauseArgsList *clauseArgsList)
 				{
 					_outputSql(", ");
 				}
-				else {
+				else
+				{
 					_outputSql(" ");
 				}
 			}
@@ -228,23 +243,25 @@ static void _generateAttributesClause(ClauseArgsList *clauseArgsList)
 	}
 }
 
-static void _generateAggregationFunction(AggregationType aggType) {
-	switch(aggType) {
-		case MIN_FUNC:
-			_outputSql("MIN");
-			break;
-		case MAX_FUNC:
-			_outputSql("MAX");
-			break;
-		case AVERAGE_FUNC:
-			_outputSql("AVERAGE");
-			break;
-		case SUM_FUNC:
-			_outputSql("SUM");
-			break;
-		case COUNT_FUNC:
-			_outputSql("COUNT");
-			break;
+static void _generateAggregationFunction(AggregationType aggType)
+{
+	switch (aggType)
+	{
+	case MIN_FUNC:
+		_outputSql("MIN");
+		break;
+	case MAX_FUNC:
+		_outputSql("MAX");
+		break;
+	case AVERAGE_FUNC:
+		_outputSql("AVERAGE");
+		break;
+	case SUM_FUNC:
+		_outputSql("SUM");
+		break;
+	case COUNT_FUNC:
+		_outputSql("COUNT");
+		break;
 	}
 }
 
@@ -291,7 +308,8 @@ static void _generateGroupByClause(ClauseArgsList *clauseArgsList)
 			{
 				_outputSql(", ");
 			}
-			else {
+			else
+			{
 				_outputSql(" ");
 			}
 		}
@@ -427,9 +445,6 @@ static boolean _whereConditionHasAggregationFunction(WhereCondition *whereCondit
 	case NODE_TYPE_WHERE_IN_CONDITION:
 		return false; // Solo tiene atributos aca
 		break;
-	case NODE_TYPE_WHERE_IS_CONDITION:
-		return _notConditionHasAggregateFunction(whereCondition->whereIsCondition->whereNotCondition);
-		break;
 	case NODE_TYPE_WHERE_NOT_CONDITION:
 		return _notConditionHasAggregateFunction(whereCondition->whereNotCondition);
 		break;
@@ -445,17 +460,20 @@ static boolean _whereConditionHasAggregationFunction(WhereCondition *whereCondit
 
 static void _generateWhereClause(WhereCondition *whereCondition, int *havingFlag)
 {
-	if (_whereConditionHasAggregationFunction(whereCondition)) {
+	if (_whereConditionHasAggregationFunction(whereCondition))
+	{
 		if (*havingFlag == 0)
-			*havingFlag=1;
-		else {
+			*havingFlag = 1;
+		else
+		{
 			_outputSql("HAVING ");
 			_generateWhereCondition(whereCondition);
 			*havingFlag = 0;
 		}
 	}
-	else {
-		_outputSql("WHERE ");	
+	else
+	{
+		_outputSql("WHERE ");
 		_generateWhereCondition(whereCondition);
 	}
 }
@@ -480,9 +498,6 @@ static void _generateWhereCondition(WhereCondition *whereCondition)
 	case NODE_TYPE_WHERE_IN_CONDITION:
 		_generateWhereInCondition(whereCondition->whereInCondition, false);
 		break;
-	case NODE_TYPE_WHERE_IS_CONDITION:
-		_generateWhereIsCondition(whereCondition->whereIsCondition);
-		break;
 	case NODE_TYPE_WHERE_NOT_CONDITION:
 		_generateWhereNotCondition(whereCondition->whereNotCondition);
 		break;
@@ -495,13 +510,15 @@ static void _generateWhereCondition(WhereCondition *whereCondition)
 		_generateWhereCondition(whereCondition->next);
 }
 
-static void _generateNullValuedWhereCondition(WhereBinaryCondition *whereBinaryCondition) {
-	if (whereBinaryCondition->value1->type == CONDITION_VALUE_NULL) {
-		WhereConditionValue* aux = whereBinaryCondition->value1;
+static void _generateNullValuedWhereCondition(WhereBinaryCondition *whereBinaryCondition)
+{
+	if (whereBinaryCondition->value1->type == CONDITION_VALUE_NULL)
+	{
+		WhereConditionValue *aux = whereBinaryCondition->value1;
 		whereBinaryCondition->value1 = whereBinaryCondition->value2;
 		whereBinaryCondition->value2 = aux;
 	}
-	
+
 	_generateWhereConditionValue(whereBinaryCondition->value1);
 	_generateBinaryConditionOperatorForNullValues(whereBinaryCondition->operator);
 	_generateWhereConditionValue(whereBinaryCondition->value2);
@@ -510,24 +527,21 @@ static void _generateNullValuedWhereCondition(WhereBinaryCondition *whereBinaryC
 static void _generateWhereBinaryCondition(WhereBinaryCondition *whereBinaryCondition)
 {
 	_outputSql("(");
-	if (whereBinaryCondition->value1->type == CONDITION_VALUE_NULL || whereBinaryCondition->value2->type == CONDITION_VALUE_NULL) {
+	if (whereBinaryCondition->value1->type == CONDITION_VALUE_NULL || whereBinaryCondition->value2->type == CONDITION_VALUE_NULL)
+	{
 		_generateNullValuedWhereCondition(whereBinaryCondition);
 	}
-	else {
+	else
+	{
 		_generateWhereConditionValue(whereBinaryCondition->value1);
 		_generateBinaryConditionOperator(whereBinaryCondition->operator);
 		_generateWhereConditionValue(whereBinaryCondition->value2);
 	}
 	_outputSql(")");
 }
-static void _generateWhereIsCondition(WhereIsCondition *whereIsCondition)
-{
-	_outputSql("%s ", whereIsCondition->attribute);
-	_generateWhereNotCondition(whereIsCondition->whereNotCondition);
-}
 static void _generateWhereInCondition(WhereInCondition *whereInCondition, int isNotCondition)
 {
-	_outputSql("%s IN (", isNotCondition? "" : whereInCondition->attribute);
+	_outputSql("%s IN (", isNotCondition ? "" : whereInCondition->attribute);
 
 	switch (whereInCondition->type)
 	{
@@ -544,7 +558,7 @@ static void _generateWhereNotCondition(WhereNotCondition *whereNotCondition)
 {
 	if (whereNotCondition->nodeSelected == IN_NODE)
 		_outputSql("%s ", whereNotCondition->in->attribute);
-	_outputSql("NOT%s", whereNotCondition->nodeSelected==IN_NODE ? "" : " ");
+	_outputSql("NOT%s", whereNotCondition->nodeSelected == IN_NODE ? "" : " ");
 	switch (whereNotCondition->nodeSelected)
 	{
 	case IN_NODE:
@@ -621,19 +635,21 @@ static void _generateBinaryConditionOperator(BinaryConditionOperator binaryCondi
 	}
 }
 
-static void _generateBinaryConditionOperatorForNullValues(BinaryConditionOperator binaryConditionOperator) {
-	switch(binaryConditionOperator) 
+static void _generateBinaryConditionOperatorForNullValues(BinaryConditionOperator binaryConditionOperator)
+{
+	switch (binaryConditionOperator)
 	{
-		case BINARY_CONDITION_OPERATOR_EQUAL:
-			_outputSql(" IS ");
-			break;
-		case BINARY_CONDITION_OPERATOR_NOT_EQUAL:
-			_outputSql(" IS NOT ");
-			break;
+	case BINARY_CONDITION_OPERATOR_EQUAL:
+		_outputSql(" IS ");
+		break;
+	case BINARY_CONDITION_OPERATOR_NOT_EQUAL:
+		_outputSql(" IS NOT ");
+		break;
 	}
 }
 
-static void _generateAuxQueryByName(char *auxQueryName){
+static void _generateAuxQueryByName(char *auxQueryName)
+{
 	_generateQuery((Json *)getSubqueryByName(_symbolTable, auxQueryName), 0);
 }
 

@@ -270,9 +270,6 @@ void releaseWhereCondition(WhereCondition *whereCondition)
 		case NODE_TYPE_WHERE_NOT_CONDITION:
 			releaseWhereNotCondition(whereCondition->whereNotCondition);
 			break;
-		case NODE_TYPE_WHERE_IS_CONDITION:
-			releaseWhereIsCondition(whereCondition->whereIsCondition);
-			break;
 		case NODE_TYPE_WHERE_IN_CONDITION:
 			releaseWhereInCondition(whereCondition->whereInCondition);
 			break;
@@ -298,17 +295,6 @@ void releaseWhereInCondition(WhereInCondition *whereInCondition)
 		}
 		free(whereInCondition->attribute);
 		free(whereInCondition);
-	}
-}
-
-void releaseWhereIsCondition(WhereIsCondition *whereIsCondition)
-{
-	logDebugging(_logger, "Executing destructor: %s", __FUNCTION__);
-	if (whereIsCondition != NULL)
-	{			
-		releaseWhereNotCondition(whereIsCondition->whereNotCondition);
-		free(whereIsCondition->attribute);
-		free(whereIsCondition);
 	}
 }
 
