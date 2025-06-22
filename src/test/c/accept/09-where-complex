@@ -60,9 +60,6 @@
                     "from": [
                         "t3"
                     ],
-                    "attributes": [{
-                        "name": "*"
-                    }],
                     "where": [
                         {
                             "operator": "=",
@@ -81,9 +78,6 @@
                         "from": [
                             "t3"
                         ],
-                        "attributes": [{
-                            "name": "*"
-                        }],
                         "where": [
                             {
                                 "operator": "=",

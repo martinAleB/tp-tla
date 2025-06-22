@@ -1,4 +1,4 @@
-#include "backend/code-generation/Generator.h"
+#include "backend/code-generation/SqlGenerator.h"
 #include "backend/domain-specific/Sql.h"
 #include "frontend/lexical-analysis/FlexActions.h"
 #include "frontend/syntactic-analysis/AbstractSyntaxTree.h"
@@ -65,7 +65,7 @@ const int main(const int count, const char **arguments)
 			compilationStatus = FAILED;
 		}
 		freeScopeManager();
-
+		generate(&compilerState);
 		// ...end of the Backend. -----------------------------------------------------------------
 		// ----------------------------------------------------------------------------------------
 	}

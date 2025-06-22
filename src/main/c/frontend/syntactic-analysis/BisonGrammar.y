@@ -235,7 +235,7 @@ whereConditionValue: STRING											{ $$ = StringWhereConditionValueSemanticAc
 	| whereBinaryCondition											{ $$ = WhereBinaryConditionWhereConditionValueSemanticAction($1); }
 	;
 
-whereBinaryCondition: OPEN_CURLY_BRACE OPERATOR[op] COLON BINARY_OPERATOR COMMA FIRST_VALUE COLON whereConditionValue[value1] COMMA SECOND_VALUE COLON whereConditionValue[value2] CLOSE_CURLY_BRACE	{ $$ = WhereBinaryConditionSemanticAction($value1, $value2, $op); }
+whereBinaryCondition: OPEN_CURLY_BRACE OPERATOR COLON BINARY_OPERATOR[op] COMMA FIRST_VALUE COLON whereConditionValue[value1] COMMA SECOND_VALUE COLON whereConditionValue[value2] CLOSE_CURLY_BRACE	{ $$ = WhereBinaryConditionSemanticAction($value1, $value2, $op); }
 	;
 
 whereNotCondition: OPEN_CURLY_BRACE NOT COLON whereBinaryCondition CLOSE_CURLY_BRACE				{ $$ = WhereNotConditionWithBinaryConditionSemanticAction($4); }
