@@ -24,7 +24,7 @@ Se realizaron ciertas modificaciones sobre las construcciones originales.
 
 ## Informe
 
-El informe requerido para la última etapa del trabajo se encuentra en la carpeta docs.
+El informe requerido para la última etapa del trabajo se encuentra en la carpeta doc.
 
 # Flex-Bison-Compiler
 
